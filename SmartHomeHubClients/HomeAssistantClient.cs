@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using UnityEngine;
 
 
-namespace ECARules4All_DLL.Clients
+namespace ECARules4All_DLL.SmartHomeHubClients
 {
     public class HomeAssistantClient : AbstractClient<HomeAssistantClient>
     {

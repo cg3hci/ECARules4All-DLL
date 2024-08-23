@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using ECARules4All_DLL.Clients;
+using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -123,6 +123,7 @@ namespace ECARules4All_DLL
                 }
             }
         }
+        [SerializeField]
         private ECABoolean _isVisible = new ECABoolean(ECABoolean.BoolType.YES);
         
         /// <summary>
@@ -147,6 +148,7 @@ namespace ECARules4All_DLL
                 }
             }
         }
+        [SerializeField]
         private ECABoolean _isActive = new ECABoolean(ECABoolean.BoolType.YES);
         
         private Canvas canvas;

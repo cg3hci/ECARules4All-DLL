@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using UnityEngine;
 
 
-namespace ECARules4All_DLL.Clients
+namespace ECARules4All_DLL.SmartHomeHubClients
 {
     public class Update
     {
@@ -134,5 +135,17 @@ namespace ECARules4All_DLL.Clients
         }
 
         protected abstract void sendRequestHandler(object sender, Update newItem);
+    }
+    
+    public static class UpdateValueWrapper
+    {
+        public static void UpdateValue<T>(string ownerName, string propertyName, T newValue)
+        {
+            foreach (var client in RuleEngine.GetInstance().clients)
+            {
+                client.updates.Enqueue(new Update(ownerName, propertyName, newValue));
+            }
+            Debug.Log($"new value: {newValue}");
+        }
     }
 }

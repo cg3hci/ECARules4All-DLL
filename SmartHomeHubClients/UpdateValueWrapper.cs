@@ -1,6 +1,5 @@
-﻿using System;
+﻿/*
 using UnityEngine;
-using System.Text.Json;
 
 
 namespace ECARules4All_DLL.Clients
@@ -17,3 +16,4 @@ namespace ECARules4All_DLL.Clients
         }
     }
 }
+*/

@@ -2,7 +2,7 @@
 using ECARules4All_DLL.Taxonomies.Behaviours.Subcategories;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
-using ECARules4All_DLL;
+using ECARules4All_DLL.SmartHomeHubClients;
 
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Characters
@@ -14,19 +14,53 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
     [ECARules4All("character")]
     [RequireComponent(typeof(ECAObject), typeof(Animator))]
     [DisallowMultipleComponent]
-    public class Character : MonoBehaviour
+    public class Character : ECAScript
     {
         /// <summary>
         /// <b>life</b> is the life of the character.
         /// </summary>
         [StateVariable("life", ECARules4AllType.Float)]
-        public float life;
+        public float life
+        {
+            get => _life;
+            set
+            {
+                _life = value;
+                var attribute = GetStateVariableProperty(nameof(life));
+                if(attribute != null)
+                {
+                    UpdateValueWrapper.UpdateValue(
+                        this.ToString(),
+                        attribute.Name,
+                        _life.ToString()
+                    );
+                }
+            }
+        }
+        private float _life;
 
         /// <summary>
         /// <b>playing</b> to identify whether it is player-controlled or not.
         /// </summary>
         [StateVariable("playing", ECARules4AllType.Boolean)]
-        public ECABoolean playing;
+        public ECABoolean playing
+        {
+            get => _playing;
+            set
+            {
+                _playing = value;
+                var attribute = GetStateVariableProperty(nameof(life));
+                if(attribute != null)
+                {
+                    UpdateValueWrapper.UpdateValue(
+                        this.ToString(),
+                        attribute.Name,
+                        _playing.ToString()
+                    );
+                }
+            }
+        }
+        private ECABoolean _playing;
 
         private bool isBusyMoving = false;
         private Animator anim;

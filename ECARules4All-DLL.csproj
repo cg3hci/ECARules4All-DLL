@@ -105,9 +105,10 @@
         <Compile Include="AntLR\ECARulesParserBaseListener.cs" />
         <Compile Include="AntLR\ECARulesParserListener.cs" />
         <Compile Include="Behaviour.cs" />
-        <Compile Include="Clients\AbstractClient.cs" />
-        <Compile Include="Clients\HomeAssistantClient.cs" />
-        <Compile Include="Clients\UpdateValueWrapper.cs" />
+        <Compile Include="SmartHomeHubClients\AbstractClient.cs" />
+        <Compile Include="SmartHomeHubClients\APIServer.cs" />
+        <Compile Include="SmartHomeHubClients\HomeAssistantClient.cs" />
+        <Compile Include="SmartHomeHubClients\UpdateValueWrapper.cs" />
         <Compile Include="ECAObject.cs" />
         <Compile Include="Objects.cs" />
         <Compile Include="Parsers\ECARulesLexer.cs" />
