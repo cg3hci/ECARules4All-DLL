@@ -65,8 +65,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         private bool isBusyMoving = false;
         private Animator anim;
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             anim = gameObject.GetComponent<Animator>();
         }
 

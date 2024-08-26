@@ -10,7 +10,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals
     [ECARules4All("animal")]
     [RequireComponent(typeof(Character))]
     [DisallowMultipleComponent]
-    public class Animal : MonoBehaviour
+    public class Animal : ECAScript
     {
         /// <summary>
         /// <b>Speaks</b>: allows to send a message to the player

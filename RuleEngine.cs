@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace ECARules4All_DLL
 {
-       ///<summary>
+    ///<summary>
     ///<c>RuleEngine</c> manages all the rule execution routines. 
     ///</summary>
     public class RuleEngine : ActionListener
@@ -19,7 +19,7 @@ namespace ECARules4All_DLL
         public static RuleEngine singleton;
         private List<Rule> rules = new List<Rule>();
         private EventBus eventQueue;
-        
+        // Smart hub clients
         public List<AbstractClientBase> clients { get; set; } = new List<AbstractClientBase>();
 
         public void AddClient(AbstractClientBase newClient)
@@ -311,68 +311,7 @@ namespace ECARules4All_DLL
 
             return actions;
         }
-
-
-        /*
-                public Dictionary<GameObject, ECARuleInfo> CreateDescriptors(GameObject[] objects)
-                {
-                    Dictionary<GameObject, ECARuleInfo> ecaDescriptors = new Dictionary<GameObject, ECARuleInfo>();
-
-                    foreach(GameObject obj in objects)
-                    {
-                        ECARuleInfo info = new ECARuleInfo();
-                        info.EcaRuleType = typeof(System.Object);
-                        ecaDescriptors.Add(obj, info);
-                        foreach(Component c in obj.GetComponents())
-                        {
-                            Type cType = c.GetType();
-                            if(Attribute.IsDefined(cType, typeof(ECARules4AllAttribute)))
-                            {
-                                // we found a ECARules4All managed type
-                                if (cType.IsSubclassOf(typeof(ECARules4All.Object)))
-                                {
-                                    // find the minimum type associated with the different components
-                                    if (cType.IsSubclassOf(info.EcaRuleType))
-                                    {
-                                        info.EcaRuleType = cType;
-                                    }
-
-                                }
-
-                                // add the actions to the list
-                                foreach (MethodInfo m in cType.GetMethods())
-                                {
-                                    ActionAttribute[] actions = (ActionAttribute[])m.GetCustomAttributes(typeof(ActionAttribute), true);
-                                    foreach (ActionAttribute a in actions)
-                                    {
-                                        info.Actions.Add(a);
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    return ecaDescriptors;
-                }
-
-        public List<String> BuildEventList()
-        {
-            List<String> actions = new List<String>();
-            foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (Type t in ass.GetExportedTypes())
-                {
-                    if (t.IsSubclassOf(typeof(UnityEngine.Component)) && Attribute.IsDefined(t, typeof(ECARules4AllAttribute)))
-                    {
-                        actions.AddRange(this.ListActions(t));
-                    }
-                }
-            }
-
-            return actions;
-        }
-        */
-
+        
         ///<summary>
         ///<c>ActionPerformed</c> is an implementation of the <see cref="ActionListener"/> interface.
         ///<para/>
@@ -400,6 +339,20 @@ namespace ECARules4All_DLL
             foreach (Action act in toExecute)
             {
                 ExecuteAction(act);
+            }
+        }
+        
+        // Test
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                var components = ComponentTracker.Instance.GetAllComponents();
+                foreach (var entry in components)
+                {
+                    Debug.Log("Key: " + entry.Key);
+                    Debug.Log("-- Value: " + entry.Value);
+                }
             }
         }
     }

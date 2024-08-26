@@ -9,21 +9,6 @@ using Object = UnityEngine.Object;
 
 namespace ECARules4All_DLL
 {
-    public abstract class ECAScript : MonoBehaviour
-    {
-        protected StateVariableAttribute GetStateVariableProperty(string nameProperty)
-        {
-            var property = GetType().GetProperty(nameProperty);
-            // return a StateVariableAttribute if the object contains a property named $"{nameProperty}" 
-            if (property != null)
-            {
-                return property.GetCustomAttribute<StateVariableAttribute>();
-            }
-
-            return null;
-        }
-    }
-    
     /// <summary>
     /// <b>ECAObject</b> is the base class for all objects that can be used in the rule engine.
     /// All the other classes in this package inherit from this class or one of its subclasses.
@@ -153,8 +138,9 @@ namespace ECARules4All_DLL
         
         private Canvas canvas;
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             //p.Owner = this;
             TryGetComponent<Canvas>(out canvas);
             UpdateVisibility();

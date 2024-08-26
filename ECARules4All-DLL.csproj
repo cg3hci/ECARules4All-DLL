@@ -105,6 +105,7 @@
         <Compile Include="AntLR\ECARulesParserBaseListener.cs" />
         <Compile Include="AntLR\ECARulesParserListener.cs" />
         <Compile Include="Behaviour.cs" />
+        <Compile Include="ECAScript.cs" />
         <Compile Include="SmartHomeHubClients\AbstractClient.cs" />
         <Compile Include="SmartHomeHubClients\APIServer.cs" />
         <Compile Include="SmartHomeHubClients\HomeAssistantClient.cs" />
@@ -176,6 +177,7 @@
         <Compile Include="UI\UIColors.cs" />
         <Compile Include="UI\VerbComposition.cs" />
         <Compile Include="Utils\ActionAttribute.cs" />
+        <Compile Include="Utils\ComponentTracker.cs" />
         <Compile Include="Utils\ECABoolean.cs" />
         <Compile Include="Utils\ECAColor.cs" />
         <Compile Include="Utils\ECAOutline.cs" />
