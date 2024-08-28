@@ -11,12 +11,20 @@ namespace ECARules4All_DLL.SmartHomeHubClients
     {
         public string subject { get; set; }
         public string verb { get; set; }
+        
+        public string variable { get; set; }
+        
+        public string modifier { get; set; }
+        
         public Dictionary<string, object> parameters { get; set; }
 
-        public ReceivedUpdate(string subject, string verb, Dictionary<string, object> parameters = null)
+        public ReceivedUpdate(string subject, string verb, string variable = null, string modifier = null, 
+            Dictionary<string, object> parameters = null)
         {
             this.subject = subject;
             this.verb = verb;
+            this.variable = variable;
+            this.modifier = modifier;
             this.parameters = parameters;
         }
     }

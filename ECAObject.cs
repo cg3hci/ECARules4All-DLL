@@ -14,6 +14,7 @@ namespace ECARules4All_DLL
     /// All the other classes in this package inherit from this class or one of its subclasses.
     /// </summary>
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(ECATracker))]
     [ECARules4All("object")]
     public class ECAObject : ECAScript
     {
@@ -44,7 +45,7 @@ namespace ECARules4All_DLL
                 if(attribute != null)
                 {
                     UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
+                        GetGameObjectComponentName(),
                         attribute.Name,
                         new Dictionary<string, object>
                         {
@@ -72,7 +73,7 @@ namespace ECARules4All_DLL
                 if(attribute != null)
                 {
                     UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
+                        GetGameObjectComponentName(),
                         attribute.Name,
                         new Dictionary<string, object>
                         {
@@ -101,7 +102,7 @@ namespace ECARules4All_DLL
                 if(attribute != null)
                 {
                     UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
+                        GetGameObjectComponentName(),
                         attribute.Name,
                         isVisible.ToString()
                     );
@@ -126,7 +127,7 @@ namespace ECARules4All_DLL
                 if(attribute != null)
                 {
                     UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
+                        GetGameObjectComponentName(),
                         attribute.Name,
                         isActive.ToString()
                     );
@@ -138,9 +139,8 @@ namespace ECARules4All_DLL
         
         private Canvas canvas;
 
-        protected override void Start()
+        void Start()
         {
-            base.Start();
             //p.Owner = this;
             TryGetComponent<Canvas>(out canvas);
             UpdateVisibility();
@@ -190,7 +190,7 @@ namespace ECARules4All_DLL
         {
             //r.Assign(newRot);
             r = new Rotation(newRot);
-            transform.Rotate(r.x, r.y, r.z);
+            transform.Rotate(r.x, r.y, r.z); // todo verify rotation
         }
         
         /// <summary>

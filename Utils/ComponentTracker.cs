@@ -24,18 +24,16 @@ namespace ECARules4All_DLL.Utils
             }
         }
 
-        public void AddComponent(string gameObjectName, string componentName, object component)
+        public void AddComponent(string pair, object component)
         {
-            string pair = $"{gameObjectName}_{componentName}";
             if (!_components.ContainsKey(pair))
             {
                 _components[pair] = component;
             }
         }
 
-        public void RemoveComponent(string gameObjectName, string componentName, object component)
+        public void RemoveComponent(string pair, object component)
         {
-            string pair = $"{gameObjectName}_{componentName}";
             if (_components.ContainsKey(pair))
             {
                 _components.Remove(pair);
