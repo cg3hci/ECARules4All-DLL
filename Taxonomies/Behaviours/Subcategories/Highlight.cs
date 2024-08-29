@@ -1,4 +1,5 @@
-﻿using ECARules4All_DLL.Utils;
+﻿using ECARules4All_DLL.SmartHomeHubClients;
+using ECARules4All_DLL.Utils;
 using UnityEngine;
 
 
@@ -10,18 +11,39 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("highlight")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Highlight : MonoBehaviour
+    public class Highlight : ECAScript
     {
         /// <summary>
         /// <b>Color</b> is the color that will be used to highlight the objects.
         /// </summary>
         [StateVariable("color", ECARules4AllType.Color)]
-        public Color color;
+        public Color color
+        {
+            get => _color;
+            set
+            {
+                _color = value;
+                NotifyUpdate(nameof(color), color.ToString());
+            }
+        }
+        [SerializeField] 
+        private Color _color;
+        
         /// <summary>
         /// <b>On</b> is a boolean that tells if the highlight is on or off.
         /// </summary>
         [StateVariable("on", ECARules4AllType.Boolean)]
-        public ECABoolean on = new ECABoolean(ECABoolean.BoolType.OFF);
+        public ECABoolean on
+        {
+            get => _on;
+            set
+            {
+                _on = value;
+                NotifyUpdate(nameof(on), on.ToString());
+            }
+        }
+        [SerializeField] 
+        private ECABoolean _on = new ECABoolean(ECABoolean.BoolType.OFF);
 
         /// <summary>
         /// <b>Outline</b> is an object that is used to highlight the object.

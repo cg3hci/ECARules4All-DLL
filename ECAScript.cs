@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Reflection;
+using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 
@@ -23,6 +25,19 @@ namespace ECARules4All_DLL
             }
 
             return null;
+        }
+        
+        public void NotifyUpdate(string propertyName, object value)
+        {
+            var attribute = GetStateVariableProperty(propertyName);
+            if (attribute  != null)
+            {
+                UpdateValueWrapper.UpdateValue(
+                    GetGameObjectComponentName(),
+                    attribute.Name,
+                    value
+                );
+            }
         }
     }
 

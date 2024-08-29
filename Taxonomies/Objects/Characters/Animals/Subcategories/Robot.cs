@@ -128,11 +128,12 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
                 // Set our position as a fraction of the distance between the markers.
 
                 gameObject.transform.position = Vector3.Lerp(startMarker, endMarker, fractionOfJourney);
-                GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+                //GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+                GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
                 yield return null;
             }
-
-            GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+            //GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+            GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
             isBusyMoving = false;
             Animate(IdleAnimation);
         }

@@ -1,4 +1,5 @@
-﻿using ECARules4All_DLL.Utils;
+﻿using System.Collections;
+using ECARules4All_DLL.Utils;
 using UnityEngine;
 
 
@@ -10,7 +11,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals
     [ECARules4All("animal")]
     [RequireComponent(typeof(Character))]
     [DisallowMultipleComponent]
-    public class Animal : ECAScript
+    public class Animal : MonoBehaviour
     {
         /// <summary>
         /// <b>Speaks</b>: allows to send a message to the player

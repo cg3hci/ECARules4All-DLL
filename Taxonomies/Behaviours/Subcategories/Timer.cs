@@ -10,16 +10,40 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("timer")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Timer : MonoBehaviour
+    public class Timer : ECAScript
     {
         /// <summary>
         /// <b>Duration</b> is the maximum time the timer will run for.
         /// </summary>
-        [StateVariable("duration", ECARules4AllType.Float)] public float duration;
+        [StateVariable("duration", ECARules4AllType.Float)] 
+        public float duration
+        {
+            get => _duration;
+            set
+            {
+                _duration = value;
+                NotifyUpdate(nameof(duration), duration.ToString());
+            }
+        }
+        [SerializeField] 
+        private float _duration;
+        
         /// <summary>
         /// <b>Current</b> is the current time the timer has been running for.
         /// </summary>
-        [StateVariable("current-time", ECARules4AllType.Float)] public float current;
+        [StateVariable("current-time", ECARules4AllType.Float)] 
+        public float current
+        {
+            get => _current;
+            set
+            {
+                _current = value;
+                NotifyUpdate(nameof(current), current.ToString());
+            }
+        }
+        [SerializeField] 
+        private float _current;
+        
         /// <summary>
         /// <b>Active</b> is a boolean that indicates whether the timer is currently running.
         /// </summary>

@@ -1,3 +1,4 @@
+using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
     [ECARules4All("camera")]
     [RequireComponent(typeof(Interaction), typeof(Camera))] //gerarchia 
     [DisallowMultipleComponent]
-    public class ECACamera : MonoBehaviour
+    public class ECACamera : ECAScript
     {
         /// <summary>
         /// <b>Camera</b> is the <see cref="Camera"/> component the script will control.
@@ -42,19 +43,49 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <b>POV</b> is the camera's point of view.
         /// </summary>
         [StateVariable("pov", ECARules4AllType.Identifier)]
-        public POV pov;
+        public POV pov
+        {
+            get => _pov;
+            set
+            {
+                _pov = value;
+                NotifyUpdate(nameof(pov), pov.ToString());
+            }
+        }
+        [SerializeField]
+        private POV _pov;
 
         /// <summary>
         /// <b>zoomLevel</b> is the camera's zoom level.
         /// </summary>
         [StateVariable("zoomLevel", ECARules4AllType.Float)]
-        public float zoomLevel = 60;
+        public float zoomLevel
+        {
+            get => _zoomLevel;
+            set
+            {
+                _zoomLevel = value;
+                NotifyUpdate(nameof(zoomLevel), zoomLevel.ToString());
+            }
+        }
+        [SerializeField]
+        private float _zoomLevel = 60;
 
         /// <summary>
         /// <b>Playing</b> is a boolean that indicates whether the camera is currently playing.
         /// </summary>
         [StateVariable("playing", ECARules4AllType.Boolean)]
-        public ECABoolean playing;
+        public ECABoolean playing
+        {
+            get => _playing;
+            set
+            {
+                _playing = value;
+                NotifyUpdate(nameof(playing), playing.ToString());
+            }
+        }
+        [SerializeField]
+        private ECABoolean _playing;
 
         //TODO: conflict between grammar and documentation, float parameter only in documentation
         /// <summary>

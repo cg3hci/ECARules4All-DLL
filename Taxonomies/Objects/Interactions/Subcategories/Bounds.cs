@@ -1,3 +1,4 @@
+using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 
@@ -10,13 +11,23 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
     [ECARules4All("bounds")]
     [RequireComponent(typeof(Interaction))] //gerarchia 
     [DisallowMultipleComponent]
-    public class Bounds : MonoBehaviour
+    public class Bounds : ECAScript
     {
         /// <summary>
         /// <b>Scale</b> is the scale of the scene bounds.
         /// </summary>
         [StateVariable("scale", ECARules4AllType.Float)]
-        public float scale;
+        public float scale
+        {
+            get => _scale;
+            set
+            {
+                _scale = value;
+                NotifyUpdate(nameof(scale), scale.ToString());
+            }
+        }
+        [SerializeField]
+        private float _scale;
 
         /// <summary>
         /// <b>Scales</b> sets the scale of the scene bounds.

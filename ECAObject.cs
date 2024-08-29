@@ -1,10 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 
 namespace ECARules4All_DLL
@@ -41,20 +39,13 @@ namespace ECARules4All_DLL
             set
             {
                 _p = value;
-                var attribute = GetStateVariableProperty(nameof(p));
-                if(attribute != null)
+                var v = new Dictionary<string, object>
                 {
-                    UpdateValueWrapper.UpdateValue(
-                        GetGameObjectComponentName(),
-                        attribute.Name,
-                        new Dictionary<string, object>
-                        {
-                            { "x", p.x },
-                            { "y", p.y },
-                            { "z", p.z },
-                        }
-                    );
-                }
+                    { "x", p.x },
+                    { "y", p.y },
+                    { "z", p.z },
+                };
+                NotifyUpdate(nameof(p), v);
             }
         }
         private Position _p;
@@ -69,20 +60,13 @@ namespace ECARules4All_DLL
             set
             {
                 _r = value;
-                var attribute = GetStateVariableProperty(nameof(r));
-                if(attribute != null)
+                var v = new Dictionary<string, object>
                 {
-                    UpdateValueWrapper.UpdateValue(
-                        GetGameObjectComponentName(),
-                        attribute.Name,
-                        new Dictionary<string, object>
-                        {
-                            { "x", r.x },
-                            { "y", r.y },
-                            { "z", r.z },
-                        }
-                    );
-                }
+                    { "x", r.x },
+                    { "y", r.y },
+                    { "z", r.z },
+                };
+                NotifyUpdate(nameof(r), v);
             }
         }
         private Rotation _r;
@@ -98,15 +82,7 @@ namespace ECARules4All_DLL
             set
             {
                 _isVisible = value;
-                var attribute = GetStateVariableProperty(nameof(isVisible));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        GetGameObjectComponentName(),
-                        attribute.Name,
-                        isVisible.ToString()
-                    );
-                }
+                NotifyUpdate(nameof(isVisible), isVisible.ToString());
             }
         }
         [SerializeField]
@@ -123,15 +99,7 @@ namespace ECARules4All_DLL
             set
             {
                 _isActive = value;
-                var attribute = GetStateVariableProperty(nameof(isActive));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        GetGameObjectComponentName(),
-                        attribute.Name,
-                        isActive.ToString()
-                    );
-                }
+                NotifyUpdate(nameof(isActive), isActive.ToString());
             }
         }
         [SerializeField]
@@ -347,6 +315,5 @@ namespace ECARules4All_DLL
             GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
             isBusyMoving = false;
         }
-
     }
 }

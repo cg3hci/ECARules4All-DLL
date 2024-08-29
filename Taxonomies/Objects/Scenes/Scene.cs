@@ -1,4 +1,5 @@
-﻿using ECARules4All_DLL.Taxonomies.Objects.Characters;
+﻿using System.Collections.Generic;
+using ECARules4All_DLL.Taxonomies.Objects.Characters;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 
@@ -8,15 +9,40 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Scenes
     [ECARules4All("scene")]
     [RequireComponent(typeof(ECAObject))]
     [DisallowMultipleComponent]
-    public class Scene : MonoBehaviour
+    public class Scene : ECAScript
     {
         //DOUBT: Aggiunto in questo file nome e posizione della scena di arrivo, può avere senso?
         //This component renames the GameObject to the Scene name, for "rule starting on start" purposes
         [StateVariable("name", ECARules4AllType.Text)]
-        public string name;
+        public string name
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                NotifyUpdate(nameof(name), name);
+            }
+        }
+        [SerializeField]
+        private string _name;
 
         [StateVariable("position", ECARules4AllType.Position)]
-        public Position position;
+        public Position position
+        {
+            get => _position;
+            set
+            {
+                _position = value;
+                var v = new Dictionary<string, object>
+                {
+                    { "x", position.x },
+                    { "y", position.y },
+                    { "z", position.z },
+                };
+                NotifyUpdate(nameof(position), v);
+            }
+        }
+        private Position _position;
 
         private void Start()
         {

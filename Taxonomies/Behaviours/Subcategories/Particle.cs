@@ -10,14 +10,24 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("particle")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Particle : MonoBehaviour
+    public class Particle : ECAScript
     {
         /// <summary>
         /// <b>On</b> is a boolean that indicates if the particle system is active.
         /// </summary>
         [StateVariable("on", ECARules4AllType.Boolean)]
-        public ECABoolean on = new ECABoolean(ECABoolean.BoolType.OFF);
-
+        public ECABoolean on
+        {
+            get => _on;
+            set
+            {
+                _on = value;
+                NotifyUpdate(nameof(on), on.ToString());
+            }
+        }
+        [SerializeField] 
+        private ECABoolean _on = new ECABoolean(ECABoolean.BoolType.OFF);
+        
         public ParticleSystem ps;
 
         //TODO: Questa azione VA in conflitto con azioni all'interno di ECAObject (ad es. Turns di Electronic)

@@ -13,7 +13,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
     [ECARules4All("clothing")]
     [RequireComponent(typeof(Prop))]
     [DisallowMultipleComponent]
-    public class Clothing : MonoBehaviour
+    public class Clothing : ECAScript
     {
         /// <summary>
         /// <b>ClothingCategories</b>: This enum is used to define the clothing categories: TOP, PANTS, SHOES and HAT.
@@ -33,25 +33,65 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         /// <b>Brand</b>: This property is used to define the brand of the clothing.
         /// </summary>
         [StateVariable("brand", ECARules4AllType.Text)]
-        public string brand;
+        public string brand
+        {
+            get => _brand;
+            set
+            {
+                _brand = value;
+                NotifyUpdate(nameof(brand), brand);
+            }
+        }
+        [SerializeField]
+        private string _brand;
 
         /// <summary>
         /// <b>Color</b>: This property is used to define the color of the clothing.
         /// </summary>
         [StateVariable("color", ECARules4AllType.Color)]
-        public Color color;
+        public Color color
+        {
+            get => _color;
+            set
+            {
+                _color = value;
+                NotifyUpdate(nameof(color), color.ToString());
+            }
+        }
+        [SerializeField]
+        private Color _color;
 
         /// <summary>
         /// <b>Size/b> This property is used to define the size of the clothing.
         /// </summary>
         [StateVariable("size", ECARules4AllType.Text)]
-        public string size;
+        public string size
+        {
+            get => _size;
+            set
+            {
+                _size = value;
+                NotifyUpdate(nameof(size), size);
+            }
+        }
+        [SerializeField]
+        private string _size;
 
         /// <summary>
         /// <b>Weared</b>: This property is used to define if the clothing is weared or not.
         /// </summary>
         [StateVariable("weared", ECARules4AllType.Boolean)]
-        public ECABoolean weared = new ECABoolean(ECABoolean.BoolType.NO);
+        public ECABoolean weared
+        {
+            get => _weared;
+            set
+            {
+                _weared = value;
+                NotifyUpdate(nameof(weared), weared.ToString());
+            }
+        }
+        [SerializeField]
+        private ECABoolean _weared = new ECABoolean(ECABoolean.BoolType.NO);
 
         [HideInInspector] public GameObject wearedBy;
 
@@ -105,7 +145,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
                     break;
             }
 
-            weared.Assign(ECABoolean.BoolType.YES);
+            //weared.Assign(ECABoolean.BoolType.YES);
+            weared = new ECABoolean(ECABoolean.BoolType.YES);
             m.AssignDress(this);
         }
 
@@ -118,7 +159,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         {
             if (m.gameObject == wearedBy)
             {
-                weared.Assign(ECABoolean.BoolType.NO);
+                //weared.Assign(ECABoolean.BoolType.NO);
+                weared = new ECABoolean(ECABoolean.BoolType.NO);
                 m.RemoveDress(this);
                 transform.position = defaultPosition;
                 transform.rotation = defaultRotation;
@@ -142,7 +184,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
                 MapBones();
             }
 
-            weared.Assign(ECABoolean.BoolType.YES);
+            //weared.Assign(ECABoolean.BoolType.YES);
+            weared = new ECABoolean(ECABoolean.BoolType.YES);
         }
 
         /// <summary>
@@ -154,7 +197,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         {
             if (c.gameObject == wearedBy)
             {
-                weared.Assign(ECABoolean.BoolType.NO);
+                //weared.Assign(ECABoolean.BoolType.NO);
+                weared = new ECABoolean(ECABoolean.BoolType.NO);
                 wearedBy = null;
             }
         }

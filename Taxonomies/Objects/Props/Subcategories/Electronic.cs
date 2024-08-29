@@ -10,25 +10,55 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
     [ECARules4All("electronic")]
     [RequireComponent(typeof(Prop))]
     [DisallowMultipleComponent]
-    public class Electronic : MonoBehaviour
+    public class Electronic : ECAScript
     {
         /// <summary>
         /// <b>Brand</b> is the brand of the electronic.
         /// </summary>
         [StateVariable("brand", ECARules4AllType.Text)]
-        public string brand;
+        public string brand
+        {
+            get => _brand;
+            set
+            {
+                _brand = value;
+                NotifyUpdate(nameof(brand), brand);
+            }
+        }
+        [SerializeField]
+        private string _brand;
 
         /// <summary>
         /// <b>Model</b> is the model of the electronic.
         /// </summary>
         [StateVariable("model", ECARules4AllType.Text)]
-        public string model;
+        public string model
+        {
+            get => _model;
+            set
+            {
+                _model = value;
+                NotifyUpdate(nameof(model), model);
+            }
+        }
+        [SerializeField]
+        private string _model;
 
         /// <summary>
         /// <b>On</b> is the state of the electronic.
         /// </summary>
         [StateVariable("on", ECARules4AllType.Boolean)]
-        public ECABoolean on = new ECABoolean(ECABoolean.BoolType.OFF);
+        public ECABoolean on 
+        {
+            get => _on;
+            set
+            {
+                _on = value;
+                NotifyUpdate(nameof(on), on.ToString());
+            }
+        }
+        [SerializeField]
+        private ECABoolean _on = new ECABoolean(ECABoolean.BoolType.OFF);
 
         /// <summary>
         /// <b>TurnParticle</b>: The particle system to play when the electronic object is turned on.

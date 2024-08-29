@@ -1,7 +1,6 @@
 ﻿using ECARules4All_DLL.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Scene = ECARules4All_DLL.Taxonomies.Objects.Scenes.Scene;
 using Scenes_Scene = ECARules4All_DLL.Taxonomies.Objects.Scenes.Scene;
 
 
@@ -13,13 +12,23 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("transition")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Transition : MonoBehaviour
+    public class Transition : ECAScript
     {
         /// <summary>
         /// <b>Reference</b> is the Unity Scene to transition to.
         /// </summary>
         [StateVariable("reference", ECARules4AllType.Identifier)]
-        public Scenes_Scene reference;
+        public Scenes_Scene reference
+        {
+            get => _references;
+            set
+            {
+                _references = value;
+                NotifyUpdate(nameof(reference), reference.ToString());
+            }
+        }
+        [SerializeField]
+        private Scenes_Scene _references;
 
         /// <summary>
         /// <b>Teleports</b> changes the current scene to the scene referenced by <see cref="reference"/>.

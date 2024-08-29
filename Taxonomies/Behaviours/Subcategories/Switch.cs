@@ -11,13 +11,23 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("switch")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Switch : MonoBehaviour
+    public class Switch : ECAScript
     {
         /// <summary>
         /// <b>On</b> is the state of the switch.
         /// </summary>
         [StateVariable("on", ECARules4AllType.Boolean)]
-        public ECABoolean on;
+        public ECABoolean on
+        {
+            get => _on;
+            set
+            {
+                _on = value;
+                NotifyUpdate(nameof(on), on.ToString());
+            }
+        }
+        [SerializeField] 
+        private ECABoolean _on;
 
         /// <summary>
         /// <b>Turns</b> defines if the switch is on or off.

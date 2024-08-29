@@ -9,34 +9,12 @@ namespace ECARules4All_DLL
     public class Position
     {
         public string Name { get; set; }
-        //public object Owner { get; set; }
         
         public float x { get; set; }
-        /*public float x 
-        {
-            get => _x;
-            //set => UpdateValueWrapper.UpdateValue(this, nameof(x), _x, value);
-            set => UpdateValueWrapper.UpdateValue(this, nameof(x), ref _x, value);
-        }
-        private float _x;*/
-        
+
         public float y { get; set; }
-        /*public float y
-        {
-            get => _y;
-            //set => UpdateValueWrapper.UpdateValue(this, nameof(y), _y, value);
-            set => UpdateValueWrapper.UpdateValue(this, nameof(y), ref _y, value);
-        }
-        private float _y;*/
 
         public float z { get; set; }
-        /*public float z
-        {
-            get => _z;
-            //set => UpdateValueWrapper.UpdateValue(this, nameof(z), _z, value);
-            set => UpdateValueWrapper.UpdateValue(this, nameof(z), ref _z, value);
-        }
-        private float _z;*/
         
         public Position()
         {

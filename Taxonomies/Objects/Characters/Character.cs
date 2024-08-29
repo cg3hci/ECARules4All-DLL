@@ -26,15 +26,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
             set
             {
                 _life = value;
-                var attribute = GetStateVariableProperty(nameof(life));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
-                        attribute.Name,
-                        _life.ToString()
-                    );
-                }
+                NotifyUpdate(nameof(_life), _life.ToString());
             }
         }
         private float _life;
@@ -49,15 +41,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
             set
             {
                 _playing = value;
-                var attribute = GetStateVariableProperty(nameof(life));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
-                        attribute.Name,
-                        _playing.ToString()
-                    );
-                }
+                NotifyUpdate(nameof(playing), playing.ToString());
             }
         }
         private ECABoolean _playing;
@@ -119,12 +103,13 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
                 // Set our position as a fraction of the distance between the markers.
 
                 gameObject.transform.position = Vector3.Lerp(startMarker, endMarker, fractionOfJourney);
-                GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
-
+                //GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+                GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
                 yield return null;
             }
 
-            GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+            //GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+            GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
             isBusyMoving = false;
         }
 
@@ -151,8 +136,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
                 Jumps(pos);
             }
         }
-
-
+        
         /// <summary>
         /// <b>Starts animation</b>: The character can start an animation
         /// </summary>

@@ -8,13 +8,33 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles
     [ECARules4All("vehicle")]
     [RequireComponent(typeof(ECAObject))]
     [DisallowMultipleComponent]
-    public class Vehicle : MonoBehaviour
+    public class Vehicle : ECAScript
     {
         [StateVariable("speed", ECARules4AllType.Float)]
-        public float speed;
+        public float speed
+        {
+            get => _speed;
+            set
+            {
+                _speed = value;
+                NotifyUpdate(nameof(speed), speed.ToString());
+            }
+        }
+        [SerializeField]
+        private float _speed;
 
         [StateVariable("on", ECARules4AllType.Boolean)]
-        public ECABoolean on = new ECABoolean(ECABoolean.BoolType.OFF);
+        public ECABoolean on 
+        {
+            get => _on;
+            set
+            {
+                _on = value;
+                NotifyUpdate(nameof(on), on.ToString());
+            }
+        }
+        [SerializeField]
+        private ECABoolean _on = new ECABoolean(ECABoolean.BoolType.OFF);
 
         private Vector3 localForward;
         private ECAObject reference;
@@ -22,7 +42,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles
         [Action(typeof(Vehicle), "starts")]
         public void Starts()
         {
-            on.Assign(ECABoolean.BoolType.ON);
+            //on.Assign(ECABoolean.BoolType.ON);
+            on = new ECABoolean(ECABoolean.BoolType.ON);
         }
 
         //TODO: verb not present in grammar
@@ -48,7 +69,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles
         [Action(typeof(Vehicle), "stops")]
         public void Stops()
         {
-            on.Assign(ECABoolean.BoolType.OFF);
+            //on.Assign(ECABoolean.BoolType.OFF);
+            on = new ECABoolean(ECABoolean.BoolType.OFF);
             speed = 0;
         }
 
@@ -56,8 +78,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles
         {
             localForward = transform.worldToLocalMatrix.MultiplyVector(transform.forward);
             reference = GetComponent<ECAObject>();
-            reference.p.Assign(gameObject.transform.position);
-            reference.r.Assign(gameObject.transform.rotation);
+            //reference.p.Assign(gameObject.transform.position);
+            //reference.r.Assign(gameObject.transform.rotation);
+            reference.p = new Position(gameObject.transform.position);
+            reference.r = new Rotation(gameObject.transform.rotation);
         }
 
         private void Update()
@@ -65,8 +89,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles
             if (on)
             {
                 transform.Translate(speed * Time.deltaTime * localForward);
-                reference.p.Assign(gameObject.transform.position);
-                reference.r.Assign(gameObject.transform.rotation);
+                //reference.p.Assign(gameObject.transform.position);
+                //reference.r.Assign(gameObject.transform.rotation);
+                reference.p = new Position(gameObject.transform.position);
+                reference.r = new Rotation(gameObject.transform.rotation);
             }
         }
     }

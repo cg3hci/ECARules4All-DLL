@@ -10,13 +10,23 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
     [ECARules4All("text")]
     [RequireComponent(typeof(Interaction))] //gerarchia 
     [DisallowMultipleComponent]
-    public class ECAText : MonoBehaviour
+    public class ECAText : ECAScript
     {
         /// <summary>
         /// <b>Content</b> is the text content of the text element.
         /// </summary>
         [StateVariable("content", ECARules4AllType.Text)]
-        public string content;
+        public string content
+        {
+            get => _content;
+            set
+            {
+                _content = value;
+                NotifyUpdate(nameof(content), content);
+            }
+        }
+        [SerializeField]
+        private string _content;
 
         /// <summary>
         /// <b>ChangesContent</b> is the text content of the text element.

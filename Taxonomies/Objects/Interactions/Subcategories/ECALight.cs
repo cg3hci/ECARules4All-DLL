@@ -11,31 +11,71 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
     [ECARules4All("light")]
     [RequireComponent(typeof(Interaction), typeof(Light))] //gerarchia 
     [DisallowMultipleComponent]
-    public class ECALight : MonoBehaviour
+    public class ECALight : ECAScript
     {
         /// <summary>
         /// <b> Intensity </b> is the intensity of the light source.
         /// </summary>
         [StateVariable("intensity", ECARules4AllType.Float)]
-        public float intensity = 1;
+        public float intensity
+        {
+            get => _intensity;
+            set
+            {
+                _intensity = value;
+                NotifyUpdate(nameof(intensity), intensity.ToString());
+            }
+        }
+        [SerializeField]
+        private float _intensity = 1;
 
         /// <summary>
         /// <b> MaxIntensity </b> is the maximum intensity of the light source.
         /// </summary>
         [StateVariable("maxIntensity", ECARules4AllType.Float)]
-        public float maxIntensity = 10;
+        public float maxIntensity
+        {
+            get => _maxIntensity;
+            set
+            {
+                _maxIntensity = value;
+                NotifyUpdate(nameof(maxIntensity), maxIntensity.ToString());
+            }
+        }
+        [SerializeField]
+        private float _maxIntensity = 10;
 
         /// <summary>
         /// <b> Color </b> is the color of the light source.
         /// </summary>
         [StateVariable("color", ECARules4AllType.Color)]
-        public Color color = new Color(1, 0.95686271f, 0.8392157f, 1);
+        public Color color
+        {
+            get => _color;
+            set
+            {
+                _color = value;
+                NotifyUpdate(nameof(color), color.ToString());
+            }
+        }
+        [SerializeField]
+        private Color _color = new Color(1, 0.95686271f, 0.8392157f, 1);
 
         /// <summary>
         /// <b>On</b> is a boolean that represents the state of the light source.
         /// </summary>
         [StateVariable("on", ECARules4AllType.Boolean)]
-        public ECABoolean on = new ECABoolean(ECABoolean.BoolType.OFF);
+        public ECABoolean on 
+        {
+            get => _on;
+            set
+            {
+                _on = value;
+                NotifyUpdate(nameof(on), on.ToString());
+            }
+        }
+        [SerializeField]
+        private ECABoolean _on = new ECABoolean(ECABoolean.BoolType.OFF);
 
         /// <summary>
         /// <b>ComponentLight</b> is the GameObject's light component.

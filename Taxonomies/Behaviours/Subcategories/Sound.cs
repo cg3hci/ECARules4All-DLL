@@ -13,40 +13,133 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("sound")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Sound : MonoBehaviour
+    public class Sound : ECAScript
     {
         /// <summary>
         /// <b>Source</b> is the audio source that will be used to play the audio.
         /// </summary>
-        [StateVariable("source", ECARules4AllType.Text)] public string source;
+        [StateVariable("source", ECARules4AllType.Text)]
+        public string source
+        {
+            get => _source;
+            set
+            {
+                _source = value;
+                NotifyUpdate(nameof(source), source);
+            }
+        }
+        [SerializeField] 
+        private string _source;
+        
         /// <summary>
         /// <b>Volume</b> is the volume of the audio.
         /// </summary>
-        [StateVariable("volume", ECARules4AllType.Float)] public float volume;
+        [StateVariable("volume", ECARules4AllType.Float)] 
+        public float volume
+        {
+            get => _volume;
+            set
+            {
+                _volume = value;
+                NotifyUpdate(nameof(volume), volume.ToString());
+            }
+        }
+        [SerializeField] 
+        private float _volume;
+            
         /// <summary>
         /// <b>MaxVolume</b> is the maximum volume the audio can reach.
         /// </summary>
-        [StateVariable("maxVolume", ECARules4AllType.Float)] public float maxVolume;
+        [StateVariable("maxVolume", ECARules4AllType.Float)] 
+        public float maxVolume
+        {
+            get => _maxVolume;
+            set
+            {
+                _maxVolume = value;
+                NotifyUpdate(nameof(maxVolume), maxVolume.ToString());
+            }
+        }
+        [SerializeField] private float _maxVolume;
+
         /// <summary>
         /// <b>duration</b> is the duration of the audio.
         /// </summary>
-        [StateVariable("duration", ECARules4AllType.Float)] public float duration;
+        [StateVariable("duration", ECARules4AllType.Float)]
+        public float duration
+        {
+            get => _duration;
+            set
+            {
+                _duration = value;
+                NotifyUpdate(nameof(duration), duration.ToString());
+            }
+        }
+        [SerializeField] private float _duration;
+        
         /// <summary>
         /// <b>currentTime</b> is the current time of the audio.
         /// </summary>
-        [StateVariable("currentTime", ECARules4AllType.Float)] public float currentTime;
+        [StateVariable("currentTime", ECARules4AllType.Float)] 
+        public float currentTime
+        {
+            get => _currentTime;
+            set
+            {
+                _currentTime = value;
+                NotifyUpdate(nameof(currentTime), currentTime.ToString());
+            }
+        }
+        [SerializeField] private float _currentTime;
+        
         /// <summary>
         /// <b>isPlaying</b> is a boolean that indicates if the audio is playing.
         /// </summary>
-        [StateVariable("playing", ECARules4AllType.Boolean)] public ECABoolean playing = new ECABoolean(ECABoolean.BoolType.NO);
+        [StateVariable("playing", ECARules4AllType.Boolean)] 
+        public ECABoolean playing
+        {
+            get => _playing;
+            set
+            {
+                _playing = value;
+                NotifyUpdate(nameof(playing), playing.ToString());
+            }
+        }
+        [SerializeField] 
+        private ECABoolean _playing = new ECABoolean(ECABoolean.BoolType.NO);
+        
         /// <summary>
         /// <b> Paused </b> is a boolean that indicates if the audio is paused.
         /// </summary>
-        [StateVariable("paused", ECARules4AllType.Boolean)] public ECABoolean paused = new ECABoolean(ECABoolean.BoolType.NO);
+        [StateVariable("paused", ECARules4AllType.Boolean)] 
+        public ECABoolean paused
+        {
+            get => _paused;
+            set
+            {
+                _paused = value;
+                NotifyUpdate(nameof(paused), paused.ToString());
+            }
+        }
+        [SerializeField] 
+        private ECABoolean _paused = new ECABoolean(ECABoolean.BoolType.NO);
+        
         /// <summary>
         /// <b> Stopped </b> is a boolean that indicates if the audio is stopped.
         /// </summary>
-        [StateVariable("stopped", ECARules4AllType.Boolean)] public ECABoolean stopped = new ECABoolean(ECABoolean.BoolType.YES);
+        [StateVariable("stopped", ECARules4AllType.Boolean)] 
+        public ECABoolean stopped
+        {
+            get => _stopped;
+            set
+            {
+                _stopped = value;
+                NotifyUpdate(nameof(stopped), stopped.ToString());
+            }
+        }
+        [SerializeField] 
+        private ECABoolean _stopped = new ECABoolean(ECABoolean.BoolType.YES);
+        
         /// <summary>
         /// <b>Player</b> is the audio player that will be used to play the audio.
         /// </summary>
@@ -62,9 +155,12 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [Action(typeof(Sound), "plays")]
         public void Plays()
         {
-            this.playing.Assign(ECABoolean.BoolType.YES);
+            /*this.playing.Assign(ECABoolean.BoolType.YES);
             this.stopped.Assign(ECABoolean.BoolType.NO);
-            this.paused.Assign(ECABoolean.BoolType.NO);
+            this.paused.Assign(ECABoolean.BoolType.NO);*/
+            playing = new ECABoolean(ECABoolean.BoolType.YES);
+            stopped = new ECABoolean(ECABoolean.BoolType.NO);
+            paused = new ECABoolean(ECABoolean.BoolType.NO);
             player.Play();
         }
 
@@ -74,9 +170,12 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [Action(typeof(Sound), "pauses")]
         public void Pauses()
         {
-            this.playing.Assign(ECABoolean.BoolType.NO);
+            /*this.playing.Assign(ECABoolean.BoolType.NO);
             this.stopped.Assign(ECABoolean.BoolType.NO);
-            this.paused.Assign(ECABoolean.BoolType.YES);
+            this.paused.Assign(ECABoolean.BoolType.YES);*/
+            playing = new ECABoolean(ECABoolean.BoolType.NO);
+            stopped = new ECABoolean(ECABoolean.BoolType.NO);
+            paused = new ECABoolean(ECABoolean.BoolType.YES);
             player.Pause();
         }
 
@@ -86,9 +185,12 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [Action(typeof(Sound), "stops")]
         public void Stops()
         {
-            this.playing.Assign(ECABoolean.BoolType.NO);
+            /*this.playing.Assign(ECABoolean.BoolType.NO);
             this.stopped.Assign(ECABoolean.BoolType.YES);
-            this.paused.Assign(ECABoolean.BoolType.NO);
+            this.paused.Assign(ECABoolean.BoolType.NO);*/
+            playing = new ECABoolean(ECABoolean.BoolType.NO);
+            stopped = new ECABoolean(ECABoolean.BoolType.YES);
+            paused = new ECABoolean(ECABoolean.BoolType.NO);
             player.Stop();
         }
 

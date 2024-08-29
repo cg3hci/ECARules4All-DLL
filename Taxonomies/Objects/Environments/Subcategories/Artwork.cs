@@ -1,5 +1,4 @@
 ﻿using ECARules4All_DLL.Utils;
-using ECARules4All_DLL.SmartHomeHubClients;
 using UnityEngine;
 
 
@@ -17,17 +16,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
             set
             {
                 _author = value;
-                var attribute = GetStateVariableProperty(nameof(author));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
-                        attribute.Name,
-                        _author.ToString()
-                    );
-                }
+                NotifyUpdate(nameof(author), author);
             }
         }
+        [SerializeField]
         private string _author;
         
         [StateVariable("price", ECARules4AllType.Float)]
@@ -37,17 +29,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
             set
             {
                 _price = value;
-                var attribute = GetStateVariableProperty(nameof(price));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
-                        attribute.Name,
-                        _price.ToString()
-                    );
-                }
+                NotifyUpdate(nameof(price), price.ToString());
             }
         }
+        [SerializeField]
         private float _price;
         
         [StateVariable("year", ECARules4AllType.Integer)]
@@ -57,17 +42,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
             set
             {
                 _year = value;
-                var attribute = GetStateVariableProperty(nameof(year));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
-                        attribute.Name,
-                        _year.ToString()
-                    );
-                }
+                NotifyUpdate(nameof(year), year.ToString());
             }
         }
+        [SerializeField]
         private int _year;
     }
 }

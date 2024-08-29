@@ -1,5 +1,4 @@
 ﻿using ECARules4All_DLL.Utils;
-using ECARules4All_DLL.SmartHomeHubClients;
 using UnityEngine;
 
 
@@ -17,19 +16,12 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
             set
             {
                 _price = value;
-                var attribute = GetStateVariableProperty(nameof(price));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
-                        attribute.Name,
-                        _price.ToString()
-                    );
-                }
+                NotifyUpdate(nameof(price), price.ToString());
             }
         }
-        private float _price;
-        
+
+        [SerializeField] private float _price;
+
         [StateVariable("color", ECARules4AllType.Color)]
         public Color color
         {
@@ -37,19 +29,12 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
             set
             {
                 _color = value;
-                var attribute = GetStateVariableProperty(nameof(color));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
-                        attribute.Name,
-                        _color.ToString()
-                    );
-                }
+                NotifyUpdate(nameof(color), color.ToString());
             }
         }
-        private Color _color;
-        
+
+        [SerializeField] private Color _color;
+
         [StateVariable("dimension", ECARules4AllType.Float)]
         public float dimension
         {
@@ -57,18 +42,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
             set
             {
                 _dimension = value;
-                var attribute = GetStateVariableProperty(nameof(dimension));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
-                        attribute.Name,
-                        _dimension.ToString()
-                    );
-                }
+                NotifyUpdate(nameof(dimension), dimension.ToString());
             }
         }
-        private float _dimension;
 
+        [SerializeField] private float _dimension;
     }
 }

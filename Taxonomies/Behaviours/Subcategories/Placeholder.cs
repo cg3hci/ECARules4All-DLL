@@ -12,13 +12,23 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("placeholder")]
     [RequireComponent(typeof(Behaviour), typeof(MeshFilter), typeof(MeshCollider))]
     [DisallowMultipleComponent]
-    public class Placeholder : MonoBehaviour
+    public class Placeholder : ECAScript
     {
         /// <summary>
         /// <b>newMesh</b> is the mesh model that the object will use.
         /// </summary>
         [StateVariable("mesh", ECARules4AllType.Identifier)]
-        public Mesh newMesh;
+        public Mesh newMesh
+        {
+            get => _newMesh;
+            set
+            {
+                _newMesh = value;
+                NotifyUpdate(nameof(newMesh), newMesh.ToString());
+            }
+        }
+        [SerializeField] 
+        private Mesh _newMesh;
 
         /// <summary>
         /// <b>Changes</b> sets the new mesh model that the object will use.

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 
@@ -12,16 +13,40 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("container")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Container : MonoBehaviour
+    public class Container : ECAScript
     {
         /// <summary>
         /// <b>Capacity</b> is the maximum number of objects that can be held by the container.
         /// </summary>
-        [StateVariable("capacity", ECARules4AllType.Integer)] public int capacity;
+        [StateVariable("capacity", ECARules4AllType.Integer)]
+        public int capacity
+        {
+            get => _capacity;
+            set
+            {
+                _capacity = value;
+                NotifyUpdate(nameof(capacity), capacity.ToString());
+            }
+        }
+        [SerializeField] 
+        private int _capacity;
+        
         /// <summary>
         /// <b>objectsCount</b> is the number of objects that are currently held by the container.
         /// </summary>
-        [StateVariable("objectsCount", ECARules4AllType.Integer)] public int objectsCount;
+        [StateVariable("objectsCount", ECARules4AllType.Integer)] 
+        public int objectsCount
+        {
+            get => _objectsCount;
+            set
+            {
+                _objectsCount = value;
+                NotifyUpdate(nameof(objectsCount), objectsCount.ToString());
+            }
+        }
+        [SerializeField] 
+        private int _objectsCount;
+        
         /// <summary>
         /// <b>objectsList</b> is the list of objects that are currently held by the container.
         /// </summary>

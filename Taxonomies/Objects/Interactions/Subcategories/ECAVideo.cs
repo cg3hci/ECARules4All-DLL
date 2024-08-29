@@ -14,56 +14,136 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
     [ECARules4All("video")]
     [RequireComponent(typeof(Interaction), typeof(VideoPlayer))] //gerarchia 
     [DisallowMultipleComponent]
-    public class ECAVideo : MonoBehaviour
+    public class ECAVideo : ECAScript
     {
         /// <summary>
         /// <b>Source</b> is the video source.
         /// </summary>
         [StateVariable("source", ECARules4AllType.Text)]
-        public string source;
+        public string source
+        {
+            get => _source;
+            set
+            {
+                _source = value;
+                NotifyUpdate(nameof(source), source);
+            }
+        }
+        [SerializeField]
+        private string _source;
 
         /// <summary>
         /// <b>Volume</b> is the video volume.
         /// </summary>
         [StateVariable("volume", ECARules4AllType.Float)]
-        public float volume;
+        public float volume
+        {
+            get => _volume;
+            set
+            {
+                _volume = value;
+                NotifyUpdate(nameof(volume), volume.ToString());
+            }
+        }
+        [SerializeField]
+        private float _volume;
 
         /// <summary>
         /// <b> MaxVolume</b> is the video max volume.
         /// </summary>
         [StateVariable("maxVolume", ECARules4AllType.Float)]
-        public float maxVolume = 1.0f;
+        public float maxVolume 
+        {
+            get => _maxVolume;
+            set
+            {
+                _maxVolume = value;
+                NotifyUpdate(nameof(maxVolume), maxVolume.ToString());
+            }
+        }
+        [SerializeField]
+        private float _maxVolume = 1.0f;
 
         /// <summary>
         /// <b>Duration</b> is the video duration.
         /// </summary>
         //TODO: duration e currentTime, abbiamo cambiato il tipo da time a double
         [StateVariable("duration", ECARules4AllType.Float)]
-        public double duration;
+        public double duration
+        {
+            get => _duration;
+            set
+            {
+                _duration = value;
+                NotifyUpdate(nameof(duration), duration.ToString());
+            }
+        }
+        [SerializeField]
+        private double _duration;
 
         /// <summary>
         /// <b>CurrentTime</b> is the video current time.
         /// </summary>
         [StateVariable("current-time", ECARules4AllType.Float)]
-        public double currentTime;
+        public double currentTime 
+        {
+            get => _currentTime;
+            set
+            {
+                _currentTime = value;
+                NotifyUpdate(nameof(currentTime), currentTime.ToString());
+            }
+        }
+        [SerializeField]
+        private double _currentTime;
 
         /// <summary>
         /// <b>Playing</b> defines whether the video is playing.
         /// </summary>
         [StateVariable("playing", ECARules4AllType.Boolean)]
-        public ECABoolean playing = new ECABoolean(ECABoolean.BoolType.NO);
+        public ECABoolean playing 
+        {
+            get => _playing;
+            set
+            {
+                _playing = value;
+                NotifyUpdate(nameof(playing), playing.ToString());
+            }
+        }
+        [SerializeField]
+        private ECABoolean _playing = new ECABoolean(ECABoolean.BoolType.NO);
 
         /// <summary>
         /// <b>Paused</b> defines whether the video is paused.
         /// </summary>
         [StateVariable("paused", ECARules4AllType.Boolean)]
-        public ECABoolean paused = new ECABoolean(ECABoolean.BoolType.NO);
+        public ECABoolean paused 
+        {
+            get => _paused;
+            set
+            {
+                _paused = value;
+                NotifyUpdate(nameof(paused), paused.ToString());
+            }
+        }
+        [SerializeField]
+        private ECABoolean _paused = new ECABoolean(ECABoolean.BoolType.NO);
 
         /// <summary>
         /// <b>Stopped</b> defines whether the video is stopped.
         /// </summary>
         [StateVariable("stopped", ECARules4AllType.Boolean)]
-        public ECABoolean stopped = new ECABoolean(ECABoolean.BoolType.YES);
+        public ECABoolean stopped 
+        {
+            get => _stopped;
+            set
+            {
+                _stopped = value;
+                NotifyUpdate(nameof(stopped), stopped.ToString());
+            }
+        }
+        [SerializeField]
+        private ECABoolean _stopped = new ECABoolean(ECABoolean.BoolType.YES);
 
         /// <summary>
         /// <b>Player</b> is the video player to control through the script.
@@ -76,9 +156,12 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         [Action(typeof(ECAVideo), "plays")]
         public void Plays()
         {
-            playing.Assign(ECABoolean.BoolType.YES);
+            /*playing.Assign(ECABoolean.BoolType.YES);
             this.stopped.Assign(ECABoolean.BoolType.NO);
-            this.paused.Assign(ECABoolean.BoolType.NO);
+            this.paused.Assign(ECABoolean.BoolType.NO);*/
+            playing = new ECABoolean(ECABoolean.BoolType.YES);
+            stopped = new ECABoolean(ECABoolean.BoolType.NO);
+            paused = new ECABoolean(ECABoolean.BoolType.NO);
             player.Play();
         }
 
@@ -88,9 +171,12 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         [Action(typeof(ECAVideo), "pauses")]
         public void Pauses()
         {
-            this.playing.Assign(ECABoolean.BoolType.NO);
+            /*this.playing.Assign(ECABoolean.BoolType.NO);
             this.stopped.Assign(ECABoolean.BoolType.NO);
-            this.paused.Assign(ECABoolean.BoolType.YES);
+            this.paused.Assign(ECABoolean.BoolType.YES);*/
+            playing = new ECABoolean(ECABoolean.BoolType.NO);
+            stopped = new ECABoolean(ECABoolean.BoolType.NO);
+            paused = new ECABoolean(ECABoolean.BoolType.YES);
             player.Pause();
         }
 
@@ -100,9 +186,12 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         [Action(typeof(ECAVideo), "stops")]
         public void Stops()
         {
-            this.playing.Assign(ECABoolean.BoolType.NO);
+            /*this.playing.Assign(ECABoolean.BoolType.NO);
             this.stopped.Assign(ECABoolean.BoolType.YES);
-            this.paused.Assign(ECABoolean.BoolType.NO);
+            this.paused.Assign(ECABoolean.BoolType.NO);*/
+            playing = new ECABoolean(ECABoolean.BoolType.NO);
+            stopped = new ECABoolean(ECABoolean.BoolType.YES);
+            paused = new ECABoolean(ECABoolean.BoolType.NO);
             currentTime = 0;
             player.Stop();
         }

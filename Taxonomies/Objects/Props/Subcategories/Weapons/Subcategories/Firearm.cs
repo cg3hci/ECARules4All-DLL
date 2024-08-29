@@ -9,7 +9,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcat
     [ECARules4All("firearm")]
     [RequireComponent(typeof(Weapon))]
     [DisallowMultipleComponent]
-    public class Firearm : MonoBehaviour
+    public class Firearm : ECAScript
     {
         /// <summary>
         /// <b>ParticleFire</b> is a reference to the particle system that is used to simulate the fire.
@@ -33,7 +33,17 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcat
         /// <b>Charge</b> is the current charge of the firearm.
         /// </summary>
         [StateVariable("charge", ECARules4AllType.Integer)]
-        public int charge;
+        public int charge
+        {
+            get => _charge;
+            set
+            {
+                _charge = value;
+                NotifyUpdate(nameof(charge), charge.ToString());
+            }
+        }
+        [SerializeField]
+        private int _charge;
 
         /// <summary>
         /// <b>Recharges</b>: The action of recharging the firearm. It plays the particle system and increases the charge.
@@ -118,8 +128,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcat
         public void Aims(ECAObject obj)
         {
             transform.LookAt(obj.transform);
-            this.GetComponent<ECAObject>().p.Assign(transform.position);
-            this.GetComponent<ECAObject>().r.Assign(transform.rotation);
+            //this.GetComponent<ECAObject>().p.Assign(transform.position);
+            this.GetComponent<ECAObject>().p = new Position(transform.position);
+            //this.GetComponent<ECAObject>().r.Assign(transform.rotation);
+            this.GetComponent<ECAObject>().r = new Rotation(transform.rotation);
         }
 
     }
