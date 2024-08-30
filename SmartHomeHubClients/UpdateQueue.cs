@@ -55,7 +55,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         {
             queue.Enqueue(item);
             //queue.Add(item);
-            OnItemAdded(item);
+            ItemAdded?.Invoke(this, item);
         }
         
         public Update Dequeue()
@@ -100,10 +100,5 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 .ToList();
            return listUpdates;
         }*/
-
-        protected virtual void OnItemAdded(Update item)
-        {
-            ItemAdded?.Invoke(this, item); //new UpdateAddedEventArgs(item, this));
-        }
     }
 }

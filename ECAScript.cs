@@ -32,7 +32,7 @@ namespace ECARules4All_DLL
             var attribute = GetStateVariableProperty(propertyName);
             if (attribute  != null)
             {
-                UpdateValueWrapper.UpdateValue(
+                AbstractClient<object>.UpdateValue(
                     GetGameObjectComponentName(),
                     attribute.Name,
                     value

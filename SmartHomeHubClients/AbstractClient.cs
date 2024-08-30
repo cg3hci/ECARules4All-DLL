@@ -79,15 +79,13 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
             return null;
         }
-    }
-    
-    public static class UpdateValueWrapper
-    {
+        
         public static void UpdateValue<T>(string ownerName, string propertyName, T newValue)
         {
+            var update = new Update(ownerName, propertyName, newValue);
             foreach (var client in RuleEngine.GetInstance().clients)
             {
-                client.updates.Enqueue(new Update(ownerName, propertyName, newValue));
+                client.updates.Enqueue(update);
                 Debug.Log($"registered new value for client {client}");
             }
         }
