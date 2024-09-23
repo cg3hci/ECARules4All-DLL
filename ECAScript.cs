@@ -56,7 +56,10 @@ namespace ECARules4All_DLL
             {
                 if (Attribute.IsDefined(component.GetType(), typeof(ECARules4AllAttribute)))
                 {
-                    ComponentTracker.Instance.AddComponent(GetGameObjectComponentName(component), this);
+                    TrackedPair trackedPair = new TrackedPair(GetGameObjectComponentName(component), component);
+                    
+                    // ComponentTracker.Instance.AddComponent(GetGameObjectComponentName(component), this);
+                    ComponentTracker.Instance.AddComponent(trackedPair);
                 }
             }
         }

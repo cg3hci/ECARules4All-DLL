@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-
 
 namespace ECARules4All_DLL.SmartHomeHubClients
 {
@@ -129,6 +129,43 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	        }
 
 	        return parameter;
+        }
+        
+        // Metodo gestore dell'evento [TrackedPair]
+        protected override async void addNewSensor(object sender, TrackedPair component)
+        {
+	        // Creazione Payload in formato JSON
+	        var payload = new {
+		        eca_script = component.GetSceneObject(),
+		        game_object = component.GetName(),
+		        unity_id = component.GetName(),
+		        attributes = component.GetAttributes()
+	        };
+	        string jsonPayload = JsonConvert.SerializeObject(payload);
+	        
+	        Debug.Log(payload.eca_script);
+	        Debug.Log(payload.game_object);
+	        Debug.Log(payload.unity_id);
+	        Debug.Log(payload.attributes);
+	        
+			using (HttpClient client = new HttpClient()) {
+				try {
+					// Creazione della richiesta POST
+					var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+					
+					// Impostazione dell'URL dell'API di HomeAssistant
+					string urlService = $"{this.url}/api/services/eud4xr/add_sensor";
+					
+					client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.token);
+					HttpResponseMessage response = await client.PostAsync(urlService, content);
+					response.EnsureSuccessStatusCode();
+                    
+					Debug.Log($"Registered a new TrackedPair to Home Assistant Client at {this.url}");
+				} 
+				catch (HttpRequestException e) {
+					Debug.Log($"An error occured during an update request - {e.Message}");
+				}
+			}
         }
     }
 }

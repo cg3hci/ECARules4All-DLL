@@ -22,6 +22,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         protected AbstractClient()
         {
             this.updates.ItemAdded += sendRequestHandler;
+            ComponentTracker.Instance.ItemAdded += addNewSensor;
         }
 
         public static T GetInstance()
@@ -34,6 +35,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         }
 
         protected abstract void sendRequestHandler(object sender, Update newItem);
+        protected abstract void addNewSensor(object sender, TrackedPair component);
         
         public static Type FindTypeByName(string className)
         {
