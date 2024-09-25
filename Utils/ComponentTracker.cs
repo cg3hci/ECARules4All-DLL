@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json.Nodes;
 using UnityEngine;
@@ -62,16 +63,30 @@ namespace ECARules4All_DLL.Utils
     {
         private string name;
         private object sceneObject;
-        
-        public TrackedPair (string name, object sceneObject)
+
+        public TrackedPair(string name, object sceneObject)
         {
             this.name = name;
             this.sceneObject = sceneObject;
         }
 
-        public string GetName() { return this.name; }
-        public object GetSceneObject() { return this.sceneObject; }
+        public string GetName()
+        {
+            return this.name;
+        }
 
+        public object GetSceneObject()
+        {
+            return this.sceneObject;
+        }
+
+        public string GetECAScript()
+        {
+            return this.sceneObject.GetType().Name;
+        }
+
+        // Versione vecchia con JsonObject [non funzionante]
+        /*
         public JsonObject GetAttributes()
         {
             JsonObject jsonAttributes = new JsonObject();
@@ -79,9 +94,15 @@ namespace ECARules4All_DLL.Utils
             // Ottieni il tipo dell'oggetto sceneObject
             Type objectType = sceneObject.GetType();
 
+            // LOG
+            Debug.Log($"{this.GetName()} - Dentro GetAttributes");
+
             // Itera sui campi e sulle proprietà dell'oggetto
             foreach (var member in objectType.GetMembers(BindingFlags.Public | BindingFlags.Instance))
             {
+                // LOG
+                Debug.Log($"{this.GetName()} - Dentro foreach");
+
                 // Cerca gli attributi personalizzati di tipo StateVariableAttribute
                 var stateVariableAttribute = member.GetCustomAttribute<StateVariableAttribute>();
                 if (stateVariableAttribute != null)
@@ -101,11 +122,122 @@ namespace ECARules4All_DLL.Utils
                     if (value != null)
                     {
                         jsonAttributes.Add(stateVariableAttribute.Name, JsonValue.Create(value));
+
+                        // LOG
+                        Debug.Log($"{this.GetName()} - Dentro if (value != null)");
                     }
                 }
             }
 
+            // LOG
+            Debug.Log($"{this.GetName()} - Return");
             return jsonAttributes;
+        }*/
+
+        // Versione nuova con dizionario [solo coppie <string, string>]
+        /*
+        public Dictionary<string, string> GetAttributes()
+        {
+            Dictionary<string, string> attributes = new Dictionary<string, string>();
+
+            // Ottieni il tipo dell'oggetto sceneObject
+            Type objectType = sceneObject.GetType();
+
+            // LOG
+            Debug.Log($"{this.GetName()} - Dentro GetAttributes");
+
+            // Itera sui campi e sulle proprietà dell'oggetto
+            foreach (var member in objectType.GetMembers(BindingFlags.Public | BindingFlags.Instance))
+            {
+                Debug.Log($"{this.GetName()} - Dentro foreach");
+
+                // Cerca gli attributi personalizzati di tipo StateVariableAttribute
+                var stateVariableAttribute = member.GetCustomAttribute<StateVariableAttribute>();
+                if (stateVariableAttribute != null)
+                {
+                    // Ottieni il valore del campo o della proprietà
+                    object value = null;
+                    if (member is FieldInfo field)
+                    {
+                        value = field.GetValue(sceneObject);
+                    }
+                    else if (member is PropertyInfo property)
+                    {
+                        value = property.GetValue(sceneObject);
+                    }
+
+                    // Aggiungi l'attributo e il suo valore al dizionario
+                    if (value != null)
+                    {
+                        attributes.Add(stateVariableAttribute.Name, value.ToString());
+
+                        Debug.Log($"{this.GetName()} - Dentro if (value != null)");
+                    }
+                }
+            }
+
+            Debug.Log($"{this.GetName()} - Return");
+            return attributes;
+        }*/
+
+        // Versione aggiornata con accorgimenti tecnici
+        public Dictionary<string, object> GetAttributes()
+        {
+            Dictionary<string, object> attributes = new Dictionary<string, object>();
+
+            // Ottieni il tipo dell'oggetto sceneObject
+            Type objectType = sceneObject.GetType();
+
+            // LOG
+            Debug.Log($"{this.GetName()} - Dentro GetAttributes");
+            
+            var properties = objectType.GetProperties()
+                .Where(p => p.GetCustomAttributes(typeof(StateVariableAttribute), true).Length > 0);
+            
+            // Itera sui campi e sulle proprietà dell'oggetto
+            foreach (var property in properties)
+            {
+                // LOG
+                Debug.Log($"Proprietà trovata: {property.Name}, Tipo: {property.PropertyType}, Attributi: {property.GetCustomAttributes(false).Length}");
+                Debug.Log($"{this.GetName()} - Dentro foreach");
+                
+                object value = property.GetValue(sceneObject);
+                Debug.Log($"TIPO DA GESTIRE: {this.sceneObject} - {property.Name} - {property.PropertyType} - {value}");
+                
+                // Se il valore è valido, determina il tipo e aggiungilo al dizionario
+                if (value != null) {
+                    object processedValue = null;
+                    
+                    // Switch per determinare il tipo dell'attributo
+                    switch (value) {
+                        case string stringValue: processedValue = stringValue; break;
+                        case int intValue: processedValue = intValue; break;
+                        case float floatValue: processedValue = floatValue; break;
+                        case double doubleValue: processedValue = doubleValue; break;
+                        case ECABoolean ecaBooleanValue: processedValue = ecaBooleanValue.ToString(); break; // Trasformiamo l'enum in stringa
+                        case Position positionValue: processedValue = positionValue; break;
+                        case Rotation rotationValue: processedValue = rotationValue; break;
+                        case Color colorValue: processedValue = colorValue; break;
+                        
+                        default:
+                            Debug.LogWarning($"Tipo sconosciuto per l'attributo {property.Name}");
+                            break;
+                    }
+
+                    var propertyStateVariable = property.GetCustomAttribute<StateVariableAttribute>();
+                    
+                    // Aggiungi il valore processato al dizionario se è stato determinato correttamente
+                    if (processedValue != null && propertyStateVariable != null)
+                    {
+                        attributes.Add(propertyStateVariable.Name.Replace("-", "_"), processedValue);
+                        Debug.Log($"{this.GetName()} - Aggiunto attributo {property.Name}: {processedValue}");
+                    }
+                }
+            }
+
+            // LOG
+            Debug.Log($"{this.GetName()} - Return");
+            return attributes;
         }
     }
 }

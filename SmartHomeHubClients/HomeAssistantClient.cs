@@ -5,6 +5,8 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using ECARules4All_DLL.Utils;
@@ -134,19 +136,36 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         // Metodo gestore dell'evento [TrackedPair]
         protected override async void addNewSensor(object sender, TrackedPair component)
         {
+	        Debug.Log($"Add sensor - {component.GetName()}");
+	        var attribute = component.GetAttributes();
+
 	        // Creazione Payload in formato JSON
 	        var payload = new {
-		        eca_script = component.GetSceneObject(),
-		        game_object = component.GetName(),
-		        unity_id = component.GetName(),
-		        attributes = component.GetAttributes()
+                eca_script = component.GetECAScript(),
+                game_object = component.GetName(),
+                unity_id = component.GetName(),
+                attributes = attribute.Count > 0 ? attribute : null
+            };
+
+	        /* var options = new JsonSerializerOptions
+	        {
+		        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+	        }; */
+	        
+	        var settings = new JsonSerializerSettings
+	        {
+		        NullValueHandling = NullValueHandling.Ignore
 	        };
-	        string jsonPayload = JsonConvert.SerializeObject(payload);
+
+
+	        // string jsonPayload = JsonSerializer.Serialize(payload, options);
+	        string jsonPayload = JsonConvert.SerializeObject(payload, settings);
 	        
 	        Debug.Log(payload.eca_script);
 	        Debug.Log(payload.game_object);
 	        Debug.Log(payload.unity_id);
 	        Debug.Log(payload.attributes);
+	        Debug.Log(jsonPayload);
 	        
 			using (HttpClient client = new HttpClient()) {
 				try {
@@ -167,5 +186,6 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 				}
 			}
         }
+        
     }
 }

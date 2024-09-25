@@ -44,6 +44,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
                 NotifyUpdate(nameof(playing), playing.ToString());
             }
         }
+        
+        [SerializeField]
         private ECABoolean _playing;
 
         private bool isBusyMoving = false;
