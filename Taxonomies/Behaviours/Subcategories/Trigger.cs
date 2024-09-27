@@ -11,7 +11,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("trigger")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Trigger : MonoBehaviour
+    public class Trigger : ECAScript
     {
         /// <summary>
         /// <b>Triggers</b> emits an event when the trigger is activated.
@@ -22,6 +22,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         {
             EventBus.GetInstance().Publish(action);
             //DOUBT: l'evento lo deve descrivere a mano l'End user Developer?
+            NotifyUpdate(action);
         }
     }
 }

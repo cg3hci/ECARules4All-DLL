@@ -12,7 +12,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
     {
         public string url { get; set; }
         public string token { get; set; }
-        public UpdateQueue updates { get; } = new UpdateQueue();
+        public NotificationQueue updates { get; } = new NotificationQueue();
     }
     
     public abstract class AbstractClient<T> : AbstractClientBase where T : class, new()
@@ -21,7 +21,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         protected AbstractClient()
         {
-            this.updates.ItemAdded += sendRequestHandler;
+            this.updates.ItemAdded += sendNotification;
         }
 
         public static T GetInstance()
@@ -33,7 +33,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             return _instance;
         }
 
-        protected abstract void sendRequestHandler(object sender, Update newItem);
+        protected abstract void sendNotification(object sender, ContentNotification newItem);
         
         public static Type FindTypeByName(string className)
         {
@@ -80,12 +80,23 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             return null;
         }
         
-        public static void UpdateValue<T>(string ownerName, string propertyName, T newValue)
+        public static void NotifyAttribute<T>(string ownerName, string propertyName, T newValue)
         {
-            var update = new Update(ownerName, propertyName, newValue);
+            var content = new ContentNotification(ownerName, propertyName, newValue);
+            Notify(content);
+        }
+        
+        public static void NotifyAction(string componentName, Action action)
+        {
+            var content = new ContentNotification(componentName, action);
+            Notify(content);
+        }
+
+        private static void Notify(ContentNotification content)
+        {
             foreach (var client in RuleEngine.GetInstance().clients)
             {
-                client.updates.Enqueue(update);
+                client.updates.Enqueue(content);
                 Debug.Log($"registered new value for client {client}");
             }
         }

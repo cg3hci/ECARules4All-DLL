@@ -12,30 +12,37 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [RequireComponent(typeof(Behaviour))]
     [RequireComponent(typeof(Collider))]
     [DisallowMultipleComponent]
-    public class Interactable : MonoBehaviour
+    public class Interactable : ECAScript
     {
         private void OnTriggerEnter(Collider other)
         {
             //PROVE
-            EventBus.GetInstance().Publish(new Action(other.gameObject, "interacts with", this.gameObject));
-
+            Action action = new Action(other.gameObject, "interacts with", this.gameObject);
+            //EventBus.GetInstance().Publish(action);
+            NotifyUpdate(action);
         }
 
         private void OnCollisionEnter(Collision other)
         {
-            EventBus.GetInstance().Publish(new Action(other.gameObject, "interacts with", this.gameObject));
+            Action action = new Action(other.gameObject, "interacts with", this.gameObject);
+            //EventBus.GetInstance().Publish(action);
+            NotifyUpdate(action);
         }
 
         private void OnTriggerExit(Collider other)
         {
             //PROVE
-            EventBus.GetInstance().Publish(new Action(other.gameObject, "stops-interacting with", this.gameObject));
+            Action action = new Action(other.gameObject, "stops-interacting with", this.gameObject);
+            //EventBus.GetInstance().Publish(action);
+            NotifyUpdate(action);
 
         }
 
         private void OnCollisionExit(Collision other)
         {
-            EventBus.GetInstance().Publish(new Action(other.gameObject, "stops-interacting with", this.gameObject));
+            Action action = new Action(other.gameObject, "stops-interacting with", this.gameObject);
+            //EventBus.GetInstance().Publish(action);
+            NotifyUpdate(action);
         }
     }
 }
