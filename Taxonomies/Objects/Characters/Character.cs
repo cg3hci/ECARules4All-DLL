@@ -29,8 +29,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
                 NotifyUpdate(nameof(_life), _life.ToString());
             }
         }
+        [SerializeField]
         private float _life;
-
+        
         /// <summary>
         /// <b>playing</b> to identify whether it is player-controlled or not.
         /// </summary>

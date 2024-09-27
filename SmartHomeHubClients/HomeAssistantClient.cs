@@ -17,27 +17,33 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 {
     public class HomeAssistantClient : AbstractClient<HomeAssistantClient>
     {
-        protected override async void sendRequestHandler(object sender, Update newItem)
+	    protected override async void sendNotification(object sender, ContentNotification newItem)
         {
             if (string.IsNullOrEmpty(this.token) || string.IsNullOrEmpty(this.url))
             {
                 Debug.Log("Token or url is empty");
             }
+            
 
             //var lastContent = this.updates.GetUpdates();
             //var lastContent = new List<Update> {this.updates.Dequeue()};
             var lastContent = this.updates.Dequeue();
-            string jsonBody = JsonSerializer.Serialize(new { update = lastContent });
+            string jsonBody = JsonSerializer.Serialize(new
+            {
+	            content = lastContent.jsonContent,
+	            timestamp = lastContent.timestamp
+            }
+            );
 
             using (HttpClient client = new HttpClient())
             {
                 try
                 {
-                    var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+                    var body = new StringContent(jsonBody, Encoding.UTF8, "application/json");
                     string urlService = $"{this.url}/api/services/eud4xr/receive_update_from_unity";
                     client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", this.token);
-                    HttpResponseMessage response = await client.PostAsync(urlService, content);
+                    HttpResponseMessage response = await client.PostAsync(urlService, body);
                     response.EnsureSuccessStatusCode();
                     
                     Debug.Log($"Sent an update to Home Assistant Client at {this.url}");
@@ -53,8 +59,6 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         public async void receivedUpdateHandler(object sender, ReceivedUpdate receivedUpdate)
         {
-            Debug.Log($"Ho ricevuto un update! - {receivedUpdate.subject} - {receivedUpdate.verb} - {receivedUpdate.parameters}");
-            
 			if (ComponentTracker.Instance.GetAllComponents().ContainsKey(receivedUpdate.subject))
 			{
 				// GameObject.Tag@ECAScript.Name example => T_Shirt_1@ECAObject

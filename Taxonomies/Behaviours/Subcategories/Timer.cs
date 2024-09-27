@@ -115,7 +115,9 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [Action(typeof(Timer), "elapses-timer", typeof(int))]
         public void Elapses(int seconds)
         {
-            EventBus.GetInstance().Publish(new Action(this.gameObject, "elapses-timer", seconds));
+            Action action = new Action(this.gameObject, "elapses-timer", seconds);
+            EventBus.GetInstance().Publish(action);
+            NotifyUpdate(action);
         }
         
         /// <summary>
@@ -125,7 +127,9 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [Action(typeof(Timer), "reaches", typeof(int))]
         public void Reaches(int seconds)
         {
-            EventBus.GetInstance().Publish(new Action(this.gameObject, "reaches", seconds));
+            Action action = new Action(this.gameObject, "reaches", seconds);
+            EventBus.GetInstance().Publish(action);
+            NotifyUpdate(action);
         }
 
         /// <summary>

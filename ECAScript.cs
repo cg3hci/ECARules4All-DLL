@@ -8,11 +8,17 @@ using UnityEngine;
 
 namespace ECARules4All_DLL
 {
+    
     public class ECAScript : MonoBehaviour
     {
         protected string GetGameObjectComponentName()
         {
-            return $"{gameObject.name}@{GetType().Name}"; // or GetType()}";
+            return $"{gameObject.name}@{GetType().Name}";
+        }
+
+        protected string GetGameObjectName()
+        {
+            return $"{gameObject.name}";
         }
         
         protected StateVariableAttribute GetStateVariableProperty(string nameProperty)
@@ -32,15 +38,32 @@ namespace ECARules4All_DLL
             var attribute = GetStateVariableProperty(propertyName);
             if (attribute  != null)
             {
-                AbstractClient<object>.UpdateValue(
+                AbstractClient<object>.NotifyAttribute(
                     GetGameObjectComponentName(),
                     attribute.Name,
                     value
                 );
             }
         }
-    }
 
+        public void NotifyUpdate(Action action)
+        {
+            try
+            {
+                AbstractClient<object>.NotifyAction(
+                    GetGameObjectName(),
+                    action
+                );
+            }
+            catch(Exception e)
+            {
+                Debug.Log(e);
+            }
+            
+        }
+    }
+    
+    [DefaultExecutionOrder(100)]
     public class ECATracker : MonoBehaviour
     {
         private string GetGameObjectComponentName(object component)
@@ -50,8 +73,6 @@ namespace ECARules4All_DLL
         
         protected virtual void Start()
         {
-            //string componentName = GetType().Name;
-            //ComponentTracker.Instance.AddComponent(GetGameObjectComponentName(), this);
             foreach (var component in gameObject.GetComponents<Component>())
             {
                 if (Attribute.IsDefined(component.GetType(), typeof(ECARules4AllAttribute)))
@@ -66,8 +87,6 @@ namespace ECARules4All_DLL
 
         protected virtual void OnDestroy()
         {
-            //string componentName = GetType().Name;
-            //ComponentTracker.Instance.RemoveComponent(GetGameObjectComponentName(), this);
             foreach (var component in gameObject.GetComponents<Component>())
             {
                 if (Attribute.IsDefined(component.GetType(), typeof(ECARules4AllAttribute)))

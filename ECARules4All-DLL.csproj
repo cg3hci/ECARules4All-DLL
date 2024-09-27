@@ -112,7 +112,7 @@
         <Compile Include="SmartHomeHubClients\AbstractClient.cs" />
         <Compile Include="SmartHomeHubClients\APIServer.cs" />
         <Compile Include="SmartHomeHubClients\HomeAssistantClient.cs" />
-        <Compile Include="SmartHomeHubClients\UpdateQueue.cs" />
+        <Compile Include="SmartHomeHubClients\NotificationQueue.cs" />
         <Compile Include="ECAObject.cs" />
         <Compile Include="Objects.cs" />
         <Compile Include="Parsers\ECARulesLexer.cs" />
