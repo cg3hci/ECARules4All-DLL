@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json.Nodes;
+using ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories;
 using UnityEngine;
+using Scenes_Scene = ECARules4All_DLL.Taxonomies.Objects.Scenes.Scene;
 
 namespace ECARules4All_DLL.Utils
 {
@@ -214,10 +216,15 @@ namespace ECARules4All_DLL.Utils
                         case int intValue: processedValue = intValue; break;
                         case float floatValue: processedValue = floatValue; break;
                         case double doubleValue: processedValue = doubleValue; break;
+                        case bool boolValue: processedValue = boolValue; break;
                         case ECABoolean ecaBooleanValue: processedValue = ecaBooleanValue.ToString(); break; // Trasformiamo l'enum in stringa
                         case Position positionValue: processedValue = positionValue; break;
                         case Rotation rotationValue: processedValue = rotationValue; break;
                         case Color colorValue: processedValue = colorValue; break;
+                        case Mesh meshValue: processedValue = meshValue.ToString(); break; 
+                        case Scenes_Scene scene_sceneValue: processedValue = scene_sceneValue; break;
+                        case DateTime dateTimeValue: processedValue = dateTimeValue.ToString(); break;
+                        case ECACamera.POV povValue: processedValue = povValue.ToString(); break;
                         
                         default:
                             Debug.LogWarning($"Tipo sconosciuto per l'attributo {property.Name}");
