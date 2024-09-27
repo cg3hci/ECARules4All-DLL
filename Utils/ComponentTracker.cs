@@ -186,38 +186,31 @@ namespace ECARules4All_DLL.Utils
         public Dictionary<string, object> GetAttributes()
         {
             Dictionary<string, object> attributes = new Dictionary<string, object>();
-
-            // Ottieni il tipo dell'oggetto sceneObject
-            Type objectType = sceneObject.GetType();
-
-            // LOG
-            Debug.Log($"{this.GetName()} - Dentro GetAttributes");
             
-            var properties = objectType.GetProperties()
-                .Where(p => p.GetCustomAttributes(typeof(StateVariableAttribute), true).Length > 0);
+            Type objectType = sceneObject.GetType();
+            var members = objectType.GetMembers()
+                .Where(m => m.GetCustomAttributes(typeof(StateVariableAttribute), true).Length > 0);
             
             // Itera sui campi e sulle proprietà dell'oggetto
-            foreach (var property in properties)
+            foreach (var member in members)
             {
-                // LOG
-                Debug.Log($"Proprietà trovata: {property.Name}, Tipo: {property.PropertyType}, Attributi: {property.GetCustomAttributes(false).Length}");
-                Debug.Log($"{this.GetName()} - Dentro foreach");
+                object value = member.MemberType is MemberTypes.Property
+                    ? ((PropertyInfo)member).GetValue(sceneObject)
+                    : ((FieldInfo)member).GetValue(sceneObject);
+                object processedValue = null;
                 
-                object value = property.GetValue(sceneObject);
-                Debug.Log($"TIPO DA GESTIRE: {this.sceneObject} - {property.Name} - {property.PropertyType} - {value}");
+                //Debug.Log($"{member.Name} - {value}");
                 
-                // Se il valore è valido, determina il tipo e aggiungilo al dizionario
-                if (value != null) {
-                    object processedValue = null;
-                    
-                    // Switch per determinare il tipo dell'attributo
-                    switch (value) {
+                if (value != null) 
+                {
+                    switch (value) 
+                    {
                         case string stringValue: processedValue = stringValue; break;
                         case int intValue: processedValue = intValue; break;
                         case float floatValue: processedValue = floatValue; break;
                         case double doubleValue: processedValue = doubleValue; break;
                         case bool boolValue: processedValue = boolValue; break;
-                        case ECABoolean ecaBooleanValue: processedValue = ecaBooleanValue.ToString(); break; // Trasformiamo l'enum in stringa
+                        case ECABoolean ecaBooleanValue: processedValue = ecaBooleanValue.ToString(); break;
                         case Position positionValue: processedValue = positionValue; break;
                         case Rotation rotationValue: processedValue = rotationValue; break;
                         case Color colorValue: processedValue = colorValue; break;
@@ -227,19 +220,14 @@ namespace ECARules4All_DLL.Utils
                         case ECACamera.POV povValue: processedValue = povValue.ToString(); break;
                         
                         default:
-                            Debug.LogWarning($"Tipo sconosciuto per l'attributo {property.Name}");
+                            Debug.LogWarning($"Tipo sconosciuto per l'attributo {member.Name}");
                             break;
                     }
-
-                    var propertyStateVariable = property.GetCustomAttribute<StateVariableAttribute>();
-                    
-                    // Aggiungi il valore processato al dizionario se è stato determinato correttamente
-                    if (processedValue != null && propertyStateVariable != null)
-                    {
-                        attributes.Add(propertyStateVariable.Name.Replace("-", "_"), processedValue);
-                        Debug.Log($"{this.GetName()} - Aggiunto attributo {property.Name}: {processedValue}");
-                    }
                 }
+                
+                var memberStateVariable = member.GetCustomAttribute<StateVariableAttribute>();
+                attributes.Add(memberStateVariable.Name.Replace("-", "_"), processedValue);
+                Debug.Log($"{this.GetName()} - Aggiunto attributo {member.Name}: {processedValue}");
             }
 
             // LOG
