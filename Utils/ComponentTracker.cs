@@ -213,7 +213,7 @@ namespace ECARules4All_DLL.Utils
                         case ECABoolean ecaBooleanValue: processedValue = ecaBooleanValue.ToString(); break;
                         case Position positionValue: processedValue = positionValue; break;
                         case Rotation rotationValue: processedValue = rotationValue; break;
-                        case Color colorValue: processedValue = colorValue; break;
+                        case Color colorValue: processedValue = colorValue.ToString(); break;
                         case Mesh meshValue: processedValue = meshValue.ToString(); break; 
                         case Scenes_Scene scene_sceneValue: processedValue = scene_sceneValue; break;
                         case DateTime dateTimeValue: processedValue = dateTimeValue.ToString(); break;

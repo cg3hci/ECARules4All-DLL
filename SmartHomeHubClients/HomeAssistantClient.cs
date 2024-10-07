@@ -165,10 +165,10 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	        // string jsonPayload = JsonSerializer.Serialize(payload, options);
 	        string jsonPayload = JsonConvert.SerializeObject(payload, settings);
 	        
-	        Debug.Log(payload.eca_script);
-	        Debug.Log(payload.game_object);
-	        Debug.Log(payload.unity_id);
-	        Debug.Log(payload.attributes);
+	        //Debug.Log(payload.eca_script);
+	        //Debug.Log(payload.game_object);
+	        //Debug.Log(payload.unity_id);
+	        //Debug.Log(payload.attributes);
 	        Debug.Log(jsonPayload);
 	        
 			using (HttpClient client = new HttpClient()) {
@@ -190,6 +190,5 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 				}
 			}
         }
-        
     }
 }
