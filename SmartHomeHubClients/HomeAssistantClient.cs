@@ -46,7 +46,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                     HttpResponseMessage response = await client.PostAsync(urlService, body);
                     response.EnsureSuccessStatusCode();
                     
-                    Debug.Log($"Sent an update to Home Assistant Client at {this.url}");
+                    Debug.Log($"Sent an update to Home Assistant Client at {this.url} - content: {lastContent.jsonContent} - timestamp: {lastContent.timestamp}");
                     // delete list content
                     //this.updates.Remove(lastContent);
                 }
