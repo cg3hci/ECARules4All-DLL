@@ -12,16 +12,20 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         public long timestamp;
 
         [JsonPropertyName("json_content")] 
-        public Dictionary<string, string> jsonContent;
+        public Dictionary<string, object> jsonContent;
         
         public ContentNotification(string entity, string attribute, object newValue)
         {
-            var data = new Dictionary<string, string>
+            string jsonString = JsonSerializer.Serialize(newValue);
+            Dictionary<string, object> dictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
+            
+            var data = new Dictionary<string, object>
             {
                 { "unity_id", entity },
                 { "attribute", attribute },
-                { "new_value", newValue.ToString() }
+                { "new_value", dictionary }
             };
+            
             this.jsonContent = data;//JsonSerializer.Serialize(data);
             this.timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
@@ -30,7 +34,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         {
             string subject = componentName;//$"{action.GetSubject().name}@{componentName}";
             
-            var data = new Dictionary<string, string>
+            var data = new Dictionary<string, object>
             {
                 { "unity_id", subject },
                 { "verb", action.GetActionMethod() }
