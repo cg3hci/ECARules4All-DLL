@@ -141,9 +141,6 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         // Metodo gestore dell'evento [TrackedPair]
         protected override async void addNewSensor(object sender, TrackedPair component)
         {
-	        // Delay di 500 ms per evitare l'accavallamento delle notifiche su Home Assistant
-	        await Task.Delay(500);
-	        
 	        Debug.Log($"Add sensor - {component.GetName()}");
 	        var attribute = component.GetAttributes();
 
