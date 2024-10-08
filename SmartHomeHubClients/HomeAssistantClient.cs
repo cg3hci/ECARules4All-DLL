@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using UnityEngine;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
@@ -140,6 +141,9 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         // Metodo gestore dell'evento [TrackedPair]
         protected override async void addNewSensor(object sender, TrackedPair component)
         {
+	        // Delay di 500 ms per evitare l'accavallamento delle notifiche su Home Assistant
+	        await Task.Delay(500);
+	        
 	        Debug.Log($"Add sensor - {component.GetName()}");
 	        var attribute = component.GetAttributes();
 
@@ -172,7 +176,8 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	        Debug.Log(jsonPayload);
 	        
 			using (HttpClient client = new HttpClient()) {
-				try {
+				try
+				{
 					// Creazione della richiesta POST
 					var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 					
