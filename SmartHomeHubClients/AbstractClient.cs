@@ -21,8 +21,8 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         protected AbstractClient()
         {
-            this.updates.ItemAdded += sendNotification;
-            ComponentTracker.Instance.ItemAdded += addNewSensor;
+            this.updates.ItemAdded += SendNotification;
+            ComponentTracker.Instance.NewRegisteredComponents += RegisterVirtualObject;
         }
 
         public static T GetInstance()
@@ -34,8 +34,9 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             return _instance;
         }
 
-        protected abstract void sendNotification(object sender, ContentNotification newItem);
-        protected abstract void addNewSensor(object sender, TrackedPair component);
+        protected abstract void SendNotification(object sender, ContentNotification newItem);
+        //protected abstract void addNewSensor(object sender, TrackedPair component);
+        protected abstract void RegisterVirtualObject(object sender, List<ComponentTrackerPair> pairs);
         
         public static Type FindTypeByName(string className)
         {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ECARules4All_DLL.SmartHomeHubClients;
@@ -73,16 +74,17 @@ namespace ECARules4All_DLL
         
         protected virtual void Start()
         {
+            List<ComponentTrackerPair> pairs = new List<ComponentTrackerPair>();
             foreach (var component in gameObject.GetComponents<Component>())
             {
                 if (Attribute.IsDefined(component.GetType(), typeof(ECARules4AllAttribute)))
                 {
-                    TrackedPair trackedPair = new TrackedPair(GetGameObjectComponentName(component), component);
-                    
-                    // ComponentTracker.Instance.AddComponent(GetGameObjectComponentName(component), this);
-                    ComponentTracker.Instance.AddComponent(trackedPair);
+                    ComponentTrackerPair componentTrackerPair = new ComponentTrackerPair(GetGameObjectComponentName(component), component);
+                    //ComponentTracker.Instance.AddComponent(trackedPair);
+                    pairs.Add(componentTrackerPair);
                 }
             }
+            ComponentTracker.Instance.AddPairs(pairs);
         }
 
         protected virtual void OnDestroy()

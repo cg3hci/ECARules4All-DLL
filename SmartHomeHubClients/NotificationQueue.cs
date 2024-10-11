@@ -9,11 +9,10 @@ namespace ECARules4All_DLL.SmartHomeHubClients
     public class ContentNotification
     {
         [JsonPropertyName("timestamp")] 
-        public long timestamp;
+        public long timestamp { get; private set; }
 
-        [JsonPropertyName("json_content")] 
-        public Dictionary<string, object> jsonContent;
-        
+        [JsonPropertyName("json_content")] public Dictionary<string, object> jsonContent { get; private set; }
+
         public ContentNotification(string entity, string attribute, object newValue)
         {
             string jsonString = JsonSerializer.Serialize(newValue);

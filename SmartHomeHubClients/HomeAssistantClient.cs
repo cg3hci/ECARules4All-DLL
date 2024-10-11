@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -17,14 +16,13 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 {
     public class HomeAssistantClient : AbstractClient<HomeAssistantClient>
     {
-	    protected override async void sendNotification(object sender, ContentNotification newItem)
+	    protected override async void SendNotification(object sender, ContentNotification newItem)
         {
             if (string.IsNullOrEmpty(this.token) || string.IsNullOrEmpty(this.url))
             {
                 Debug.Log("Token or url is empty");
             }
             
-
             //var lastContent = this.updates.GetUpdates();
             //var lastContent = new List<Update> {this.updates.Dequeue()};
             var lastContent = this.updates.Dequeue();
@@ -57,7 +55,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             }
         }
 
-        public async void receivedUpdateHandler(object sender, ReceivedUpdate receivedUpdate)
+        public async void ReceivedUpdateHandler(object sender, ReceivedUpdate receivedUpdate)
         {
 			if (ComponentTracker.Instance.GetAllComponents().ContainsKey(receivedUpdate.subject))
 			{
@@ -137,8 +135,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	        return parameter;
         }
         
-        // Metodo gestore dell'evento [TrackedPair]
-        protected override async void addNewSensor(object sender, TrackedPair component)
+        /*protected override async void addNewSensor(object sender, TrackedPair component)
         {
 	        Debug.Log($"Add sensor - {component.GetName()}");
 	        var attribute = component.GetAttributes();
@@ -154,7 +151,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	        /* var options = new JsonSerializerOptions
 	        {
 		        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-	        }; */
+	        }; #1#
 	        
 	        var settings = new JsonSerializerSettings
 	        {
@@ -189,6 +186,56 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 					Debug.Log($"An error occured during an update request - {e.Message}");
 				}
 			}
+        }*/
+
+        protected override async void RegisterVirtualObject(object sender, List<ComponentTrackerPair> pairs)
+        {
+	        List<object> payload = new List<object>();
+	        
+	        foreach (var pair in pairs)
+	        {
+		        var attribute = pair.GetAttributes();
+		        
+		        var p = new
+		        {
+			        eca_script = pair.GetECAScript(),
+			        game_object = pair.GetName(),
+			        unity_id = pair.GetName(),
+			        attributes = attribute.Count > 0 ? attribute : null
+		        };
+
+		        var settings = new JsonSerializerSettings
+		        {
+			        NullValueHandling = NullValueHandling.Ignore
+		        };
+
+		        payload.Add(p);
+	        }
+	        var options = new JsonSerializerOptions
+	        {
+		        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+	        };
+	        string jsonBody = JsonSerializer.Serialize(new {pairs = payload}, options);
+	        
+	        using (HttpClient client = new HttpClient())
+	        {
+		        try
+		        {
+			        var stringContent = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+			        string urlService = $"{this.url}/api/services/eud4xr/add_virtual_object";
+			        string requestBody = await stringContent.ReadAsStringAsync();
+			        client.DefaultRequestHeaders.Authorization =
+				        new AuthenticationHeaderValue("Bearer", this.token);
+			        HttpResponseMessage response = await client.PostAsync(urlService, stringContent);
+			        response.EnsureSuccessStatusCode();
+
+			        Debug.Log($"Registered a new virtual object to Home Assistant Client at {this.url}");
+		        }
+		        catch (HttpRequestException e)
+		        {
+			        Debug.Log($"An error occured while registering a new virtual object - {e.Message}");
+		        }
+	        }
         }
     }
 }
