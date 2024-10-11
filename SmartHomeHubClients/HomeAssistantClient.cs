@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using UnityEngine;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
@@ -169,7 +170,8 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	        Debug.Log(jsonPayload);
 	        
 			using (HttpClient client = new HttpClient()) {
-				try {
+				try
+				{
 					// Creazione della richiesta POST
 					var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 					
