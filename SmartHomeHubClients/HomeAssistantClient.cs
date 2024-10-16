@@ -58,6 +58,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         public async void ReceivedUpdateHandler(object sender, ReceivedUpdate receivedUpdate)
         {
+	        //Debug.Log($"{receivedUpdate.subject} - {receivedUpdate.verb} - {receivedUpdate.parameters}");
 			if (ComponentTracker.Instance.GetAllComponents().ContainsKey(receivedUpdate.subject))
 			{
 				// GameObject.Tag@ECAScript.Name example => T_Shirt_1@ECAObject
@@ -69,7 +70,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 					
 					MethodInfo methodInfo = FindMethodWithVerb(ecaScript, receivedUpdate.verb);
 
-					if (methodInfo == null)
+					if (methodInfo.GetParameters().Length == 0)
 					{
 						RuleEngine.GetInstance().ExecuteAction(
 							new Action(gameObject, receivedUpdate.verb)
@@ -87,17 +88,17 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 						if (String.IsNullOrEmpty(receivedUpdate.variable))
 						{
 							RuleEngine.GetInstance().ExecuteAction(
-								new Action(gameObject, receivedUpdate.verb, parameter)
+								new Action(gameObject, methodInfo.Name, parameter)
 							);
 						}
 						else
 						{
 							RuleEngine.GetInstance().ExecuteAction(
-								new Action(gameObject, receivedUpdate.verb, receivedUpdate.variable, receivedUpdate.modifier, parameter)
+								new Action(gameObject, methodInfo.Name, receivedUpdate.variable, receivedUpdate.modifier, parameter)
 							);
 						}
 					}
-					Debug.Log($"Action {receivedUpdate.verb} performed");	
+					Debug.Log($"Action {methodInfo.Name.ToLower()} performed");	
 				}
 			}
         }
