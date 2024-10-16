@@ -31,11 +31,9 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         
         public ContentNotification(string componentName, Action action)
         {
-            string subject = componentName;//$"{action.GetSubject().name}@{componentName}";
-            
             var data = new Dictionary<string, object>
             {
-                { "unity_id", subject },
+                { "unity_id", action.GetSubject().name },
                 { "verb", action.GetActionMethod() }
             };
             // object
