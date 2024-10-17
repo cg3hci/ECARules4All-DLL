@@ -6,9 +6,39 @@ using ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories;
 using UnityEngine;
 using Scenes_Scene = ECARules4All_DLL.Taxonomies.Objects.Scenes.Scene;
 
+
 namespace ECARules4All_DLL.Utils
 {
-    // Classe per coppie String - GameObject selezionate attraverso ComponentTracker
+    public class SerializeAttributeUtils
+    {
+        public static object SerializeAttributes(object value)
+        {
+            object processedValue = null;
+            switch (value) 
+            {
+                case string stringValue: processedValue = stringValue; break;
+                case int intValue: processedValue = intValue; break;
+                case float floatValue: processedValue = floatValue; break;
+                case double doubleValue: processedValue = doubleValue; break;
+                case bool boolValue: processedValue = boolValue; break;
+                case ECABoolean ecaBooleanValue: processedValue = ecaBooleanValue.ToString(); break;
+                case Position positionValue: processedValue = positionValue; break;
+                case Rotation rotationValue: processedValue = rotationValue; break;
+                case Color colorValue: processedValue = colorValue.ToString(); break;
+                case Mesh meshValue: processedValue = meshValue.ToString(); break; 
+                case Scenes_Scene scene_sceneValue: processedValue = scene_sceneValue; break;
+                case DateTime dateTimeValue: processedValue = dateTimeValue.ToString(); break;
+                case ECACamera.POV povValue: processedValue = povValue.ToString(); break;
+                            
+                default:
+                    Debug.LogWarning($"Type {value.GetType().ToString()} does not recognized");
+                    break;
+            }
+
+            return processedValue;
+        }
+    }
+    
     public class ComponentTrackerPair
     {
         private string name;
@@ -54,7 +84,7 @@ namespace ECARules4All_DLL.Utils
                 
                 if (value != null) 
                 {
-                    switch (value) 
+                    /*switch (value) 
                     {
                         case string stringValue: processedValue = stringValue; break;
                         case int intValue: processedValue = intValue; break;
@@ -73,7 +103,8 @@ namespace ECARules4All_DLL.Utils
                         default:
                             Debug.LogWarning($"Tipo sconosciuto per l'attributo {member.Name}");
                             break;
-                    }
+                    }*/
+                    processedValue = SerializeAttributeUtils.SerializeAttributes(value);
                 }
                 
                 var memberStateVariable = member.GetCustomAttribute<StateVariableAttribute>();

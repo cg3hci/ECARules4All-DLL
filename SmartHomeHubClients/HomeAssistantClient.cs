@@ -58,7 +58,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         public async void ReceivedUpdateHandler(object sender, ReceivedUpdate receivedUpdate)
         {
-	        //Debug.Log($"{receivedUpdate.subject} - {receivedUpdate.verb} - {receivedUpdate.parameters}");
+	        Debug.Log($"{receivedUpdate.subject} - {receivedUpdate.verb} - {receivedUpdate.parameters}");
 			if (ComponentTracker.Instance.GetAllComponents().ContainsKey(receivedUpdate.subject))
 			{
 				// GameObject.Tag@ECAScript.Name example => T_Shirt_1@ECAObject

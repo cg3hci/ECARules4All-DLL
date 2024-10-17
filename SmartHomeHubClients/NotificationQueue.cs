@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using ECARules4All_DLL.Utils;
 using UnityEngine;
 
 namespace ECARules4All_DLL.SmartHomeHubClients
@@ -15,14 +16,15 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         public ContentNotification(string entity, string attribute, object newValue)
         {
-            string jsonString = JsonSerializer.Serialize(newValue);
-            Dictionary<string, object> dictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
+            //string jsonString = JsonSerializer.Serialize(newValue);
+            //Dictionary<string, object> dictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
+            var newValueSerialized = SerializeAttributeUtils.SerializeAttributes(newValue);
             
             var data = new Dictionary<string, object>
             {
                 { "unity_id", entity },
                 { "attribute", attribute },
-                { "new_value", dictionary }
+                { "new_value", newValueSerialized }
             };
             
             this.jsonContent = data;//JsonSerializer.Serialize(data);
