@@ -37,7 +37,7 @@ namespace ECARules4All_DLL
         public void NotifyUpdate(string propertyName, object value)
         {
             var attribute = GetStateVariableProperty(propertyName);
-            if (attribute  != null)
+            if (attribute != null && RuleEngine.GetInstance().clients.Count > 0)
             {
                 AbstractClient<object>.NotifyAttribute(
                     GetGameObjectComponentName(),
@@ -49,18 +49,20 @@ namespace ECARules4All_DLL
 
         public void NotifyUpdate(Action action)
         {
-            try
+            if (RuleEngine.GetInstance().clients.Count > 0)
             {
-                AbstractClient<object>.NotifyAction(
-                    GetGameObjectName(),
-                    action
-                );
+                try
+                {
+                    AbstractClient<object>.NotifyAction(
+                        GetGameObjectName(),
+                        action
+                    );
+                }
+                catch (Exception e)
+                {
+                    Debug.Log($"Error on NotifyUpdate - {e}");
+                }
             }
-            catch(Exception e)
-            {
-                Debug.Log(e);
-            }
-            
         }
     }
     

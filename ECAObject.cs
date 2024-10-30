@@ -39,13 +39,7 @@ namespace ECARules4All_DLL
             set
             {
                 _p = value;
-                var v = new Dictionary<string, object>
-                {
-                    { "x", p.x },
-                    { "y", p.y },
-                    { "z", p.z },
-                };
-                NotifyUpdate(nameof(p), v);
+                NotifyUpdate(nameof(p), _p);
             }
         }
         private Position _p;
@@ -60,13 +54,7 @@ namespace ECARules4All_DLL
             set
             {
                 _r = value;
-                var v = new Dictionary<string, object>
-                {
-                    { "x", r.x },
-                    { "y", r.y },
-                    { "z", r.z },
-                };
-                NotifyUpdate(nameof(r), v);
+                NotifyUpdate(nameof(r), _r);
             }
         }
         private Rotation _r;
