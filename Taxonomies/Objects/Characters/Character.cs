@@ -63,7 +63,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         /// </summary>
         /// <param name="o">The interactable object</param>
         [Action(typeof(Character), "interacts with", typeof(Interactable))]
-        public void Interacts(ECAObject o)
+        public void Interacts(Interactable o)
         {
         }
 
@@ -73,7 +73,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         /// </summary>
         /// <param name="o">The interactable object</param>
         [Action(typeof(Character), "stops-interacting with", typeof(Interactable))]
-        public void StopsInteracting(ECAObject o)
+        public void StopsInteracting(Interactable o)
         {
         }
 

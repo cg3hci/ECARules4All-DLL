@@ -19,14 +19,14 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         {
             //PROVE
             Action action = new Action(other.gameObject, "interacts with", this.gameObject);
-            //EventBus.GetInstance().Publish(action);
+            EventBus.GetInstance().Publish(action);
             NotifyUpdate(action);
         }
 
         private void OnCollisionEnter(Collision other)
         {
             Action action = new Action(other.gameObject, "interacts with", this.gameObject);
-            //EventBus.GetInstance().Publish(action);
+            EventBus.GetInstance().Publish(action);
             NotifyUpdate(action);
         }
 
@@ -34,16 +34,17 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         {
             //PROVE
             Action action = new Action(other.gameObject, "stops-interacting with", this.gameObject);
-            //EventBus.GetInstance().Publish(action);
+            EventBus.GetInstance().Publish(action);
             NotifyUpdate(action);
-
         }
 
         private void OnCollisionExit(Collision other)
         {
+            Debug.Log("OnCollisionExit 1");
             Action action = new Action(other.gameObject, "stops-interacting with", this.gameObject);
-            //EventBus.GetInstance().Publish(action);
+            EventBus.GetInstance().Publish(action);
             NotifyUpdate(action);
+            Debug.Log($"OnCollisionExit 2 - other: {other.gameObject.name} - obj: {this.gameObject.name}");
         }
     }
 }
