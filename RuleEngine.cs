@@ -1081,6 +1081,9 @@ namespace ECARules4All_DLL
         //TODO null action
         private bool ActionEquals(Action action)
         {
+            if (action is null)
+                return false;
+            
             if (!a_subject.Equals(action.GetSubject()))
                 return false;
             if (!a_verb.Equals(action.GetActionMethod()))
