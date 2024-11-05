@@ -433,6 +433,118 @@ namespace ECARules4All_DLL
         {
             return actions;
         }
+        
+        /**
+         * TODO test it
+         * Tries to create a rule from the given parameters.
+         * @param lWhen The event that triggers the rule
+         * @param lIf The condition that must be true for the rule to be executed
+         * @param lThen The list of actions to be executed when the rule is triggered
+         * @return The rule, if it was successfully created, null otherwise
+         */
+        public static Rule TryCreateRule(Action lWhen, Condition lIf, List<Action> lActions)
+        {
+            Rule rule = null; //result
+            bool areArgsValid = AreRuleArgsValid(lWhen, lIf, lActions, out bool atLeastOneCondition);
+            if (!areArgsValid)
+            {
+                Debug.LogError("Invalid rule");
+                return null;
+            }
+
+            if (atLeastOneCondition)
+            {
+                rule = new Rule(lWhen, lIf, lActions);
+            }
+            else
+            {
+                rule = new Rule(lWhen, lActions);
+            }
+
+            Debug.Log("Valid rule");
+            return rule;
+        }
+        public static Rule TryCreateRule(Action lWhen, List<Action> lActions)
+        {
+            return TryCreateRule(lWhen, null, lActions);
+        }
+        
+        private static bool AreRuleArgsValid(Action whenAction, Condition lIf, List<Action> lActions,
+            out bool atLeastOneCondition)
+        {
+            atLeastOneCondition = lIf != null;
+
+            bool isWhenValid;
+            bool isConditionValid;
+            bool thenValid;
+
+
+            ////////////////////// EVENT //////////////////////
+            isWhenValid = whenAction != null && whenAction.IsValid();
+            if (!isWhenValid)
+            {
+                Debug.Log("Invalid when");
+                return false; //the findAction returns null, so something is missing
+            }
+            ///////////////////////////////////////////////////////
+
+
+            ////////////////////// CONDITIONS  //////////////////////
+            CompositeCondition compositeCondition = null;
+            SimpleCondition simpleCondition = null;
+            isConditionValid = true;
+
+            if (atLeastOneCondition)
+            {       
+                bool isConditionComposite =lIf is CompositeCondition;
+
+                if (isConditionComposite)
+                {
+                    compositeCondition = (CompositeCondition)lIf;
+                    Debug.Log("Trying to evaluate the composite condition " + compositeCondition);
+                    isConditionValid = compositeCondition.IsValid();
+                }
+                else
+                {
+                    simpleCondition = (SimpleCondition)lIf;
+                    Debug.Log("Trying to evaluate the simple condition " + simpleCondition);
+                    isConditionValid = simpleCondition.IsValid();
+                }
+            }
+
+            if (!isConditionValid)
+            {
+                Debug.Log("Invalid condition");
+                return false; //if one of the action is not valid, the rule is null
+            }
+            ///////////////////////////////////////////////////////
+
+
+            ////////////////////// ACTIONS //////////////////////
+            if (!lActions.Any())
+            {
+                Debug.Log("Invalid then: 0 actions in the list");
+                return false;
+            }
+
+            thenValid = true;
+            foreach (var thenAction in lActions)
+            {
+                if (thenAction.IsValid()) continue;
+
+                thenValid = false;
+                break;
+            }
+
+            if (!thenValid)
+            {
+                Debug.Log("Invalid then");
+                return false; //if one of the action is not valid, the rule is null
+            }
+            //////////////////////////////////////////////////////////////////
+
+            return true;
+        }
     }
 
     /// <summary>
@@ -607,6 +719,28 @@ namespace ECARules4All_DLL
             {
                 throw new ArgumentException("Cannot set more than one child using the not operator");
             }
+        }
+        
+        public bool IsValid()
+        {
+            bool isValid = true;
+            foreach (var compChildren in this.Children())
+            {
+                if (compChildren == null) return false;
+
+                if (compChildren is SimpleCondition simpleCondition)
+                {
+                    isValid = isValid && simpleCondition.IsValid();
+                }
+                else if (compChildren is CompositeCondition compositeCondition)
+                    isValid = isValid && compositeCondition.IsValid();
+                else
+                {
+                    throw new Exception("Invalid Condition");
+                }
+            }
+
+            return isValid;
         }
     }
 
