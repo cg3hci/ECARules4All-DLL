@@ -12,6 +12,7 @@ using UnityEngine;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using Vector3 = UnityEngine.Vector3;
 
 namespace ECARules4All_DLL.SmartHomeHubClients
 {
@@ -75,6 +76,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 						RuleEngine.GetInstance().ExecuteAction(
 							new Action(gameObject, receivedUpdate.verb)
 						);
+						Debug.Log($"Action {receivedUpdate.verb} with no parameter runned");
 					}
 					else
 					{
@@ -87,18 +89,23 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 						// run action
 						if (String.IsNullOrEmpty(receivedUpdate.variable))
 						{
+							var action = new Action(gameObject, receivedUpdate.verb, parameter);
 							RuleEngine.GetInstance().ExecuteAction(
-								new Action(gameObject, methodInfo.Name, parameter)
+								action
 							);
+							Debug.Log($"Action {receivedUpdate.verb} with no variable runned");
 						}
 						else
 						{
+							var action = new Action(gameObject, receivedUpdate.verb, receivedUpdate.variable,
+								receivedUpdate.modifier, parameter);
 							RuleEngine.GetInstance().ExecuteAction(
-								new Action(gameObject, methodInfo.Name, receivedUpdate.variable, receivedUpdate.modifier, parameter)
+								action
 							);
+							Debug.Log($"Action {receivedUpdate.verb} with variable runned");
 						}
 					}
-					Debug.Log($"Action {methodInfo.Name.ToLower()} performed");	
+					Debug.Log($"Reflection method (aka Action) {methodInfo.Name} performed");	
 				}
 			}
         }
@@ -128,6 +135,10 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 			        //positions.Add(new Position(JsonSerializer.Deserialize<Vector3>(match.Value)));
 		        }
 		        parameter = new Path(positions);
+	        }
+	        else if (typeParameter == typeof(ECABoolean))
+	        {
+		        parameter = ECABoolean.FromString(receivedParameter);
 	        }
 	        else if (typeParameter == typeof(float) || typeParameter == typeof(int))
 	        {

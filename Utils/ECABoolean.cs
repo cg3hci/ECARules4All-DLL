@@ -1,4 +1,7 @@
 ﻿
+using System;
+using UnityEngine;
+
 namespace ECARules4All_DLL.Utils
 {
     [System.Serializable]
@@ -86,6 +89,21 @@ namespace ECARules4All_DLL.Utils
             return choice.ToString().ToLower();
         }
 
+        public static ECABoolean FromString(string value)
+        {
+            Debug.Log($"ECABOOLEAN FROM STRING - VALORE RICEVUTO: {value}");
+            switch (value.ToLower())
+            {
+                case "yes": return ECABoolean.YES;
+                case "on": return ECABoolean.ON;
+                case "true": return ECABoolean.TRUE;
+                case "no": return ECABoolean.NO;
+                case "off": return ECABoolean.OFF;
+                case "false": return ECABoolean.FALSE;
+                default: throw new ArgumentException($"[{value}] is not a valid string for ECABoolean");
+            }
+        }
+        
         public override bool Equals(object obj)
         {
             if (!(obj is ECABoolean)) return false;
