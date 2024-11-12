@@ -122,7 +122,9 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	        }
 	        else if (typeParameter == typeof(Rotation))
 	        {
-		        parameter = new Rotation(JsonConvert.DeserializeObject<Quaternion>(receivedParameter));
+		        //parameter = new Rotation(JsonConvert.DeserializeObject<Quaternion>(receivedParameter));
+		        Debug.Log(receivedParameter);
+		        parameter = new Rotation(Quaternion.Euler(JsonConvert.DeserializeObject<Vector3>(receivedParameter)));
 		        //parameter = new Rotation(JsonSerializer.Deserialize<Quaternion>(receivedParameter));
 	        }
 	        else if (typeParameter == typeof(Path))

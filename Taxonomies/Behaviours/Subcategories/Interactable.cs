@@ -19,6 +19,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         {
             //PROVE
             Action action = new Action(other.gameObject, "interacts with", this.gameObject);
+            Debug.Log("Interacts-with (trigger) " + other.gameObject);
             EventBus.GetInstance().Publish(action);
             NotifyUpdate(action);
         }
@@ -26,6 +27,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         private void OnCollisionEnter(Collision other)
         {
             Action action = new Action(other.gameObject, "interacts with", this.gameObject);
+            Debug.Log("Interacts-with (collision) " + other.gameObject);
             EventBus.GetInstance().Publish(action);
             NotifyUpdate(action);
         }

@@ -282,11 +282,12 @@ namespace ECARules4All_DLL
         private IEnumerator MoveObject(float speed, Vector3 endMarker)
         {
             isBusyMoving = true;
-            Vector3 startMarker = gameObject.transform.position;
+            //Vector3 startMarker = gameObject.transform.position;
+            Vector3 startMarker = gameObject.transform.localPosition;
             float startTime = Time.time;
             float journeyLength = Vector3.Distance(startMarker, endMarker);
-            while (gameObject.transform.position != endMarker)
-            {
+            //while (gameObject.transform.position != endMarker)
+            while (gameObject.transform.localPosition != endMarker) {
                 float distCovered = (Time.time - startTime) * speed;
 
                 // Fraction of journey completed equals current distance divided by total distance.
@@ -294,13 +295,13 @@ namespace ECARules4All_DLL
 
                 // Set our position as a fraction of the distance between the markers.
 
-                gameObject.transform.position = Vector3.Lerp(startMarker, endMarker, fractionOfJourney);
-                //GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
-                GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
+                gameObject.transform.localPosition = Vector3.Lerp(startMarker, endMarker, fractionOfJourney);
+                //GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
+                GetComponent<ECAObject>().p = new Position(gameObject.transform.localPosition);
                 yield return null;
             }
-            //GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
-            GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
+            //GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
+            GetComponent<ECAObject>().p = new Position(gameObject.transform.localPosition);
             isBusyMoving = false;
         }
     }
