@@ -147,60 +147,6 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
 	        return parameter;
         }
-        
-        /*protected override async void addNewSensor(object sender, TrackedPair component)
-        {
-	        Debug.Log($"Add sensor - {component.GetName()}");
-	        var attribute = component.GetAttributes();
-
-	        // Creazione Payload in formato JSON
-	        var payload = new {
-                eca_script = component.GetECAScript(),
-                game_object = component.GetName(),
-                unity_id = component.GetName(),
-                attributes = attribute.Count > 0 ? attribute : null
-            };
-
-	        /* var options = new JsonSerializerOptions
-	        {
-		        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-	        }; #1#
-	        
-	        var settings = new JsonSerializerSettings
-	        {
-		        NullValueHandling = NullValueHandling.Ignore
-	        };
-
-
-	        // string jsonPayload = JsonSerializer.Serialize(payload, options);
-	        string jsonPayload = JsonConvert.SerializeObject(payload, settings);
-	        
-	        //Debug.Log(payload.eca_script);
-	        //Debug.Log(payload.game_object);
-	        //Debug.Log(payload.unity_id);
-	        //Debug.Log(payload.attributes);
-	        Debug.Log(jsonPayload);
-	        
-			using (HttpClient client = new HttpClient()) {
-				try
-				{
-					// Creazione della richiesta POST
-					var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-					
-					// Impostazione dell'URL dell'API di HomeAssistant
-					string urlService = $"{this.url}/api/services/eud4xr/add_sensor";
-					
-					client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", this.token);
-					HttpResponseMessage response = await client.PostAsync(urlService, content);
-					response.EnsureSuccessStatusCode();
-                    
-					Debug.Log($"Registered a new TrackedPair to Home Assistant Client at {this.url}");
-				} 
-				catch (HttpRequestException e) {
-					Debug.Log($"An error occured during an update request - {e.Message}");
-				}
-			}
-        }*/
 
         protected override async void RegisterVirtualObject(object sender, List<ComponentTrackerPair> pairs)
         {

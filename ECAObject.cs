@@ -190,7 +190,7 @@ namespace ECARules4All_DLL
         }
         
         /// <summary>
-        /// <b>Scale</b> sets the scale of the object to a new value.
+        /// <b>Scales</b> sets the scale of the object to a new value.
         /// </summary>
         /// <param name="newScale">The new scale value fo the object. </param>
         [Action(typeof(ECAObject), "scales to", typeof(Scale))]
