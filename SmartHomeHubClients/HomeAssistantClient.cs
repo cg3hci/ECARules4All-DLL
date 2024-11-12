@@ -118,14 +118,10 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	        if (typeParameter == typeof(Position))
 	        {
 		        parameter = new Position(JsonConvert.DeserializeObject<Vector3>(receivedParameter));
-		        //parameter = new Position(JsonSerializer.Deserialize<Vector3>(receivedParameter));
 	        }
 	        else if (typeParameter == typeof(Rotation))
 	        {
-		        //parameter = new Rotation(JsonConvert.DeserializeObject<Quaternion>(receivedParameter));
-		        Debug.Log(receivedParameter);
 		        parameter = new Rotation(Quaternion.Euler(JsonConvert.DeserializeObject<Vector3>(receivedParameter)));
-		        //parameter = new Rotation(JsonSerializer.Deserialize<Quaternion>(receivedParameter));
 	        }
 	        else if (typeParameter == typeof(Path))
 	        {
@@ -134,7 +130,6 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 		        foreach (Match match in matches)
 		        {
 			        positions.Add(new Position(JsonConvert.DeserializeObject<Vector3>(match.Value)));
-			        //positions.Add(new Position(JsonSerializer.Deserialize<Vector3>(match.Value)));
 		        }
 		        parameter = new Path(positions);
 	        }

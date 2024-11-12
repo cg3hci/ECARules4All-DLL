@@ -58,7 +58,26 @@ namespace ECARules4All_DLL
             }
         }
         private Rotation _r;
-
+        
+        /// <summary>
+        /// <b>r</b> is the scale of the object.
+        /// </summary>
+        [StateVariable("scale", ECARules4AllType.Scale)]
+        public Scale s
+        {
+            get => _s;
+            set
+            {
+                _s = value;
+                NotifyUpdate(nameof(s), _s);
+            }
+        }
+        private Scale _s;
+        
+        private Vector3 _originalPosition ;
+        private Quaternion _originalQuaternion ;
+        private Vector3 _originalScale3 ;
+        
         /// <summary>
         /// <b>isVisible</b> is a boolean that indicates if the object is visible.
         /// If the object is invisible, it will not be rendered but it will still collide with other objects.
@@ -97,6 +116,10 @@ namespace ECARules4All_DLL
 
         void Start()
         {
+            // TryGetComponent<Canvas>(out _canvas);
+            _originalPosition = gameObject.transform.position;
+            _originalQuaternion = gameObject.transform.rotation;
+            _originalScale3 = gameObject.transform.localScale;
             //p.Owner = this;
             TryGetComponent<Canvas>(out canvas);
             UpdateVisibility();
@@ -164,7 +187,27 @@ namespace ECARules4All_DLL
                 //r.Assign(transform.rotation);
                 r = new Rotation(transform.rotation);
             }
-            
+        }
+        
+        /// <summary>
+        /// <b>Scale</b> sets the scale of the object to a new value.
+        /// </summary>
+        /// <param name="newScale">The new scale value fo the object. </param>
+        [Action(typeof(ECAObject), "scales to", typeof(Scale))]
+        public void Scales(Scale newScale)
+        {
+            //r.Assign(newRot);
+            s = new Scale(newScale);
+            transform.localScale = new Vector3(s.x, s.y, s.z); // todo verify scale
+        }
+        
+        [Action(typeof(ECAObject), "restores original settings")]
+        public void MovesOriginalPosition()
+        {
+            float speed = 3.0F; ;
+            StartCoroutine(MoveObject(speed, _originalPosition));
+            gameObject.transform.rotation = _originalQuaternion;
+            gameObject.transform.localScale = _originalScale3;
         }
 
         /// <summary>
