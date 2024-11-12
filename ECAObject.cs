@@ -292,6 +292,7 @@ namespace ECARules4All_DLL
             //r = new Rotation();
             //r.Assign(transform.rotation);
             r = new Rotation(transform.rotation);
+            s = new Scale(transform.localScale);
         }
         
         //TODO: should be private
