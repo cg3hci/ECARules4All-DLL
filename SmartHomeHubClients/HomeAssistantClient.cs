@@ -132,6 +132,9 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 			        positions.Add(new Position(JsonConvert.DeserializeObject<Vector3>(match.Value)));
 		        }
 		        parameter = new Path(positions);
+	        } else if(typeParameter == typeof(Scale))
+	        {
+		        parameter = new Scale(JsonConvert.DeserializeObject<Vector3>(receivedParameter));
 	        }
 	        else if (typeParameter == typeof(ECABoolean))
 	        {
