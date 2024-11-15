@@ -117,7 +117,7 @@ namespace ECARules4All_DLL
         void Start()
         {
             // TryGetComponent<Canvas>(out _canvas);
-            _originalPosition = gameObject.transform.position;
+            _originalPosition = gameObject.transform.localPosition;
             _originalQuaternion = gameObject.transform.rotation;
             _originalScale3 = gameObject.transform.localScale;
             //p.Owner = this;
