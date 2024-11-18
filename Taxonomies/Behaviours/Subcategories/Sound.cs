@@ -12,6 +12,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     /// </summary>
     [ECARules4All("sound")]
     [RequireComponent(typeof(Behaviour))]
+    [RequireComponent(typeof(AudioSource))]
     [DisallowMultipleComponent]
     public class Sound : ECAScript
     {
