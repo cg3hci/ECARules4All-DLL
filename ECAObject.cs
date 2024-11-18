@@ -224,8 +224,11 @@ namespace ECARules4All_DLL
             float speed = 3.0F; ;
             //StartCoroutine(MoveObject(speed, _originalPosition));
             gameObject.transform.localPosition = _originalPosition;
+            p = new Position(_originalPosition);
             gameObject.transform.localRotation = _originalQuaternion;
+            r = new Rotation(_originalQuaternion);
             gameObject.transform.localScale = _originalScale;
+            s = new Scale(_originalScale);
         }
 
         /// <summary>
