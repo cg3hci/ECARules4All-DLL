@@ -427,19 +427,27 @@ namespace ECARules4All_DLL.Utils
             {
                 RequireComponent[] requiredComponentsAtts = Attribute.GetCustomAttributes(type,
                     typeof(RequireComponent), true) as RequireComponent[];
-
-                if (requiredComponentsAtts.Length > 0) //e.g. interactable has two requires
+            
+                if (requiredComponentsAtts != null && requiredComponentsAtts.Length > 0) //e.g. interactable has two requires
                 {
-                    if (requiredComponentsAtts[0] != null &&
-                        requiredComponentsAtts[0].m_Type0 == typeof(Behaviour)) //behaviour children
+                    foreach (var requiredCompoent in requiredComponentsAtts)
                     {
-                        behaviours.Add(type);
+                        if (requiredCompoent != null)
+                        {
+                            if (requiredCompoent.m_Type0 == typeof(Behaviour)
+                                || requiredCompoent.m_Type1 == typeof(Behaviour)
+                                || requiredCompoent.m_Type2 == typeof(Behaviour))
+                            {
+                                behaviours.Add(type);
+                            }
+                        }
                     }
                 }
             }
-
+ 
             return behaviours;
         }
+
 
         public static string FindInnerTypeNotBehaviour(GameObject gameObject)
         {
@@ -651,18 +659,29 @@ namespace ECARules4All_DLL.Utils
             return false;
         }
 
-        public static string FindTheInnerOne(List<Type> listEcaComponents)
+        public static string FindTheInnerOne(List<Type> listEcaComponents, string gameObjectName="gameobject name not passed as arg")
         {
-            Dictionary<int, string> depts = new Dictionary<int, string>();
+            Dictionary<int, string> depths = new Dictionary<int, string>(); // Dizionario <profondità, nomeComponente>
+ 
             foreach (var comp in listEcaComponents)
             {
-                int dept = GetDepth(comp, 0);
-                depts.Add(dept, comp.Name);
+                int dept =  GetDepth(comp, 0);
+                try
+                {
+                    depths.Add(dept, comp.Name);
+                }
+                catch (ArgumentException argumentException)
+                {
+                    throw new ArgumentException($"ERRORE IN RuleUtils.cs/FindTheInnerOne:\n The gameobject {gameObjectName} has ecacomponents with the same depths. This should not happen. Please check the components assigned." +
+                                                $"\n Here is the list of eca-components name: {String.Join(", ", listEcaComponents.Select(t=>t.Name))}. \n Errore:{argumentException}");
+                }
             }
-
-            var maxKey = depts.Keys.Max();
-            return depts[maxKey];
+ 
+            var maxKey = depths.Keys.Max();
+            return depths[maxKey];
+       
         }
+
 
         /// <summary>
         /// Returns the dept of a ecarules component

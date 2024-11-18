@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
@@ -100,7 +101,7 @@ namespace ECARules4All_DLL
         /// If the object is inactive, it will not be rendered and it will not collide with other objects.
         /// </summary>
         [StateVariable("active", ECARules4AllType.Boolean)]
-        public ECABoolean isActive //= new ECABoolean(ECABoolean.BoolType.YES);
+        public ECABoolean isActive
         {
             get => _isActive;
             set
@@ -112,7 +113,23 @@ namespace ECARules4All_DLL
         [SerializeField]
         private ECABoolean _isActive = new ECABoolean(ECABoolean.BoolType.YES);
         
+        /// <summary>
+        /// <b>isInsideCamera</b> is a boolean that indicates if the object is within the camera's field of view.
+        /// </summary>
+        [StateVariable("isInsideCamera", ECARules4AllType.Boolean)]
+        public ECABoolean isInsideCamera
+        {
+            get => _isInsideCamera;
+            set
+            {
+                _isInsideCamera = value;
+                NotifyUpdate(nameof(isInsideCamera), isInsideCamera.ToString());
+            }
+        }
+        private ECABoolean _isInsideCamera = new ECABoolean(ECABoolean.BoolType.NO);
+        
         private Canvas canvas;
+        public Camera xrCamera;
 
         void Start()
         {
@@ -198,7 +215,7 @@ namespace ECARules4All_DLL
         {
             //r.Assign(newRot);
             s = new Scale(newScale);
-            transform.localScale = new Vector3(s.x, s.y, s.z); // todo verify scale
+            transform.localScale = new Vector3(s.x, s.y, s.z);
         }
         
         [Action(typeof(ECAObject), "restores original settings")]
@@ -347,6 +364,31 @@ namespace ECARules4All_DLL
             //GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
             GetComponent<ECAObject>().p = new Position(gameObject.transform.localPosition);
             isBusyMoving = false;
+        }
+
+        public void Update()
+        {
+            // check if object is within the camera's field of view.
+            // the object must be active
+            if (xrCamera)
+            {
+                Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(xrCamera);
+
+                ECABoolean res = ECABoolean.NO;
+                foreach (Renderer render in gameRenderer)
+                {
+                    if (GeometryUtility.TestPlanesAABB(frustumPlanes, render.bounds))
+                    {
+                        res = ECABoolean.YES;
+                        break;
+                    }
+                }
+
+                if(this.isInsideCamera != res)
+                {
+                    this.isInsideCamera = res;
+                }
+            }
         }
     }
 }

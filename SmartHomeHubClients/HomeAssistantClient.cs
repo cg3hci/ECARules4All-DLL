@@ -52,7 +52,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 }
                 catch (HttpRequestException e)
                 {
-                    Debug.Log($"An error occured during an update request - {e.Message}");
+                    Debug.LogError($"An error occured during an update request - {e.Message}");
                 }
             }
         }
@@ -193,7 +193,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 		        }
 		        catch (HttpRequestException e)
 		        {
-			        Debug.Log($"An error occured while registering a new virtual object - {e.Message}");
+			        Debug.LogError($"An error occured while registering a new virtual object - {e.Message}");
 		        }
 	        }
         }
