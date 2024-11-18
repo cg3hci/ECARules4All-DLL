@@ -77,7 +77,7 @@ namespace ECARules4All_DLL
         
         private Vector3 _originalPosition ;
         private Quaternion _originalQuaternion ;
-        private Vector3 _originalScale3 ;
+        private Vector3 _originalScale ;
         
         /// <summary>
         /// <b>isVisible</b> is a boolean that indicates if the object is visible.
@@ -136,7 +136,7 @@ namespace ECARules4All_DLL
             // TryGetComponent<Canvas>(out _canvas);
             _originalPosition = gameObject.transform.localPosition;
             _originalQuaternion = gameObject.transform.rotation;
-            _originalScale3 = gameObject.transform.localScale;
+            _originalScale = gameObject.transform.localScale;
             //p.Owner = this;
             TryGetComponent<Canvas>(out canvas);
             UpdateVisibility();
@@ -224,7 +224,7 @@ namespace ECARules4All_DLL
             float speed = 3.0F; ;
             StartCoroutine(MoveObject(speed, _originalPosition));
             gameObject.transform.rotation = _originalQuaternion;
-            gameObject.transform.localScale = _originalScale3;
+            gameObject.transform.localScale = _originalScale;
         }
 
         /// <summary>
