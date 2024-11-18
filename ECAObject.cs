@@ -135,7 +135,7 @@ namespace ECARules4All_DLL
         {
             // TryGetComponent<Canvas>(out _canvas);
             _originalPosition = gameObject.transform.localPosition;
-            _originalQuaternion = gameObject.transform.rotation;
+            _originalQuaternion = gameObject.transform.localRotation;
             _originalScale = gameObject.transform.localScale;
             //p.Owner = this;
             TryGetComponent<Canvas>(out canvas);
@@ -222,8 +222,9 @@ namespace ECARules4All_DLL
         public void MovesOriginalPosition()
         {
             float speed = 3.0F; ;
-            StartCoroutine(MoveObject(speed, _originalPosition));
-            gameObject.transform.rotation = _originalQuaternion;
+            //StartCoroutine(MoveObject(speed, _originalPosition));
+            gameObject.transform.localPosition = _originalPosition;
+            gameObject.transform.localRotation = _originalQuaternion;
             gameObject.transform.localScale = _originalScale;
         }
 
@@ -305,10 +306,10 @@ namespace ECARules4All_DLL
             
             //p = new Position();
             //p.Assign(transform.position);
-            p = new Position(transform.position);
+            p = new Position(transform.localPosition);
             //r = new Rotation();
             //r.Assign(transform.rotation);
-            r = new Rotation(transform.rotation);
+            r = new Rotation(transform.localRotation);
             s = new Scale(transform.localScale);
         }
         

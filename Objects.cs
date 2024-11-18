@@ -191,6 +191,24 @@ namespace ECARules4All_DLL
             this.y = r.y;
             this.z = r.z;
         }
+        
+        public override string ToString()
+        {
+            return x + ", " + y + ", " + z;
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if(obj is Scale)
+            {
+                Scale s = obj as Scale;
+                return this.x == s.x && this.y == s.y && this.z == s.z;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
     public class Path
