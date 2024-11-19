@@ -3,6 +3,7 @@ using ECARules4All_DLL.Taxonomies.Objects.Characters;
 using ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
+using Serilog;
 
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
@@ -228,7 +229,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
 
                     if (!boneMap.TryGetValue(split[split.Length - 1], out newBones[i]))
                     {
-                        Debug.Log("The bone " + bone.name + " doesn't exist in the target skeleton.");
+                        Log.Information("The bone " + bone.name + " doesn't exist in the target skeleton.");
                         mappingIsRight = false;
                     }
                 }

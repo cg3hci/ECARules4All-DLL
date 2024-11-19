@@ -1,6 +1,6 @@
-﻿
+﻿using Serilog;
 using System;
-using UnityEngine;
+
 
 namespace ECARules4All_DLL.Utils
 {
@@ -91,7 +91,7 @@ namespace ECARules4All_DLL.Utils
 
         public static ECABoolean FromString(string value)
         {
-            Debug.Log($"ECABOOLEAN FROM STRING - VALORE RICEVUTO: {value}");
+            Log.Information($"ECABOOLEAN FROM STRING - VALORE RICEVUTO: {value}");
             switch (value.ToLower())
             {
                 case "yes": return ECABoolean.YES;

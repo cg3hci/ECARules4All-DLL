@@ -21,7 +21,7 @@ namespace ECARules4All_DLL
             // }
             // foreach (var r in ruleEngine.Rules())
             // {
-            //     Debug.Log(r);
+            //     Log.Information(r);
             // }
         }
     }

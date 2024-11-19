@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories;
+using Serilog;
 using UnityEngine;
 using Scenes_Scene = ECARules4All_DLL.Taxonomies.Objects.Scenes.Scene;
 
@@ -22,8 +23,9 @@ namespace ECARules4All_DLL.Utils
                 case double doubleValue: processedValue = doubleValue; break;
                 case bool boolValue: processedValue = boolValue; break;
                 case ECABoolean ecaBooleanValue: processedValue = ecaBooleanValue.ToString(); break;
-                case Position positionValue: processedValue = positionValue; break;
+                case Position positionValue: processedValue = positionValue.ToDict(); break;
                 case Rotation rotationValue: processedValue = rotationValue; break;
+                case Path pathValue: processedValue = pathValue.ToDict(); break;
                 case Scale scaleValue: processedValue = scaleValue; break;
                 case Color colorValue: processedValue = colorValue.ToString(); break;
                 case Mesh meshValue: processedValue = meshValue.ToString(); break; 
@@ -32,7 +34,7 @@ namespace ECARules4All_DLL.Utils
                 case ECACamera.POV povValue: processedValue = povValue.ToString(); break;
                             
                 default:
-                    Debug.LogWarning($"Type {value.GetType().ToString()} does not recognized");
+                    Log.Warning($"Type {value.GetType().ToString()} does not recognized");
                     break;
             }
 
@@ -81,7 +83,7 @@ namespace ECARules4All_DLL.Utils
                     : ((FieldInfo)member).GetValue(sceneObject);
                 object processedValue = null;
                 
-                //Debug.Log($"{member.Name} - {value}");
+                //Log.Information($"{member.Name} - {value}");
                 
                 if (value != null) 
                 {
@@ -102,7 +104,7 @@ namespace ECARules4All_DLL.Utils
                         case ECACamera.POV povValue: processedValue = povValue.ToString(); break;
                         
                         default:
-                            Debug.LogWarning($"Tipo sconosciuto per l'attributo {member.Name}");
+                            Log.InformationWarning($"Tipo sconosciuto per l'attributo {member.Name}");
                             break;
                     }*/
                     processedValue = SerializeAttributeUtils.SerializeAttributes(value);
@@ -110,11 +112,11 @@ namespace ECARules4All_DLL.Utils
                 
                 var memberStateVariable = member.GetCustomAttribute<StateVariableAttribute>();
                 attributes.Add(memberStateVariable.Name.Replace("-", "_"), processedValue);
-                //Debug.Log($"{this.GetName()} - Aggiunto attributo {member.Name}: {processedValue}");
+                //Log.Information($"{this.GetName()} - Aggiunto attributo {member.Name}: {processedValue}");
             }
 
             // LOG
-            //Debug.Log($"{this.GetName()} - Return");
+            //Log.Information($"{this.GetName()} - Return");
             return attributes;
         }
     }
@@ -150,7 +152,7 @@ namespace ECARules4All_DLL.Utils
                 }
                 else
                 {
-                    Debug.Log($"Error {pairName}");
+                    Log.Information($"Error {pairName}");
                     pairs.Remove(pair);
                 } 
             }

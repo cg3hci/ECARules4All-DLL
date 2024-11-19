@@ -16,8 +16,6 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         public ContentNotification(string entity, string attribute, object newValue)
         {
-            //string jsonString = JsonSerializer.Serialize(newValue);
-            //Dictionary<string, object> dictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
             var newValueSerialized = SerializeAttributeUtils.SerializeAttributes(newValue);
             
             var data = new Dictionary<string, object>
@@ -27,7 +25,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 { "new_value", newValueSerialized }
             };
             
-            this.jsonContent = data;//JsonSerializer.Serialize(data);
+            this.jsonContent = data;
             this.timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
         

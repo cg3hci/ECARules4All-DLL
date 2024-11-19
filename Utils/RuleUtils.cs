@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Antlr4.Runtime.Misc;
 using ECARules4All_DLL.Parsers;
 using ECARules4All_DLL.UI;
-using ECARules4All_DLL;
 using JetBrains.Annotations;
-using UnityEditor;
 using UnityEngine;
-using Action = ECARules4All_DLL.Action;
-using Behaviour = ECARules4All_DLL.Behaviour;
-using Object = UnityEngine.Object;
+using Serilog;
 using SystemIOPath = System.IO.Path;
+
 
 namespace ECARules4All_DLL.Utils
 {
@@ -581,10 +576,10 @@ namespace ECARules4All_DLL.Utils
                 }
             }
 
-            /*Debug.Log("Verbs: ");
+            /*Log.Information("Verbs: ");
             foreach (KeyValuePair<int, VerbComposition> kvp in result)
             {
-                Debug.Log( string.Format("Key = {0}, Value = {1}", kvp.Key, kvp.Value.Verb + kvp.Value.ActionAttribute) );
+                Log.Information( string.Format("Key = {0}, Value = {1}", kvp.Key, kvp.Value.Verb + kvp.Value.ActionAttribute) );
             }*/
             return result;
         }
@@ -808,7 +803,7 @@ namespace ECARules4All_DLL.Utils
         {
             foreach (var e in list)
             {
-                Debug.Log(e);
+                Log.Information(e);
             }
         }
 
@@ -816,7 +811,7 @@ namespace ECARules4All_DLL.Utils
         {
             foreach (var e in list)
             {
-                Debug.Log(e.ToString());
+                Log.Information(e.ToString());
             }
         }
 
@@ -824,7 +819,7 @@ namespace ECARules4All_DLL.Utils
         {
             foreach (var e in list)
             {
-                Debug.Log(e.ToString());
+                Log.Information(e.ToString());
             }
         }
         
@@ -1193,12 +1188,6 @@ namespace ECARules4All_DLL.Utils
         }
         
         // ----------------------------------------------------------------------
-        
-        
-        
-        
-        
-        
         // +----------------------------------------+
         // | Methods to check - maybe Unity Project |
         // +----------------------------------------+

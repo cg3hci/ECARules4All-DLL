@@ -88,6 +88,16 @@ namespace ECARules4All_DLL
             return x + ", " + y + ", " + z;
         }
 
+        public Dictionary<string, object> ToDict()
+        {
+            return new Dictionary<string, object>
+            {
+                {"x", this.x},
+                {"y", this.y},
+                {"z", this.z}
+            };
+        }
+
         public override bool Equals(object obj)
         {
             if(obj is Position)
@@ -252,6 +262,20 @@ namespace ECARules4All_DLL
             {
                 return false;
             }
+        }
+        
+        public Dictionary<string, object> ToDict()
+        {
+            var list = new List<Dictionary<string, object>>();
+            foreach (var pos in this.Points)
+            {
+                list.Add(pos.ToDict());
+            }
+            
+            return new Dictionary<string, object>
+            {
+                {"points", list}
+            };
         }
     }
 }

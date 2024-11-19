@@ -6,6 +6,7 @@ using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using JetBrains.Annotations;
 using UnityEngine;
+using Serilog;
 
 
 namespace ECARules4All_DLL
@@ -47,6 +48,9 @@ namespace ECARules4All_DLL
         private RuleEngine()
         {
             eventQueue = EventBus.GetInstance();
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
         }
 
         ///<summary>
@@ -231,10 +235,10 @@ namespace ECARules4All_DLL
             //    StateVariableAttribute state = Attribute.GetCustomAttribute(fields[i], typeof(StateVariableAttribute)) as StateVariableAttribute;
             //    if (state != null)
             //    {
-            //        Debug.Log("Fields[i].name: " + fields[i].Name);
-            //        Debug.Log("State.name: " + state.Name);
-            //        Debug.Log("State.Type: " + state.type);
-            //        Debug.Log("--------------------------");
+            //        Log.Information("Fields[i].name: " + fields[i].Name);
+            //        Log.Information("State.name: " + state.Name);
+            //        Log.Information("State.Type: " + state.type);
+            //        Log.Information("--------------------------");
             //    }
             //}
 
@@ -350,8 +354,8 @@ namespace ECARules4All_DLL
                 var components = ComponentTracker.Instance.GetAllComponents();
                 foreach (var entry in components)
                 {
-                    Debug.Log("Key: " + entry.Key);
-                    Debug.Log("-- Value: " + entry.Value);
+                    Log.Information("Key: " + entry.Key);
+                    Log.Information("-- Value: " + entry.Value);
                 }
             }
         }
@@ -448,7 +452,7 @@ namespace ECARules4All_DLL
             bool areArgsValid = AreRuleArgsValid(lWhen, lIf, lActions, out bool atLeastOneCondition);
             if (!areArgsValid)
             {
-                Debug.LogError("Invalid rule");
+                Log.Error("Invalid rule");
                 return null;
             }
 
@@ -461,7 +465,7 @@ namespace ECARules4All_DLL
                 rule = new Rule(lWhen, lActions);
             }
 
-            Debug.Log("Valid rule");
+            Log.Information("Valid rule");
             return rule;
         }
         public static Rule TryCreateRule(Action lWhen, List<Action> lActions)
@@ -483,7 +487,7 @@ namespace ECARules4All_DLL
             isWhenValid = whenAction != null && whenAction.IsValid();
             if (!isWhenValid)
             {
-                Debug.Log("Invalid when");
+                Log.Information("Invalid when");
                 return false; //the findAction returns null, so something is missing
             }
             ///////////////////////////////////////////////////////
@@ -501,20 +505,20 @@ namespace ECARules4All_DLL
                 if (isConditionComposite)
                 {
                     compositeCondition = (CompositeCondition)lIf;
-                    Debug.Log("Trying to evaluate the composite condition " + compositeCondition);
+                    Log.Information("Trying to evaluate the composite condition " + compositeCondition);
                     isConditionValid = compositeCondition.IsValid();
                 }
                 else
                 {
                     simpleCondition = (SimpleCondition)lIf;
-                    Debug.Log("Trying to evaluate the simple condition " + simpleCondition);
+                    Log.Information("Trying to evaluate the simple condition " + simpleCondition);
                     isConditionValid = simpleCondition.IsValid();
                 }
             }
 
             if (!isConditionValid)
             {
-                Debug.Log("Invalid condition");
+                Log.Information("Invalid condition");
                 return false; //if one of the action is not valid, the rule is null
             }
             ///////////////////////////////////////////////////////
@@ -523,7 +527,7 @@ namespace ECARules4All_DLL
             ////////////////////// ACTIONS //////////////////////
             if (!lActions.Any())
             {
-                Debug.Log("Invalid then: 0 actions in the list");
+                Log.Information("Invalid then: 0 actions in the list");
                 return false;
             }
 
@@ -538,7 +542,7 @@ namespace ECARules4All_DLL
 
             if (!thenValid)
             {
-                Debug.Log("Invalid then");
+                Log.Information("Invalid then");
                 return false; //if one of the action is not valid, the rule is null
             }
             //////////////////////////////////////////////////////////////////

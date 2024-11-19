@@ -1,21 +1,27 @@
-﻿using System.Collections;
-using ECARules4All_DLL.Utils;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
-using SystemPath = System.IO.Path;
+using ECARules4All_DLL.Taxonomies.Objects.Interactions;
+using ECARules4All_DLL.Utils;
+using Newtonsoft.Json;
+using Serilog;
 
 
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// <b>Sound</b> is a <see cref="Behaviour"/> that works like a media player, and it is specific to audio files.
+    /// <b>ECASound</b> is a <see cref="ECABehaviour"/> that works like a media player, and it is specific to audio files.
     /// </summary>
     [ECARules4All("sound")]
-    [RequireComponent(typeof(Behaviour))]
+    [RequireComponent(typeof(Interaction))]
     [RequireComponent(typeof(AudioSource))]
+    [JsonObject(MemberSerialization.OptIn)]
     [DisallowMultipleComponent]
     public class Sound : ECAScript
     {
+        private string status = "";
+        
         /// <summary>
         /// <b>Source</b> is the audio source that will be used to play the audio.
         /// </summary>
@@ -29,13 +35,12 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(source), source);
             }
         }
-        [SerializeField] 
-        private string _source;
-        
+        [SerializeField] private string _source;
+
         /// <summary>
         /// <b>Volume</b> is the volume of the audio.
         /// </summary>
-        [StateVariable("volume", ECARules4AllType.Float)] 
+        [StateVariable("volume", ECARules4AllType.Float)]
         public float volume
         {
             get => _volume;
@@ -45,13 +50,13 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(volume), volume.ToString());
             }
         }
-        [SerializeField] 
-        private float _volume;
-            
+
+        [SerializeField] private float _volume;
+
         /// <summary>
         /// <b>MaxVolume</b> is the maximum volume the audio can reach.
         /// </summary>
-        [StateVariable("maxVolume", ECARules4AllType.Float)] 
+        [StateVariable("maxVolume", ECARules4AllType.Float)]
         public float maxVolume
         {
             get => _maxVolume;
@@ -61,6 +66,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(maxVolume), maxVolume.ToString());
             }
         }
+
         [SerializeField] private float _maxVolume;
 
         /// <summary>
@@ -76,12 +82,13 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(duration), duration.ToString());
             }
         }
+
         [SerializeField] private float _duration;
-        
+
         /// <summary>
         /// <b>currentTime</b> is the current time of the audio.
         /// </summary>
-        [StateVariable("currentTime", ECARules4AllType.Float)] 
+        [StateVariable("currentTime", ECARules4AllType.Float)]
         public float currentTime
         {
             get => _currentTime;
@@ -91,12 +98,13 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(currentTime), currentTime.ToString());
             }
         }
+
         [SerializeField] private float _currentTime;
-        
+
         /// <summary>
         /// <b>isPlaying</b> is a boolean that indicates if the audio is playing.
         /// </summary>
-        [StateVariable("playing", ECARules4AllType.Boolean)] 
+        [StateVariable("playing", ECARules4AllType.Boolean)]
         public ECABoolean playing
         {
             get => _playing;
@@ -106,13 +114,13 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(playing), playing.ToString());
             }
         }
-        [SerializeField] 
-        private ECABoolean _playing = new ECABoolean(ECABoolean.BoolType.NO);
-        
+
+        [SerializeField] private ECABoolean _playing = new ECABoolean(ECABoolean.BoolType.NO);
+
         /// <summary>
         /// <b> Paused </b> is a boolean that indicates if the audio is paused.
         /// </summary>
-        [StateVariable("paused", ECARules4AllType.Boolean)] 
+        [StateVariable("paused", ECARules4AllType.Boolean)]
         public ECABoolean paused
         {
             get => _paused;
@@ -122,13 +130,13 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(paused), paused.ToString());
             }
         }
-        [SerializeField] 
-        private ECABoolean _paused = new ECABoolean(ECABoolean.BoolType.NO);
-        
+
+        [SerializeField] private ECABoolean _paused = new ECABoolean(ECABoolean.BoolType.NO);
+
         /// <summary>
         /// <b> Stopped </b> is a boolean that indicates if the audio is stopped.
         /// </summary>
-        [StateVariable("stopped", ECARules4AllType.Boolean)] 
+        [StateVariable("stopped", ECARules4AllType.Boolean)]
         public ECABoolean stopped
         {
             get => _stopped;
@@ -138,31 +146,29 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(stopped), stopped.ToString());
             }
         }
-        [SerializeField] 
-        private ECABoolean _stopped = new ECABoolean(ECABoolean.BoolType.YES);
+
+        [SerializeField] private ECABoolean _stopped = new ECABoolean(ECABoolean.BoolType.YES);
         
         /// <summary>
-        /// <b>Player</b> is the audio player that will be used to play the audio.
+        /// <b> AudioSource </b> is the audio _audioSource that will be used to play the audio.
         /// </summary>
-        private AudioSource player;
+        private AudioSource _audioSource;
+
         /// <summary>
         /// <b> SourcePath </b> is the path of the audio file.
         /// </summary>
         private string sourcePath;
-        
+
         /// <summary>
         /// <b>Plays</b> starts the audio.
         /// </summary>
         [Action(typeof(Sound), "plays")]
         public void Plays()
         {
-            /*this.playing.Assign(ECABoolean.BoolType.YES);
+            this.playing.Assign(ECABoolean.BoolType.YES);
             this.stopped.Assign(ECABoolean.BoolType.NO);
-            this.paused.Assign(ECABoolean.BoolType.NO);*/
-            playing = new ECABoolean(ECABoolean.BoolType.YES);
-            stopped = new ECABoolean(ECABoolean.BoolType.NO);
-            paused = new ECABoolean(ECABoolean.BoolType.NO);
-            player.Play();
+            this.paused.Assign(ECABoolean.BoolType.NO);
+            _audioSource.Play();
         }
 
         /// <summary>
@@ -171,13 +177,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [Action(typeof(Sound), "pauses")]
         public void Pauses()
         {
-            /*this.playing.Assign(ECABoolean.BoolType.NO);
+            this.playing.Assign(ECABoolean.BoolType.NO);
             this.stopped.Assign(ECABoolean.BoolType.NO);
-            this.paused.Assign(ECABoolean.BoolType.YES);*/
-            playing = new ECABoolean(ECABoolean.BoolType.NO);
-            stopped = new ECABoolean(ECABoolean.BoolType.NO);
-            paused = new ECABoolean(ECABoolean.BoolType.YES);
-            player.Pause();
+            this.paused.Assign(ECABoolean.BoolType.YES);
+            _audioSource.Pause();
         }
 
         /// <summary>
@@ -186,13 +189,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [Action(typeof(Sound), "stops")]
         public void Stops()
         {
-            /*this.playing.Assign(ECABoolean.BoolType.NO);
+            this.playing.Assign(ECABoolean.BoolType.NO);
             this.stopped.Assign(ECABoolean.BoolType.YES);
-            this.paused.Assign(ECABoolean.BoolType.NO);*/
-            playing = new ECABoolean(ECABoolean.BoolType.NO);
-            stopped = new ECABoolean(ECABoolean.BoolType.YES);
-            paused = new ECABoolean(ECABoolean.BoolType.NO);
-            player.Stop();
+            this.paused.Assign(ECABoolean.BoolType.NO);
+            _audioSource.Stop();
         }
 
         /// <summary>
@@ -214,21 +214,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 v = 0;
             }
 
-            volume = v;
-            player.volume = volume;
-        }
-
-        /// <summary>
-        /// <b>ChangesCurrentTime</b> changes the current time of the audio to the given value.
-        /// </summary>
-        /// <param name="c"> The new time value.</param>
-        [Action(typeof(Sound), "changes", "current-time", "to", typeof(double))]
-        public void ChangesCurrentTime(double c)
-        {
-            if (c <= duration)
-            {
-                //TODO: abbastanza esplicativo cosa ci sia da fare
-            }
+            this.volume = v;
+            _audioSource.volume = this.volume;
         }
 
         /// <summary>
@@ -240,62 +227,83 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [Action(typeof(Sound), "changes", "source", "to", typeof(string))]
         public void ChangesSource(string newSource)
         {
-            source = newSource;
-            sourcePath = "file://" + SystemPath.Combine(Application.streamingAssetsPath, SystemPath.Combine("Inventory", SystemPath.Combine("Audios", source)));
-            StartCoroutine(ChangeAudioSource());
+            var objName = gameObject.name;
+
+            if (string.IsNullOrEmpty(newSource))
+                Log.Warning($"Hai inserito un url vuoto per l'audio in {objName}!");
+
+            StartCoroutine(this.LoadAudioFromURL(newSource, (status) =>
+            {
+                Log.Information($"PlayAudio sull'oggetto {objName} terminata con stato: {status}");
+
+                if (status != "ok")
+                    throw new Exception(
+                        $"Si è verificato un errore nel caricamento dell'audio {newSource} per l'oggetto {objName}");
+
+                // Update the list of objects in the scene
+                // instance?.GetObjectInfoByName(objName);
+            }));
         }
 
-        IEnumerator ChangeAudioSource()
+        public IEnumerator LoadAudioFromURL(string fileName, Action<string> result)
         {
-            using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(sourcePath, AudioType.MPEG))
+            _audioSource.Stop(); // Interrompe la riproduzione dell'audio corrente
+
+            using (UnityWebRequest uwr =
+                   UnityWebRequestMultimedia.GetAudioClip(TaxonomyUtils.getFileAudioByName(fileName), AudioType.UNKNOWN))
             {
                 yield return uwr.SendWebRequest();
-                if (uwr.result == UnityWebRequest.Result.ConnectionError ||
-                    uwr.result == UnityWebRequest.Result.ProtocolError)
+                if (uwr.result != UnityWebRequest.Result.Success)
                 {
-                    //throw new Exception("File unavailable or wrong path");
+                    Log.Error(
+                        "Si è verificato un errore nel caricamento del file audio. Verifica che il file audio " +
+                        "richiesto esista e si trovi nella relativa cartella.");
+                    status = "error";
                 }
                 else
                 {
-                    if (player.clip != null)
+                    source = fileName;
+                    _audioSource.clip = DownloadHandlerAudioClip.GetContent(uwr);
+                    _audioSource.time = 0;
+                    if (!stopped && !paused && playing)
                     {
-                        Stops();
-                        AudioClip reference = player.clip;
-                        player.clip = null;
-                        reference.UnloadAudioData();
-                        DestroyImmediate(reference, false);
+                        /* TODO Questo serve perché ri-mettere in play l'eventuale clip,
+                        // essendo questa funzione (ChangeSource) invocata in maniera asincrona (IEnumerator),
+                        // non siamo certi che venga effettivamente eseguita prima della Play()
+                        // Esecuzione Ideale: ChangeSource ->  Play
+                        // Problema: ChangeSource è asincrono e potrebbe succedere questo
+                        //                    Play -> ChangeSource
+                        // Ma visto che il cambio di Clip (in ChangeSource) stoppa la riproduzione audio, la clip in sostanza non va mai in play */
+                        _audioSource.Play(); // Avvia la riproduzione del nuovo file audio
                     }
 
-                    player.clip = DownloadHandlerAudioClip.GetContent(uwr);
+                    status = "ok";
                 }
+
+                result(status);
             }
 
             yield return null;
         }
 
-        private void Update()
+        private void Start()
         {
-            if (playing)
-            {
-                currentTime = player.time;
-            }
-        }
-
-        private void Awake()
-        {
+            // _hook = GameObject.Find("Hook").GetComponent<HookManager>(); // TODO JACO AGILE: Perchè prendiamo l'hook?
             maxVolume = 1.0f;
-            player = GetComponent<AudioSource>();
+            _audioSource = GetComponent<AudioSource>();
 
-            if (source != null)
-            {
-                sourcePath = "file://" + SystemPath.Combine(Application.streamingAssetsPath, SystemPath.Combine("Inventory", SystemPath.Combine("Audios", source)));
-                StartCoroutine(ChangeAudioSource());
-                duration = player.clip.length;
-            }
+            ChangesSource(source);
 
             volume = volume > maxVolume ? maxVolume : volume;
             volume = volume < 0.0f ? 0.0f : volume;
-            player.volume = volume;
+            _audioSource.volume = volume;
+
+            _audioSource.playOnAwake = (!stopped && !paused && playing);
+
+            if (stopped || paused)
+                this.Stops();
+            else
+                this.Plays();
         }
     }
 }

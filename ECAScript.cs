@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
+using Serilog;
 
 
 namespace ECARules4All_DLL
@@ -60,7 +60,7 @@ namespace ECARules4All_DLL
                 }
                 catch (Exception e)
                 {
-                    Debug.Log($"Error on NotifyUpdate - {e}");
+                    Log.Information($"Error on NotifyUpdate - {e}");
                 }
             }
         }

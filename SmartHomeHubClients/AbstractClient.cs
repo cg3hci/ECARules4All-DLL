@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ECARules4All_DLL.Utils;
-using UnityEngine;
+using Serilog;
 
 
 namespace ECARules4All_DLL.SmartHomeHubClients
@@ -100,7 +100,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             foreach (var client in RuleEngine.GetInstance().clients)
             {
                 client.updates.Enqueue(content);
-                Debug.Log($"registered new value for client {client}");
+                Log.Information($"registered new value for client {client}");
             }
         }
     }

@@ -7,22 +7,23 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using UnityEngine;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Vector3 = UnityEngine.Vector3;
+using Serilog;
 
 namespace ECARules4All_DLL.SmartHomeHubClients
 {
     public class HomeAssistantClient : AbstractClient<HomeAssistantClient>
     {
+	    
 	    protected override async void SendNotification(object sender, ContentNotification newItem)
         {
             if (string.IsNullOrEmpty(this.token) || string.IsNullOrEmpty(this.url))
             {
-                Debug.Log("Token or url is empty");
+                Log.Information("Token or url is empty");
             }
             
             //var lastContent = this.updates.GetUpdates();
@@ -46,20 +47,21 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                     HttpResponseMessage response = await client.PostAsync(urlService, body);
                     response.EnsureSuccessStatusCode();
                     
-                    Debug.Log($"Sent an update to Home Assistant Client at {this.url} - content: {lastContent.jsonContent} - timestamp: {lastContent.timestamp}");
+                    Log.Information("Sent update {@Content}", jsonBody);
+                    Log.Information($"Sent an update to Home Assistant Client at {this.url} - content: {lastContent.jsonContent} - timestamp: {lastContent.timestamp}");
                     // delete list content
                     //this.updates.Remove(lastContent);
                 }
                 catch (HttpRequestException e)
                 {
-                    Debug.LogError($"An error occured during an update request - {e.Message}");
+                    Log.Error($"An error occured during an update request - {e.Message}");
                 }
             }
         }
 
         public async void ReceivedUpdateHandler(object sender, ReceivedUpdate receivedUpdate)
         {
-	        Debug.Log($"{receivedUpdate.subject} - {receivedUpdate.verb} - {receivedUpdate.parameters}");
+	        Log.Information($"{receivedUpdate.subject} - {receivedUpdate.verb} - {receivedUpdate.parameters}");
 			if (ComponentTracker.Instance.GetAllComponents().ContainsKey(receivedUpdate.subject))
 			{
 				// GameObject.Tag@ECAScript.Name example => T_Shirt_1@ECAObject
@@ -76,7 +78,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 						RuleEngine.GetInstance().ExecuteAction(
 							new Action(gameObject, receivedUpdate.verb)
 						);
-						Debug.Log($"Action {receivedUpdate.verb} with no parameter runned");
+						Log.Information($"Action {receivedUpdate.verb} with no parameter runned");
 					}
 					else
 					{
@@ -93,7 +95,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 							RuleEngine.GetInstance().ExecuteAction(
 								action
 							);
-							Debug.Log($"Action {receivedUpdate.verb} with no variable runned");
+							Log.Information($"Action {receivedUpdate.verb} with no variable runned");
 						}
 						else
 						{
@@ -102,10 +104,10 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 							RuleEngine.GetInstance().ExecuteAction(
 								action
 							);
-							Debug.Log($"Action {receivedUpdate.verb} with variable runned");
+							Log.Information($"Action {receivedUpdate.verb} with variable runned");
 						}
 					}
-					Debug.Log($"Reflection method (aka Action) {methodInfo.Name} performed");	
+					Log.Information($"Reflection method (aka Action) {methodInfo.Name} performed");	
 				}
 			}
         }
@@ -188,12 +190,12 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 				        new AuthenticationHeaderValue("Bearer", this.token);
 			        HttpResponseMessage response = await client.PostAsync(urlService, stringContent);
 			        response.EnsureSuccessStatusCode();
-
-			        Debug.Log($"Registered a new virtual object to Home Assistant Client at {this.url}");
+					
+			        Log.Information($"Registered a new virtual object to Home Assistant Client at {this.url}");
 		        }
 		        catch (HttpRequestException e)
 		        {
-			        Debug.LogError($"An error occured while registering a new virtual object - {e.Message}");
+			        Log.Error($"An error occured while registering a new virtual object - {e.Message}");
 		        }
 	        }
         }

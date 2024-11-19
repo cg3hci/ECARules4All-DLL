@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
-using UnityEngine;
+using Serilog;
 
 
 namespace ECARules4All_DLL.SmartHomeHubClients
@@ -48,14 +48,14 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         public void Start()
         {
             _listener.Start();
-            Debug.Log($"Server started");
+            Log.Information($"Server started");
             Receive();
         }
 
         public void Stop()
         {
             _listener.Stop();
-            Debug.Log($"Server stopped.");
+            Log.Information($"Server stopped.");
         }
 
         private async void Receive()
@@ -81,7 +81,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
                     string requestBody = reader.ReadToEnd();
-                    Debug.Log($"Received POST data: {requestBody}");
+                    Log.Information($"Received POST data: {requestBody}");
                     
                     try
                     {
@@ -95,7 +95,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                     }
                     catch (Exception ex)
                     {
-                        Debug.Log($"Error processing POST data: {ex.Message}");
+                        Log.Information($"Error processing POST data: {ex.Message}");
                         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                         context.Response.Close();
                     }

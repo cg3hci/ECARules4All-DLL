@@ -1,5 +1,6 @@
 ﻿using ECARules4All_DLL.Utils;
 using UnityEngine;
+using Serilog;
 
 
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
@@ -19,7 +20,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         {
             //PROVE
             Action action = new Action(other.gameObject, "interacts with", this.gameObject);
-            Debug.Log("Interacts-with (trigger) " + other.gameObject);
+            Log.Information("Interacts-with (trigger) " + other.gameObject);
             EventBus.GetInstance().Publish(action);
             NotifyUpdate(action);
         }
@@ -27,7 +28,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         private void OnCollisionEnter(Collision other)
         {
             Action action = new Action(other.gameObject, "interacts with", this.gameObject);
-            Debug.Log("Interacts-with (collision) " + other.gameObject);
+            Log.Information("Interacts-with (collision) " + other.gameObject);
             EventBus.GetInstance().Publish(action);
             NotifyUpdate(action);
         }
@@ -42,11 +43,11 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
         private void OnCollisionExit(Collision other)
         {
-            Debug.Log("OnCollisionExit 1");
+            Log.Information("OnCollisionExit 1");
             Action action = new Action(other.gameObject, "stops-interacting with", this.gameObject);
             EventBus.GetInstance().Publish(action);
             NotifyUpdate(action);
-            Debug.Log($"OnCollisionExit 2 - other: {other.gameObject.name} - obj: {this.gameObject.name}");
+            Log.Information($"OnCollisionExit 2 - other: {other.gameObject.name} - obj: {this.gameObject.name}");
         }
     }
 }
