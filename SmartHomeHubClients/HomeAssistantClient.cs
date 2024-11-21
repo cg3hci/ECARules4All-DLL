@@ -70,8 +70,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 				if (ecaScript != null)
 				{
 					var gameObject = GameObject.Find(names[0]);
-					
-					MethodInfo methodInfo = FindMethodWithVerb(ecaScript, receivedUpdate.verb);
+					MethodInfo methodInfo = FindMethodWithVerb(targetType: ecaScript, verb: receivedUpdate.verb, variable: receivedUpdate.variable_name);
 
 					if (methodInfo.GetParameters().Length == 0)
 					{
@@ -89,7 +88,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 						object parameter = ConvertParameter(methodParameter, receivedParameter);
 						
 						// run action
-						if (String.IsNullOrEmpty(receivedUpdate.variable))
+						if (String.IsNullOrEmpty(receivedUpdate.variable_name))
 						{
 							var action = new Action(gameObject, receivedUpdate.verb, parameter);
 							RuleEngine.GetInstance().ExecuteAction(
@@ -99,7 +98,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 						}
 						else
 						{
-							var action = new Action(gameObject, receivedUpdate.verb, receivedUpdate.variable,
+							var action = new Action(gameObject, receivedUpdate.verb, receivedUpdate.variable_name,
 								receivedUpdate.modifier, parameter);
 							RuleEngine.GetInstance().ExecuteAction(
 								action
@@ -109,6 +108,10 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 					}
 					Log.Information($"Reflection method (aka Action) {methodInfo.Name} performed");	
 				}
+			}
+			else
+			{
+				Log.Error($"Error on handling the action '{receivedUpdate.verb}' of the subject '{receivedUpdate.subject}'");
 			}
         }
 
@@ -145,6 +148,16 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	        else if (typeParameter == typeof(float) || typeParameter == typeof(int))
 	        {
 		        parameter = float.Parse(receivedParameter);
+	        }
+	        else if (typeParameter == typeof(string))
+	        {
+		        parameter = receivedParameter;
+	        }
+	        else
+	        {
+		        string message = $"Error on converting {receivedParameter} to {typeParameter}";
+		        Log.Error(message);
+		        throw new Exception(message);
 	        }
 
 	        return parameter;
