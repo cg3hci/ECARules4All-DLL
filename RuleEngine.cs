@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using ECARules4All_DLL.SmartHomeHubClients;
@@ -48,8 +49,17 @@ namespace ECARules4All_DLL
         private RuleEngine()
         {
             eventQueue = EventBus.GetInstance();
+            // log file
+            var logFilePath = "logs/log.txt";
+            if (File.Exists(logFilePath))
+            {
+                File.Delete(logFilePath);
+            }
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.File(
+                    logFilePath, 
+                    rollingInterval: RollingInterval.Infinite
+                )
                 .CreateLogger();
         }
 

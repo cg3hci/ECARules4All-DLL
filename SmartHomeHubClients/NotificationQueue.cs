@@ -42,8 +42,8 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 var obj = action.GetObject();
                 if (obj is string)
                 {
-                    data["variable"] = (string)obj;
-                    data["modifier"] = action.GetModifier();
+                    data["variable_name"] = (string)obj;
+                    data["modifier_string"] = action.GetModifier();
                     data["value"] = action.GetModifierValue().ToString();
                 }
                 else
@@ -59,12 +59,12 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                         objString = obj.ToString();
                     }
                     
-                    data["variable"] = objString;
+                    data["variable_name"] = objString;
                 }
                 
             }
 
-            this.jsonContent = data;//JsonSerializer.Serialize(data);
+            this.jsonContent = data;
             this.timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
     }
