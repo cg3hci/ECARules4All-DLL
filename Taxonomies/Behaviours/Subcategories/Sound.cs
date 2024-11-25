@@ -21,7 +21,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     public class Sound : ECAScript
     {
         private string status = "";
-        
+
         /// <summary>
         /// <b>Source</b> is the audio source that will be used to play the audio.
         /// </summary>
@@ -35,6 +35,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(source), source);
             }
         }
+
         [SerializeField] private string _source;
 
         /// <summary>
@@ -148,7 +149,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         [SerializeField] private ECABoolean _stopped = new ECABoolean(ECABoolean.BoolType.YES);
-        
+
         /// <summary>
         /// <b> AudioSource </b> is the audio _audioSource that will be used to play the audio.
         /// </summary>
@@ -250,7 +251,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             _audioSource.Stop(); // Interrompe la riproduzione dell'audio corrente
 
             using (UnityWebRequest uwr =
-                   UnityWebRequestMultimedia.GetAudioClip(TaxonomyUtils.getFileAudioByName(fileName), AudioType.UNKNOWN))
+                   UnityWebRequestMultimedia.GetAudioClip(TaxonomyUtils.getFileAudioByName(fileName),
+                       AudioType.UNKNOWN))
             {
                 yield return uwr.SendWebRequest();
                 if (uwr.result != UnityWebRequest.Result.Success)
