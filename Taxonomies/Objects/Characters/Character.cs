@@ -76,7 +76,27 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         public void StopsInteracting(Interactable o)
         {
         }
+        
+        /// <summary>
+        /// <b>Points</b>: a character can point to other interactable objects.
+        /// </summary>
+        /// <param name="o">The pointed game object</param>
+        [Action(typeof(Character), "points to", typeof(ECAObject))]
+        public void Points(ECAObject o)
+        {
+            // TODO is an extension? 
+        }
 
+        /// <summary>
+        /// <b>Stops interaction</b>: a character can stop the interaction with other interactable objects.
+        /// </summary>
+        /// <param name="o">The pointed game object</param>
+        [Action(typeof(Character), "stops-pointing to", typeof(ECAObject))]
+        public void StopsPointing(ECAObject o)
+        {
+            // TODO is an extension?
+        }
+        
         /// <summary>
         /// <b>Jumps</b>: The character can jump to a given position
         /// </summary>

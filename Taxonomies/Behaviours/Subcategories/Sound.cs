@@ -166,9 +166,9 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [Action(typeof(Sound), "plays")]
         public void Plays()
         {
-            this.playing.Assign(ECABoolean.BoolType.YES);
-            this.stopped.Assign(ECABoolean.BoolType.NO);
-            this.paused.Assign(ECABoolean.BoolType.NO);
+            this.playing= new ECABoolean(ECABoolean.BoolType.YES);
+            this.stopped = new ECABoolean(ECABoolean.BoolType.YES);
+            this.paused = new ECABoolean(ECABoolean.BoolType.YES);
             _audioSource.Play();
         }
 
@@ -178,9 +178,9 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [Action(typeof(Sound), "pauses")]
         public void Pauses()
         {
-            this.playing.Assign(ECABoolean.BoolType.NO);
-            this.stopped.Assign(ECABoolean.BoolType.NO);
-            this.paused.Assign(ECABoolean.BoolType.YES);
+            this.playing= new ECABoolean(ECABoolean.BoolType.NO);
+            this.stopped= new ECABoolean(ECABoolean.BoolType.NO);
+            this.paused= new ECABoolean(ECABoolean.BoolType.YES);
             _audioSource.Pause();
         }
 
@@ -190,9 +190,9 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [Action(typeof(Sound), "stops")]
         public void Stops()
         {
-            this.playing.Assign(ECABoolean.BoolType.NO);
-            this.stopped.Assign(ECABoolean.BoolType.YES);
-            this.paused.Assign(ECABoolean.BoolType.NO);
+            this.playing= new ECABoolean(ECABoolean.BoolType.NO);
+            this.stopped= new ECABoolean(ECABoolean.BoolType.YES);
+            this.paused= new ECABoolean(ECABoolean.BoolType.NO);
             _audioSource.Stop();
         }
 

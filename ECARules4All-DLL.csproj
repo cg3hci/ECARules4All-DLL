@@ -172,7 +172,7 @@
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\Button.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECACamera.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECALight.cs" />
-        <Compile Include="Taxonomies\Objects\Interactions\Subcategories\Old_ECAText.cs" />
+        <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECAText.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECAVideo.cs" />
         <Compile Include="Taxonomies\Objects\Props\Prop.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Clothing.cs" />
