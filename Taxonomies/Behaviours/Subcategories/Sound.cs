@@ -10,9 +10,8 @@ using Serilog;
 
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
-    /// <summary>
-    /// <b>ECASound</b> is a <see cref="ECABehaviour"/> that works like a media player, and it is specific to audio files.
-    /// </summary>
+    /// <b>Sound</b> is a behavior that functions as a media player specifically designed for audio files.
+    /// It extends <see cref="ECABehaviour"/> to provide audio-related functionalities such as playback, volume control, and source management.
     [ECARules4All("sound")]
     [RequireComponent(typeof(Interaction))]
     [RequireComponent(typeof(AudioSource))]
@@ -23,7 +22,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         private string status = "";
 
         /// <summary>
-        /// <b>Source</b> is the audio source that will be used to play the audio.
+        /// <b>Source</b> is the audio filename that serves as the source for playback.
         /// </summary>
         [StateVariable("source", ECARules4AllType.Text)]
         public string source
@@ -35,11 +34,11 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(source), source);
             }
         }
-
         [SerializeField] private string _source;
 
         /// <summary>
-        /// <b>Volume</b> is the volume of the audio.
+        /// <b>Volume</b> is the current volume level of the audio.
+        /// Accepts values between 0 and the maximum volume, defined by <see cref="maxVolume"/>.
         /// </summary>
         [StateVariable("volume", ECARules4AllType.Float)]
         public float volume
@@ -51,11 +50,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(volume), volume.ToString());
             }
         }
-
         [SerializeField] private float _volume;
 
         /// <summary>
-        /// <b>MaxVolume</b> is the maximum volume the audio can reach.
+        /// <b>MaxVolume</b> is the maximum volume level the audio can reach.
         /// </summary>
         [StateVariable("maxVolume", ECARules4AllType.Float)]
         public float maxVolume
@@ -63,31 +61,15 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             get => _maxVolume;
             set
             {
-                _maxVolume = value;
+                _maxVolume = value; //TODO What if the volume is greater than the maxVolume?
                 NotifyUpdate(nameof(maxVolume), maxVolume.ToString());
             }
         }
-
         [SerializeField] private float _maxVolume;
 
         /// <summary>
-        /// <b>duration</b> is the duration of the audio.
-        /// </summary>
-        [StateVariable("duration", ECARules4AllType.Float)]
-        public float duration
-        {
-            get => _duration;
-            set
-            {
-                _duration = value;
-                NotifyUpdate(nameof(duration), duration.ToString());
-            }
-        }
-
-        [SerializeField] private float _duration;
-
-        /// <summary>
-        /// <b>currentTime</b> is the current time of the audio.
+        /// <b>currentTime</b> is the current playback position in seconds. 
+        /// Tracks the progression of the audio clip.
         /// </summary>
         [StateVariable("currentTime", ECARules4AllType.Float)]
         public float currentTime
@@ -99,11 +81,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(currentTime), currentTime.ToString());
             }
         }
-
         [SerializeField] private float _currentTime;
 
         /// <summary>
-        /// <b>isPlaying</b> is a boolean that indicates if the audio is playing.
+        /// <b>playing</b> indicates whether the audio is currently playing. The value is either "yes" or "no". If paused or stopped are "yes", playing will be "no".
         /// </summary>
         [StateVariable("playing", ECARules4AllType.Boolean)]
         public ECABoolean playing
@@ -115,11 +96,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(playing), playing.ToString());
             }
         }
-
         [SerializeField] private ECABoolean _playing = new ECABoolean(ECABoolean.BoolType.NO);
 
         /// <summary>
-        /// <b> Paused </b> is a boolean that indicates if the audio is paused.
+        /// <b>paused</b> indicates whether the audio playback is paused. The value is either "yes" or "no". When playing again, the audio will resume from the paused time.
         /// </summary>
         [StateVariable("paused", ECARules4AllType.Boolean)]
         public ECABoolean paused
@@ -131,11 +111,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(paused), paused.ToString());
             }
         }
-
         [SerializeField] private ECABoolean _paused = new ECABoolean(ECABoolean.BoolType.NO);
 
         /// <summary>
-        /// <b> Stopped </b> is a boolean that indicates if the audio is stopped.
+        /// <b> Stopped </b> indicates whether the audio playback is stopped. The value is either "yes" or "no". When playing again, the audio will start from the beginning.
         /// </summary>
         [StateVariable("stopped", ECARules4AllType.Boolean)]
         public ECABoolean stopped
@@ -147,11 +126,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 NotifyUpdate(nameof(stopped), stopped.ToString());
             }
         }
-
         [SerializeField] private ECABoolean _stopped = new ECABoolean(ECABoolean.BoolType.YES);
 
         /// <summary>
-        /// <b> AudioSource </b> is the audio _audioSource that will be used to play the audio.
+        /// <b>AudioSource</b> is the audio _audioSource that will be used to play the audio.
         /// </summary>
         private AudioSource _audioSource;
 
@@ -161,7 +139,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         private string sourcePath;
 
         /// <summary>
-        /// <b>Plays</b> starts the audio.
+        /// <b>Plays</b> starts the audio playback.
+        /// Updates the state variables playing, stopped, and paused to reflect that playback is active.
         /// </summary>
         [Action(typeof(Sound), "plays")]
         public void Plays()
@@ -173,7 +152,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// <b>Pauses</b> pauses the audio.
+        /// <b>Pauses</b> pauses the audio playback.
+        /// Maintains the current playback time (currentTime) for resuming later (by calling Plays).
         /// </summary>
         [Action(typeof(Sound), "pauses")]
         public void Pauses()
@@ -185,7 +165,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// <b>Stops</b> stops the audio.
+        /// <b>Stops</b> stops the audio playback and resets the playback time (currentTime) to the beginning.
         /// </summary>
         [Action(typeof(Sound), "stops")]
         public void Stops()
@@ -197,11 +177,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// <b>ChangesVolume</b> changes the volume of the audio to the given value.
-        /// <para>If the value is greater than the maximum volume, the volume will be set to the maximum volume; if
-        /// the value is less than 0, the volume will be set to 0.</para>
+        /// <b>ChangesVolume</b> changes the volume of the audio to a given value.
+        /// <para>Ensures the value remains within the range of 0 to <see cref="maxVolume"/></para>
         /// </summary>
-        /// <param name="v">The new volume setting.</param>
+        /// <param name="v">The new volume value.</param>
         [Action(typeof(Sound), "changes", "volume", "to", typeof(float))]
         public void ChangesVolume(float v)
         {
@@ -220,11 +199,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// <b>ChangesSource</b> changes the source of the audio to the given path.
-        /// <p>The path must be relative to the project's user-accessible Inventory folder.</p>
-        /// <p>If the path is not valid, the audio will not be played.</p>
+        /// <b>ChangesSource</b> changes the audio filename source to the given filename.
+        /// <p>Validates the path and dynamically loads the audio for playback.</p>
         /// </summary>
-        /// <param name="newSource">The new audio file path.</param>
+        /// <param name="newSource">The new audio filename.</param>
         [Action(typeof(Sound), "changes", "source", "to", typeof(string))]
         public void ChangesSource(string newSource)
         {
