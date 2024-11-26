@@ -6,8 +6,9 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
 {
     /// <summary>
-    /// The <b>Robot</b> class derives from Character, it represents the the non-animal counterpart of human.
-    /// A robot can run, walk and swim.
+    /// The <b>Robot</b> class represents a robot character (non-animal counterpart of a human).
+    /// A Robot can perform various movements such as running, walking, and swimming, each with a specific animation.
+    /// This class extends the functionality of <see cref="Animal"/> to include robot-specific behaviors.
     /// </summary>
     [ECARules4All("robot")]
     [RequireComponent(typeof(Animal))]
@@ -17,31 +18,31 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         private bool isBusyMoving = false;
 
         /// <summary>
-        /// <b>IdleAnimation</b>: is the animation that is played when the robot is idle.
+        /// <b>IdleAnimation</b> specifies the name of the animation clip played when the robot is idle.
         /// </summary>
         public string IdleAnimation;
 
         /// <summary>
-        /// <b>SwimAnimation</b>: is the animation that is played when the robot is swimming.
+        /// <b>SwimAnimation</b> specifies the name of the animation clip played when the robot is swimming.
         /// </summary>
         public string SwimAnimation;
 
         /// <summary>
-        /// <b>RunAnimation</b>: is the animation that is played when the robot is running.
+        /// <b>RunAnimation</b> specifies the name of the animation clip played when the robot is running.
         /// </summary>
         public string RunAnimation;
 
         /// <summary>
-        /// <b>WalkAnimation</b>: is the animation that is played when the robot is walking.
+        /// <b>WalkAnimation</b> specifies the name of the animation clip played when the robot is walking.
         /// </summary>
         public string WalkAnimation;
 
         private string selected;
 
         /// <summary>
-        /// <b>Runs</b>: This method is used to move the robot to a specific position with a running animation.
+        /// <b>Runs</b> (to) is a method that moves the robot to a specific position with a running animation.
         /// </summary>
-        /// <param name="p">The position where to run</param>
+        /// <param name="p">The target position to run to.</param>
         [Action(typeof(Robot), "runs to", typeof(Position))]
         public void Runs(Position p)
         {
@@ -52,9 +53,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Runs</b>: This method is used to move the robot through a path with a running animation.
+        /// <b>Runs</b> (on) is a method that moves the robot along a specified path while playing the running animation.
         /// </summary>
-        /// <param name="p">The path</param>
+        /// <param name="p">The path to follow while running.</param>
         [Action(typeof(Robot), "runs on", typeof(Path))]
         public void Runs(Path p)
         {
@@ -63,9 +64,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Swims</b>: This method is used to move the robot to a specific position with a swimming animation.
+        /// <b>Swims</b> (to) is a method that moves the robot to a specific position with a swimming animation.
         /// </summary>
-        /// <param name="p">The position where to swim</param>
+        /// <param name="p">The target position to swim to.</param>
         [Action(typeof(Robot), "swims to", typeof(Position))]
         public void Swims(Position p)
         {
@@ -76,9 +77,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Swims</b>: This method is used to move the robot through a path with a swimming animation.
+        /// <b>Swims</b> (on) is a method that moves the robot along a specified path while playing the swimming animation.
         /// </summary>
-        /// <param name="p">The path</param>
+        /// <param name="p">The path to follow while swimming.</param>
         [Action(typeof(Robot), "swims on", typeof(Path))]
         public void Swims(Path p)
         {
@@ -87,9 +88,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Walks</b>: This method is used to move the robot to a specific position with a waling animation.
+        /// <b>Walks</b> (to) is a method that moves the robot to a specific position with a walking animation.
         /// </summary>
-        /// <param name="p">The position where to walk</param>
+        /// <param name="p">The target position to move to.</param>
         [Action(typeof(Robot), "walks to", typeof(Position))]
         public void Walks(Position p)
         {
@@ -101,9 +102,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Walks</b>: This method is used to move the robot through a path with a walking animation.
+        /// <b>Walks</b> (on) is a method that moves the robot along a specified path while playing the walking animation.
         /// </summary>
-        /// <param name="p">The path</param>
+        /// <param name="p">The path to follow while walking.</param>
         [Action(typeof(Robot), "walks on", typeof(Path))]
         public void Walks(Path p)
         {

@@ -6,8 +6,9 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
 {
     /// <summary>
-    /// The <b>Terrestrial animal</b> class is a subclass of the <see cref="Animal"/> class.
-    /// It represents a generic terrestrial animal.
+    /// The <b>TerrestrialAnimal</b> class represents a terrestrial animal.
+    /// A TerrestrialAnimal can perform actions like running and walking, with corresponding animations for movement to specific positions or along paths.
+    /// This class extends the functionality of <see cref="Animal"/> to include terrestrial-specific behaviors.
     /// </summary>
     [ECARules4All("terrestrial-animal")]
     [RequireComponent(typeof(Animal))]
@@ -18,24 +19,24 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         public string selected;
 
         /// <summary>
-        /// <b>IdleAnimation</b>: is the animation that is played when the terrestrial animal is idle.
+        /// <b>IdleAnimation</b> specifies the name of the animation clip played when the terrestrial animal is idle.
         /// </summary>
         public string IdleAnimation;
 
         /// <summary>
-        /// <b>RunAnimation</b>: is the animation that is played when the terrestrial animal is running.
+        /// <b>RunAnimation</b> specifies the name of the animation clip played when the terrestrial animal is running.
         /// </summary>
         public string RunAnimation;
 
         /// <summary>
-        /// <b>WalkAnimation</b>: is the animation that is played when the terrestrial animal is walking.
+        /// <b>IdleAnimation</b> specifies the name of the animation clip played when the terrestrial animal is walking.
         /// </summary>
         public string WalkAnimation;
 
         /// <summary>
-        /// <b>Runs</b>: This method is used to move the terrestrial animal to a specific position with a running animation.
+        /// <b>Runs</b> (to) is a method that moves the terrestrial animal to a specific position with a running animation.
         /// </summary>
-        /// <param name="p">The position where to run</param>
+        /// <param name="p">The target position to run to.</param>
         [Action(typeof(TerrestrialAnimal), "runs to", typeof(Position))]
         public void Runs(Position p)
         {
@@ -46,9 +47,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Runs</b>: This method is used to move the terrestrial animal to a specific position with a running animation.
+        /// <b>Runs</b> (on) is a method that moves the terrestrial animal along a specified path while playing the running animation.
         /// </summary>
-        /// <param name="p">The position where to run</param>
+        /// <param name="p">The path to follow while running.</param>
         [Action(typeof(TerrestrialAnimal), "runs on", typeof(Path))]
         public void Runs(Path p)
         {
@@ -57,9 +58,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Runs</b>: This method is used to move the terrestrial animal to a specific position with a running animation.
+        /// <b>Walks</b> (to) is a method that moves the terrestrial animal to a specific position with a walking animation.
         /// </summary>
-        /// <param name="p">The position where to run</param>
+        /// <param name="p">The target position to walk to.</param>
         [Action(typeof(TerrestrialAnimal), "walks to", typeof(Position))]
         public void Walks(Position p)
         {
@@ -71,9 +72,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Runs</b>: This method is used to move the terrestrial animal to a specific position with a running animation.
+        /// <b>Walks</b> (on) is a method that moves the terrestrial animal along a specified path while playing the walking animation.
         /// </summary>
-        /// <param name="p">The position where to run</param>
+        /// <param name="p">The path to follow while walking.</param>
         [Action(typeof(TerrestrialAnimal), "walks on", typeof(Path))]
         public void Walks(Path p)
         {

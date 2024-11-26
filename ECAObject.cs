@@ -9,8 +9,9 @@ using UnityEngine;
 namespace ECARules4All_DLL
 {
     /// <summary>
-    /// <b>ECAObject</b> is the base class for all objects that can be used in the rule engine.
+    /// <b>ECAObject</b> is the base class for all virtual objects that can be used in the automations.
     /// All the other classes in this package inherit from this class or one of its subclasses.
+    /// It supports properties such as position, rotation, scale, visibility, and activity, and provides methods for moving, rotating, scaling, and controlling visibility.
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ECATracker))]
@@ -31,7 +32,7 @@ namespace ECARules4All_DLL
         private bool isBusyMoving = false;
 
         /// <summary>
-        /// <b>p</b> is the position of the object.
+        /// <b>p</b> represents the position of the virtual object in the 3D space. It's a vector with three components: x, y, and z.
         /// </summary>
         [StateVariable("position", ECARules4AllType.Position)]
         public Position p
@@ -46,7 +47,7 @@ namespace ECARules4All_DLL
         private Position _p;
         
         /// <summary>
-        /// <b>r</b> is the rotation of the object.
+        /// <b>r</b> represents the rotation of the object in the 3D space. It's a vector with three components: x, y, and z (euler angles).
         /// </summary>
         [StateVariable("rotation", ECARules4AllType.Rotation)]
         public Rotation r
@@ -61,7 +62,7 @@ namespace ECARules4All_DLL
         private Rotation _r;
         
         /// <summary>
-        /// <b>r</b> is the scale of the object.
+        /// <b>r</b> represents the scale of the object in the 3D space.
         /// </summary>
         [StateVariable("scale", ECARules4AllType.Scale)]
         public Scale s
@@ -80,8 +81,8 @@ namespace ECARules4All_DLL
         private Vector3 _originalScale ;
         
         /// <summary>
-        /// <b>isVisible</b> is a boolean that indicates if the object is visible.
-        /// If the object is invisible, it will not be rendered but it will still collide with other objects.
+        /// <b>visible</b> indicates whether the object is visible. The allowed values are either "yes" or "no".
+        /// If invisible, the object is not rendered but remains interactive for collisions.
         /// </summary>
         [StateVariable("visible", ECARules4AllType.Boolean)]
         public ECABoolean isVisible // = new ECABoolean(ECABoolean.BoolType.YES);
@@ -97,8 +98,8 @@ namespace ECARules4All_DLL
         private ECABoolean _isVisible = new ECABoolean(ECABoolean.BoolType.YES);
         
         /// <summary>
-        /// <b>isActive</b> is a boolean that indicates if the object is active and visible.
-        /// If the object is inactive, it will not be rendered and it will not collide with other objects.
+        /// <b>active</b> indicates whether the object is active. The allowed values are either "yes" or "no".
+        /// When inactive, the object is not rendered and does not interact with other objects.
         /// </summary>
         [StateVariable("active", ECARules4AllType.Boolean)]
         public ECABoolean isActive
@@ -114,7 +115,7 @@ namespace ECARules4All_DLL
         private ECABoolean _isActive = new ECABoolean(ECABoolean.BoolType.YES);
         
         /// <summary>
-        /// <b>isInsideCamera</b> is a boolean that indicates if the object is within the camera's field of view.
+        /// <b>isInsideCamera</b> indicates whether the object is currently within the camera's field of view. This property is automatically updated at runtime.
         /// </summary>
         [StateVariable("isInsideCamera", ECARules4AllType.Boolean)]
         public ECABoolean isInsideCamera
@@ -143,9 +144,9 @@ namespace ECARules4All_DLL
         }
 
         /// <summary>
-        /// <b>Moves</b> (to) is a method that moves the object to a new position.
+        /// <b>Moves</b> (to) is a method that moves the object to a specified position in the 3D space.
         /// </summary>
-        /// <param name="newPos">The new position for the object </param>
+        /// <param name="newPos">The target position to move to.</param>
         [Action(typeof(ECAObject), "moves to", typeof(Position))]
         public void Moves(Position newPos)
         {
@@ -155,9 +156,9 @@ namespace ECARules4All_DLL
         }
 
         /// <summary>
-        /// <b>Moves</b> (on) is a method that moves the object to a new position, following a path.
+        /// <b>Moves</b> (on) is a method that moves the object along a specified path, following sequential points.
         /// </summary>
-        /// <param name="path">The array of positions the object will follow, one after another</param>
+        /// <param name="path">An array of positions the object will follow, one after another.</param>
         [Action(typeof(ECAObject), "moves on", typeof(Path))]
         public void Moves(Path path)
         {
@@ -178,9 +179,9 @@ namespace ECARules4All_DLL
         }
 
         /// <summary>
-        /// <b>Rotates</b> sets the rotation of the object to a new value.
+        /// <b>Rotates</b> sets the object's rotation to a specified value in the 3D space.
         /// </summary>
-        /// <param name="newRot">The new rotation value fo the object. </param>
+        /// <param name="newRot">The target rotation expressed as a vector with three components: x, y, and z.</param>
         [Action(typeof(ECAObject), "rotates around", typeof(Rotation))]
         public void Rotates(Rotation newRot)
         {
@@ -190,7 +191,7 @@ namespace ECARules4All_DLL
         }
         
         /// <summary>
-        /// <b>Looks</b> sets the rotation of the object in a way that it looks at a target.
+        /// <b>Looks</b> adjusts the object's rotation to face a specified target object.
         /// </summary>
         /// <param name="o">The target GameObject to look at.</param>
         [Action(typeof(ECAObject), "looks at", typeof(GameObject))]
@@ -207,9 +208,9 @@ namespace ECARules4All_DLL
         }
         
         /// <summary>
-        /// <b>Scales</b> sets the scale of the object to a new value.
+        /// <b>Scales</b> sets the object's scale to a specified value.
         /// </summary>
-        /// <param name="newScale">The new scale value fo the object. </param>
+        /// <param name="newScale">The new scale value fo the object. The scale is a vector with three components: x, y, and z.</param>
         [Action(typeof(ECAObject), "scales to", typeof(Scale))]
         public void Scales(Scale newScale)
         {
@@ -218,6 +219,9 @@ namespace ECARules4All_DLL
             transform.localScale = new Vector3(s.x, s.y, s.z);
         }
         
+        /// <summary>
+        /// Restores the object's original position, rotation, and scale to their initial values.
+        /// </summary>
         [Action(typeof(ECAObject), "restores original settings")]
         public void MovesOriginalPosition()
         {
@@ -232,7 +236,7 @@ namespace ECARules4All_DLL
         }
 
         /// <summary>
-        /// <b>Shows</b> makes the object visible. It makes it visible if it is not already.
+        /// <b>Shows</b> maakes the object visible if it is not already.
         /// </summary>
         [Action(typeof(ECAObject), "shows")]
         public void Shows()
@@ -243,7 +247,7 @@ namespace ECARules4All_DLL
         }
         
         /// <summary>
-        /// <b>Hides</b> makes the object invisible. It makes it invisible if it is not already.
+        /// <b>Hides</b> makes the object invisible if it is not already.
         /// </summary>
         [Action(typeof(ECAObject), "hides")]
         public void Hides()
@@ -254,7 +258,7 @@ namespace ECARules4All_DLL
         }
         
         /// <summary>
-        /// <b>Activates</b> makes the object active. It makes it active if it is not already. 
+        /// <b>Activates</b> makes the object both interactable and visible.
         /// </summary>
         [Action(typeof(ECAObject), "activates")]
         public void Activates()
@@ -263,8 +267,9 @@ namespace ECARules4All_DLL
             isActive = new ECABoolean(ECABoolean.BoolType.YES);
             UpdateVisibility();
         }
+        
         /// <summary>
-        /// <b>Deactivates</b> makes the object inactive. It makes it inactive if it is not already.
+        /// <b>Deactivates</b> makes the object invisible and non-interactable.
         /// </summary>
         [Action(typeof(ECAObject), "deactivates")]
         public void Deactivates()
@@ -275,9 +280,9 @@ namespace ECARules4All_DLL
         }
         
         /// <summary>
-        /// <b>ShowsHides</b> sets the visibility of the object, defined by a parameter.
+        /// <b>ShowsHides</b> changes the visibility state of the object based on a parameter. The parameter can be either "yes" or "no".
         /// </summary>
-        /// <param name="yesNo">The new visibility state for the object. </param>
+        /// <param name="yesNo">The new visibility state.</param>
         [Action(typeof(ECAObject), "changes", "visible", "to", typeof(YesNo))]
         public void ShowsHides(ECABoolean yesNo)
         {
@@ -286,9 +291,9 @@ namespace ECARules4All_DLL
         }
 
         /// <summary>
-        /// <b>ActivatesDeactivates</b> sets the active state of the object, defined by a parameter.
+        /// <b>ActivatesDeactivates</b> changes the active state of the object based on a parameter. The parameter can be either "yes" or "no".
         /// </summary>
-        /// <param name="yesNo"></param>
+        /// <param name="yesNo">The new active state.</param>
         [Action(typeof(ECAObject), "changes", "active", "to", typeof(YesNo))]
         public void ActivatesDeactivates(ECABoolean yesNo)
         {

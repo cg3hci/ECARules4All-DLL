@@ -5,8 +5,10 @@ using UnityEngine;
 namespace ECARules4All_DLL
 {
     /// <summary>
-    /// <b>Behaviour</b> is a Component that does not derive from the <see cref="ECAObject">ECAObject</see> family, it's possible to apply more than one
-    /// in order to define extra behaviours 
+    /// <b>Behaviour</b> serves as a foundational component required for all behavior implementations within the automation framework. 
+    /// While only one instance of <see cref="Behaviour"/> is attached to a GameObject, it enables and supports specific behaviors such as Toggle or Switch,  
+    /// which inherit from this class and define unique functionality.
+    /// This class does not contain any specific functionality, but rather serves as a base class for all behavior implementations.
     /// </summary>
     [ECARules4All("behaviour")]
     [DisallowMultipleComponent]

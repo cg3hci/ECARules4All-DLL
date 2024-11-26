@@ -10,7 +10,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
     /// have rigging skeletons. Since the mannequin is supposed to stay still in the environment, the implementation contains
     /// for automatically positioning it on top of the mannequin according to the specified position (e.g., head, torso,
     /// left or right leg, arm, etc.). Provided that the distinction between a mannequin and a not-playable human is
-    /// technical, it is up to the TB to decide which object offers the best configuration options considering the
+    /// technical, it is up to the Unity developer to decide which object offers the best configuration options considering the
     /// template under development.
     /// </summary>
     [ECARules4All("mannequin")]

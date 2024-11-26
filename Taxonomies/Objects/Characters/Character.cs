@@ -8,8 +8,10 @@ using ECARules4All_DLL.SmartHomeHubClients;
 namespace ECARules4All_DLL.Taxonomies.Objects.Characters
 {
     /// <summary>
-    /// A <b>Character</b> is a type of ECAObject, it represents an animal, a humanoid, a robot or a generic creature.
-    /// A Character can be autonomous or controlled by the player.
+    /// Represents a versatile character within the ECA rules framework. 
+    /// A <b>Character</b> can embody various forms, including animals, humanoids, robots, or generic creatures. 
+    /// It can operate autonomously or be controlled by the player, supporting a range of actions and state attributes 
+    /// to interact dynamically with the environment
     /// </summary>
     [ECARules4All("character")]
     [RequireComponent(typeof(ECAObject), typeof(Animator))]
@@ -17,7 +19,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
     public class Character : ECAScript
     {
         /// <summary>
-        /// <b>life</b> is the life of the character.
+        /// <b>life</b> is the current life of the character, represented as a float number.
         /// </summary>
         [StateVariable("life", ECARules4AllType.Float)]
         public float life
@@ -33,7 +35,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         private float _life;
         
         /// <summary>
-        /// <b>playing</b> to identify whether it is player-controlled or not.
+        /// <b>playing</b> indicates whether the character is controlled by the player ("yes") or operating autonomously ("no").
         /// </summary>
         [StateVariable("playing", ECARules4AllType.Boolean)]
         public ECABoolean playing
@@ -58,49 +60,53 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         }
 
         /// <summary>
-        /// <b>Interacts</b>: a character can interact with other interactable objects.
-        /// There is no need for implementation, see <see cref="Interactable"/> for more details.
+        /// <b>Interacts</b> enables the character to interact with a specified interactable object.
+        /// The implementation details are managed by the <see cref="Interactable"/> class logic.
         /// </summary>
-        /// <param name="o">The interactable object</param>
+        /// <param name="o">The target interactable object</param>
         [Action(typeof(Character), "interacts with", typeof(Interactable))]
         public void Interacts(Interactable o)
         {
         }
 
         /// <summary>
-        /// <b>Stops interaction</b>: a character can stop the interaction with other interactable objects.
-        /// There is no need for implementation, see <see cref="Interactable"/> for more details.
+        /// <b>Stops interaction</b> allows the character to stop its interaction with a specified interactable object.
+        /// The implementation details are managed by the <see cref="Interactable"/> class logic.
         /// </summary>
-        /// <param name="o">The interactable object</param>
+        /// <param name="o">The target interactable object</param>
         [Action(typeof(Character), "stops-interacting with", typeof(Interactable))]
         public void StopsInteracting(Interactable o)
         {
         }
         
+        //TODO Cambiare typeof(ECAObject) in typeof(Interactable) o typeof(XRInteractable) o cosa?
         /// <summary>
-        /// <b>Points</b>: a character can point to other interactable objects.
+        /// <b>Points</b> the character to point at a specified object, emphasizing its focus or attention on the target.
         /// </summary>
-        /// <param name="o">The pointed game object</param>
+        /// <param name="o">The target object to point at.</param>
         [Action(typeof(Character), "points to", typeof(ECAObject))]
         public void Points(ECAObject o)
         {
             // TODO is an extension? 
         }
 
+
+        //TODO Cambiare typeof(ECAObject) in typeof(Interactable) o typeof(XRInteractable) o cosa?
         /// <summary>
-        /// <b>Stops interaction</b>: a character can stop the interaction with other interactable objects.
+        /// <b>StopsPointing</b> commands the character to stop pointing at a specified object, ceasing its focus or attention on the target.
         /// </summary>
-        /// <param name="o">The pointed game object</param>
+        /// <param name="o">The target object to stop pointing at.</param>
         [Action(typeof(Character), "stops-pointing to", typeof(ECAObject))]
         public void StopsPointing(ECAObject o)
         {
             // TODO is an extension?
         }
         
+
         /// <summary>
-        /// <b>Jumps</b>: The character can jump to a given position
+        /// <b>Jumps</b> commands the character to jump to a specific position in the 3D world.
         /// </summary>
-        /// <param name="p">The position where to jump</param>
+        /// <param name="p">The destination position where the character will jump.</param>
         [Action(typeof(Character), "jumps to", typeof(Position))]
         public void Jumps(Position p)
         {
@@ -137,9 +143,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         }
 
         /// <summary>
-        /// <b>Jumps</b>: The character can jump to a given path
+        /// <b>Jumps</b> directs the character to follow a predefined path, jumping between each position in the path.
         /// </summary>
-        /// <param name="p">The path</param>
+        /// <param name="p">The path consisting of multiple positions to follow. Each position is a vector in the 3D world with x, y, and z coordinates.</param>
         [Action(typeof(Character), "jumps on", typeof(Path))]
         public void Jumps(Path p)
         {
@@ -161,9 +167,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         }
         
         /// <summary>
-        /// <b>Starts animation</b>: The character can start an animation
+        /// <b>StartsAnimation</b> triggers a predefined animation for the character, using the provided animation identifier.
         /// </summary>
-        /// <param name="s">The string that represents the already built animation of the character game object</param>
+        /// <param name="s">The string of the animation clip to play</param>
         [Action(typeof(Character), "starts-animation", typeof(string))]
         public void StartsAnimation(string s)
         {

@@ -6,7 +6,9 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals
 {
     /// <summary>
-    /// <b>Animal</b> is a subclass of Character. It is used to represent the animals character.
+    /// Represents an animal character within the ECA rules framework. 
+    /// An <b>Animal</b> is a specialized subclass of <see cref="Character"/> that embodies animal-like traits 
+    /// and behaviors, enabling interactions and actions unique to animal entities.
     /// </summary>
     [ECARules4All("animal")]
     [RequireComponent(typeof(Character))]
@@ -14,9 +16,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals
     public class Animal : MonoBehaviour
     {
         /// <summary>
-        /// <b>Speaks</b>: allows to send a message to the player
+        /// <b>Speaks</b> allows the animal to produce a sound or "speak" by playing an associated audio clip.
+        /// The audio clip is identified by the provided string, which must correspond to a valid resource.
         /// </summary>
-        /// <param name="s">The string that recalls the audioclip</param>
+        /// <param name="s">The name of the audio resource to be played.</param>
         [Action(typeof(Animal), "speaks", typeof(string))]
         public void Speaks(string s)
         {

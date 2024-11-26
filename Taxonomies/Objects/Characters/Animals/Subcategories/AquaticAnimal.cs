@@ -6,7 +6,9 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
 {
     /// <summary>
-    /// This class represents an animal that can swim.
+    /// The <b>AquaticAnimal</b> class represents an aquatic animal.
+    /// An AquaticAnimal can swim to specific positions or follow predefined paths, with animations for both swimming and idling states.
+    /// This class extends the functionality of <see cref="Animal"/> to include aquatic-specific behaviors.
     /// </summary>
     [ECARules4All("aquatic-animal")]
     [RequireComponent(typeof(Animal))]
@@ -16,19 +18,19 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         private bool isBusyMoving = false;
 
         /// <summary>
-        /// <b>IdleAnimation</b>: is the animation that is played when the aquatic animal is idle.
+        /// <b>IdleAnimation</b> specifies the name of the animation clip played when the aquatic animal is idle.
         /// </summary>
         public string IdleAnimation = "";
 
         /// <summary>
-        /// <b>SwimAnimation</b>: is the animation that is played when the aquatic animal is swimming.
+        /// <b>SwimAnimation</b> specifies the name of the animation clip played when the aquatic animal is swimming.
         /// </summary>
         public string SwimAnimation = "";
 
         /// <summary>
-        /// <b>Swims</b>: This method is used to move the aquatic animal to a specific position with a swimming animation.
+        /// <b>Swims</b> (to) is a method that moves the aquatic animal to a specific position with a swimming animation.
         /// </summary>
-        /// <param name="p">The position where to swim</param>
+        /// <param name="p">The target position to swim to.</param>
         [Action(typeof(AquaticAnimal), "swims to", typeof(Position))]
         public void Swims(Position p)
         {
@@ -38,9 +40,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Swims</b>: This method is used to move the aquatic animal through a path with a swimming animation.
+        /// <b>Swims</b> (on) is a method that moves the aquatic animal along a specified path while playing the swimming animation.
         /// </summary>
-        /// <param name="p">The path</param>
+        /// <param name="p">The path to follow while swimming.</param>
         [Action(typeof(AquaticAnimal), "swims on", typeof(Path))]
         public void Swims(Path p)
         {
