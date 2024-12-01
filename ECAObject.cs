@@ -130,7 +130,30 @@ namespace ECARules4All_DLL
         private ECABoolean _isInsideCamera = new ECABoolean(ECABoolean.BoolType.NO);
         
         private Canvas canvas;
-        public Camera xrCamera;
+        private Camera xrCamera;
+
+        private void Awake()
+        {
+            gameCollider = this.gameObject.GetComponents<Collider>();
+            gameRenderer = this.gameObject.GetComponents<Renderer>();
+
+            if (gameRenderer.Length == 0)
+                gameRenderer = this.gameObject.GetComponentsInChildren<Renderer>();
+            
+            if (gameCollider.Length == 0)
+                gameCollider = this.gameObject.GetComponentsInChildren<Collider>();
+            
+            p = new Position(transform.localPosition);
+            r = new Rotation(transform.localRotation);
+            s = new Scale(transform.localScale);
+
+            // I don't want to know what should be done if there are multiple cameras in the scene
+            xrCamera = Camera.main;
+            if (xrCamera == null)
+            {
+                throw new Exception("No camera found in the scene. This is important for the isInsideCamera property!!");
+            }
+        }
 
         void Start()
         {
@@ -299,26 +322,6 @@ namespace ECARules4All_DLL
         {
             isActive = yesNo;
             UpdateVisibility();
-        }
-
-        private void Awake()
-        {
-            gameCollider = this.gameObject.GetComponents<Collider>();
-            gameRenderer = this.gameObject.GetComponents<Renderer>();
-
-            if (gameRenderer.Length == 0)
-                gameRenderer = this.gameObject.GetComponentsInChildren<Renderer>();
-            
-            if (gameCollider.Length == 0)
-                gameCollider = this.gameObject.GetComponentsInChildren<Collider>();
-            
-            //p = new Position();
-            //p.Assign(transform.position);
-            p = new Position(transform.localPosition);
-            //r = new Rotation();
-            //r.Assign(transform.rotation);
-            r = new Rotation(transform.localRotation);
-            s = new Scale(transform.localScale);
         }
         
         //TODO: should be private
