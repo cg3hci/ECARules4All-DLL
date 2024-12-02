@@ -741,7 +741,7 @@ namespace ECARules4All_DLL.Utils
         // Returns for each state variable the name and the ECARules4AllType
         public static Dictionary<string, (ECARules4AllType, Type)> FindStateVariables(GameObject gameObject)
         {
-            Dictionary<string, (ECARules4AllType, Type)> variables = new Dictionary<string, (ECARules4AllType, Type)>();
+            var variables = new Dictionary<string, (ECARules4AllType, Type)>();
 
             foreach (Component c in gameObject.GetComponents<Component>())
             {
@@ -754,8 +754,10 @@ namespace ECARules4All_DLL.Utils
                     var componentVariables = ListStateVariables(cType);
                     foreach (var var in componentVariables)
                     {
-                        if(!variables.ContainsKey(var.Key)) variables.Add(var.Key, (var.Value, cType));
-                    }                 
+                        if (!variables.ContainsKey(var.Key)) {
+                            variables.Add(var.Key, (var.Value, cType));
+                        }
+                    }
                 }
             }
 
@@ -765,14 +767,15 @@ namespace ECARules4All_DLL.Utils
         public static Dictionary<string, ECARules4AllType> ListStateVariables(Type cType)
         {
             Dictionary<string, ECARules4AllType> variables = new Dictionary<string, ECARules4AllType>();
-            foreach (FieldInfo m in cType.GetFields())
+            var members = from it in cType.GetMembers( BindingFlags.Public | BindingFlags.Instance) where it is PropertyInfo || it is FieldInfo select it;
+            foreach (var m in members)
             {
                 object[] a = m.GetCustomAttributes(typeof(StateVariableAttribute), true);
                 if (a.Length > 0)
                 {
                     foreach (var item in a)
                     {
-                        StateVariableAttribute var = (StateVariableAttribute) item;
+                        StateVariableAttribute var = (StateVariableAttribute)item;
                         variables.Add(var.Name, var.type);
                     }
                 }
