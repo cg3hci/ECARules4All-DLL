@@ -739,7 +739,7 @@ namespace ECARules4All_DLL.Utils
         }
         
         // Returns for each state variable the name and the ECARules4AllType
-        public static Dictionary<string, (ECARules4AllType, Type)> FindStateVariables<T>(GameObject gameObject)
+        public static Dictionary<string, (ECARules4AllType, Type)> FindStateVariables(GameObject gameObject)
         {
             Dictionary<string, (ECARules4AllType, Type)> variables = new Dictionary<string, (ECARules4AllType, Type)>();
 
@@ -755,9 +755,7 @@ namespace ECARules4All_DLL.Utils
                     foreach (var var in componentVariables)
                     {
                         if(!variables.ContainsKey(var.Key)) variables.Add(var.Key, (var.Value, cType));
-                    }
-                    //variables = variables.Concat(componentVariables).ToDictionary(s => s.Key, s => s.Value);
-                 
+                    }                 
                 }
             }
 
