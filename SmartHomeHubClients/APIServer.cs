@@ -7,41 +7,24 @@ using Serilog;
 
 namespace ECARules4All_DLL.SmartHomeHubClients
 {
-    public class ReceivedUpdate
-    {
-        public string subject { get; set; }
-        public string verb { get; set; }
-        
-        public string variable_name { get; set; }
-        
-        public string modifier { get; set; }
-        
-        public Dictionary<string, object> parameters { get; set; }
-
-        public ReceivedUpdate(string subject, string verb, string variable_name = null, string modifier = null, 
-            Dictionary<string, object> parameters = null)
-        {
-            this.subject = subject;
-            this.verb = verb;
-            this.variable_name = variable_name;
-            this.modifier = modifier;
-            this.parameters = parameters;
-        }
-    }
-    
     public class APIServer
     {
         private string _url;
         private int _port;
         private HttpListener _listener;
-        public event EventHandler<ReceivedUpdate> Update; 
+        public event EventHandler<ActionDTO> ActionUpdate;
+        public event EventHandler<List<AutomationDTO>> RegisteredAutomations;
+
+        private string apiExternalUpdates = $"/api/external_updates/";
+        private string apiAutomations = $"/api/automations/";
 
         public APIServer(string url = "http://localhost",  int port = 8080)
         {
             _url = url;
             _port = port;
             _listener = new HttpListener();
-            this._listener.Prefixes.Add($"{this._url}:{this._port}/api/external_updates/");
+            this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiExternalUpdates}");
+            this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiAutomations}");
             this.Start();
         }
 
@@ -76,35 +59,76 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         
         private void HandleRequest(HttpListenerContext context)
         {
+            string path = context.Request.Url.AbsolutePath;
+
             if (context.Request.HttpMethod == "POST")
             {
-                using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
+                if (path.Contains(this.apiExternalUpdates))
                 {
-                    string requestBody = reader.ReadToEnd();
-                    Log.Information($"Received POST data: {requestBody}");
-                    
-                    try
-                    {
-                        // read data and throw the event
-                        ReceivedUpdate data = JsonSerializer.Deserialize<ReceivedUpdate>(requestBody);
-                        Update?.Invoke( this, data);
-
-                        // response
-                        context.Response.StatusCode = (int)HttpStatusCode.OK;
-                        context.Response.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Information($"Error processing POST data: {ex.Message}");
-                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        context.Response.Close();
-                    }
+                    this.HandleExternalUpdates(context);
+                }
+                else if(path.Contains(this.apiAutomations))
+                {
+                    this.HandleAnotherEndpoint(context);
+                }
+                else
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    context.Response.Close();
                 }
             }
             else
             {
                 context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
                 context.Response.Close();
+            }
+        }
+        
+        private void HandleExternalUpdates(HttpListenerContext context)
+        {
+            using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
+            {
+                string requestBody = reader.ReadToEnd();
+                Log.Information($"Received POST data on {this.apiExternalUpdates}: {requestBody}");
+
+                try
+                {
+                    ActionDTO data = JsonSerializer.Deserialize<ActionDTO>(requestBody);
+                    ActionUpdate?.Invoke(this, data);
+
+                    context.Response.StatusCode = (int)HttpStatusCode.OK;
+                    context.Response.Close();
+                }
+                catch (Exception ex)
+                {
+                    Log.Information($"Error processing POST data: {ex.Message}");
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    context.Response.Close();
+                }
+            }
+        }
+
+        private void HandleAnotherEndpoint(HttpListenerContext context)
+        {
+            using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
+            {
+                string requestBody = reader.ReadToEnd();
+                Log.Information($"Received POST data on {this.apiAutomations}: {requestBody}");
+                
+                try
+                {
+                    List<AutomationDTO> data = JsonSerializer.Deserialize<List<AutomationDTO>>(requestBody);
+                    RegisteredAutomations?.Invoke(this, data);
+
+                    context.Response.StatusCode = (int)HttpStatusCode.OK;
+                    context.Response.Close();
+                }
+                catch (Exception ex)
+                {
+                    Log.Information($"Error processing POST data: {ex.Message}");
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    context.Response.Close();
+                }
             }
         }
     }

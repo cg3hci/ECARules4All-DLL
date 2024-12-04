@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using ECARules4All_DLL.Utils;
 using Serilog;
 
@@ -13,6 +14,8 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         public string url { get; set; }
         public string token { get; set; }
         public NotificationQueue updates { get; } = new NotificationQueue();
+        
+        public List<Rule> registereAutomations { get; set; }
     }
     
     public abstract class AbstractClient<T> : AbstractClientBase where T : class, new()
@@ -35,53 +38,11 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         }
 
         protected abstract void SendNotification(object sender, ContentNotification newItem);
-        //protected abstract void addNewSensor(object sender, TrackedPair component);
-        protected abstract void RegisterVirtualObject(object sender, List<ComponentTrackerPair> pairs);
         
-        public static Type FindTypeByName(string className)
-        {
-            /*Type type = Type.GetType(className);
-            if (type == null)
-            {
-                Assembly assembly = Assembly.GetExecutingAssembly();
-                type = assembly.GetType(className);
-            }
+        protected abstract void RegisterVirtualObject(object sender, List<ComponentTrackerPair> pairs);
 
-            return type;*/
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (Assembly assembly in assemblies)
-            {
-                Type type = assembly.GetTypes().FirstOrDefault(t => t.Name == className);
-                if (type != null)
-                {
-                    return type;
-                }
-            }
-            return null;
-        }
+        protected abstract void RegisteredAutomations(object sender, List<AutomationDTO> automations);
 
-        public static MethodInfo FindMethodWithVerb(Type targetType, string verb, string variable = null)
-        {
-            MethodInfo[] methods = targetType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
-            List<MethodInfo> fMethods = new List<MethodInfo>();
-            foreach (var method in methods)
-            {
-                // Check if the method has the ECAActionAttribute
-                var attribute = method.GetCustomAttribute<ActionAttribute>();
-                if (attribute != null)
-                {
-                    bool verbComparison = attribute.Verb.Equals(verb, StringComparison.OrdinalIgnoreCase);
-                    // Compare the second argument (string) with the given input string
-                    if (verbComparison && String.IsNullOrEmpty(variable) || 
-                        verbComparison && attribute.variableName.Equals(variable, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return method;
-                    }
-                }
-            }
-
-            return null;
-        }
         
         public static void NotifyAttribute<T>(string ownerName, string propertyName, T newValue)
         {

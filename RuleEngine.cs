@@ -942,7 +942,7 @@ namespace ECARules4All_DLL
             return toCheck + " " + property + " " + checkSymbol + " " + compareWith;
         }
     }
-
+    
     ///<summary>
     ///Describes an interaction inside the system
     ///</summary>

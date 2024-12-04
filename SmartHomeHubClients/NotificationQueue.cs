@@ -16,7 +16,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         public ContentNotification(string entity, string attribute, object newValue)
         {
-            var newValueSerialized = SerializeAttributeUtils.SerializeAttributes(newValue);
+            var newValueSerialized = SerializeUtils.SerializeAttribute(newValue);
             
             var data = new Dictionary<string, object>
             {

@@ -2,46 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories;
 using Serilog;
-using UnityEngine;
-using Scenes_Scene = ECARules4All_DLL.Taxonomies.Objects.Scenes.Scene;
 
 
 namespace ECARules4All_DLL.Utils
 {
-    public class SerializeAttributeUtils
-    {
-        public static object SerializeAttributes(object value)
-        {
-            object processedValue = null;
-            switch (value) 
-            {
-                case string stringValue: processedValue = stringValue; break;
-                case int intValue: processedValue = intValue; break;
-                case float floatValue: processedValue = floatValue; break;
-                case double doubleValue: processedValue = doubleValue; break;
-                case bool boolValue: processedValue = boolValue; break;
-                case ECABoolean ecaBooleanValue: processedValue = ecaBooleanValue.ToString(); break;
-                case Position positionValue: processedValue = positionValue.ToDict(); break;
-                case Rotation rotationValue: processedValue = rotationValue; break;
-                case Path pathValue: processedValue = pathValue.ToDict(); break;
-                case Scale scaleValue: processedValue = scaleValue; break;
-                case Color colorValue: processedValue = colorValue.ToString(); break;
-                case Mesh meshValue: processedValue = meshValue.ToString(); break; 
-                case Scenes_Scene scene_sceneValue: processedValue = scene_sceneValue; break;
-                case DateTime dateTimeValue: processedValue = dateTimeValue.ToString(); break;
-                case ECACamera.POV povValue: processedValue = povValue.ToString(); break;
-                            
-                default:
-                    Log.Warning($"Type {value.GetType().ToString()} does not recognized");
-                    break;
-            }
-
-            return processedValue;
-        }
-    }
-    
     public class ComponentTrackerPair
     {
         private string name;
@@ -107,7 +72,7 @@ namespace ECARules4All_DLL.Utils
                             Log.InformationWarning($"Tipo sconosciuto per l'attributo {member.Name}");
                             break;
                     }*/
-                    processedValue = SerializeAttributeUtils.SerializeAttributes(value);
+                    processedValue = SerializeUtils.SerializeAttribute(value);
                 }
                 
                 var memberStateVariable = member.GetCustomAttribute<StateVariableAttribute>();
@@ -149,10 +114,11 @@ namespace ECARules4All_DLL.Utils
                 if (!_components.ContainsKey(pairName))
                 {
                     _components[pairName] = pair.GetSceneObject();
+                    Log.Information($"{pairName} registered - {this._components.Count}");
                 }
                 else
                 {
-                    Log.Information($"Error {pairName}");
+                    Log.Error($"Error {pairName}");
                     pairs.Remove(pair);
                 } 
             }
@@ -170,6 +136,18 @@ namespace ECARules4All_DLL.Utils
         public Dictionary<string, object> GetAllComponents()
         {
             return _components;
+        }
+
+        public bool SafeSearchByKey(string componentLowerCase)
+        {
+            foreach (var item in this._components)
+            {
+                if (item.Key.ToLower() == componentLowerCase)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
