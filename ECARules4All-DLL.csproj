@@ -96,7 +96,7 @@
         </Reference>
         <Reference Include="System.Xml"/>
         <Reference Include="UnityEngine">
-          <HintPath>..\ecarules4all-library\ECARules4All-NetCore\bin\Debug\UnityEngine.dll</HintPath>
+            <HintPath>./Dlls/UnityEngine.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>
