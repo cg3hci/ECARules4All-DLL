@@ -6223,14 +6223,17 @@
         </member>
         <member name="T:ECARules4All_DLL.Behaviour">
             <summary>
-            <b>Behaviour</b> is a Component that does not derive from the <see cref="T:ECARules4All_DLL.ECAObject">ECAObject</see> family, it's possible to apply more than one
-            in order to define extra behaviours 
+            <b>Behaviour</b> serves as a foundational component required for all behavior implementations within the automation framework. 
+            While only one instance of <see cref="T:ECARules4All_DLL.Behaviour"/> is attached to a GameObject, it enables and supports specific behaviors such as Toggle or Switch,  
+            which inherit from this class and define unique functionality.
+            This class does not contain any specific functionality, but rather serves as a base class for all behavior implementations.
             </summary>
         </member>
         <member name="T:ECARules4All_DLL.ECAObject">
             <summary>
-            <b>ECAObject</b> is the base class for all objects that can be used in the rule engine.
+            <b>ECAObject</b> is the base class for all virtual objects that can be used in the automations.
             All the other classes in this package inherit from this class or one of its subclasses.
+            It supports properties such as position, rotation, scale, visibility, and activity, and provides methods for moving, rotating, scaling, and controlling visibility.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.ECAObject.gameCollider">
@@ -6250,97 +6253,102 @@
         </member>
         <member name="P:ECARules4All_DLL.ECAObject.p">
             <summary>
-            <b>p</b> is the position of the object.
+            <b>p</b> represents the position of the virtual object in the 3D space. It's a vector with three components: x, y, and z.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.ECAObject.r">
             <summary>
-            <b>r</b> is the rotation of the object.
+            <b>r</b> represents the rotation of the object in the 3D space. It's a vector with three components: x, y, and z (euler angles).
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.ECAObject.s">
             <summary>
-            <b>r</b> is the scale of the object.
+            <b>r</b> represents the scale of the object in the 3D space.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.ECAObject.isVisible">
             <summary>
-            <b>isVisible</b> is a boolean that indicates if the object is visible.
-            If the object is invisible, it will not be rendered but it will still collide with other objects.
+            <b>visible</b> indicates whether the object is visible. The allowed values are either "yes" or "no".
+            If invisible, the object is not rendered but remains interactive for collisions.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.ECAObject.isActive">
             <summary>
-            <b>isActive</b> is a boolean that indicates if the object is active and visible.
-            If the object is inactive, it will not be rendered and it will not collide with other objects.
+            <b>active</b> indicates whether the object is active. The allowed values are either "yes" or "no".
+            When inactive, the object is not rendered and does not interact with other objects.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.ECAObject.isInsideCamera">
             <summary>
-            <b>isInsideCamera</b> is a boolean that indicates if the object is within the camera's field of view.
+            <b>isInsideCamera</b> indicates whether the object is currently within the camera's field of view. This property is automatically updated at runtime.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.ECAObject.Moves(ECARules4All_DLL.Position)">
             <summary>
-            <b>Moves</b> (to) is a method that moves the object to a new position.
+            <b>Moves</b> (to) is a method that moves the object to a specified position in the 3D space.
             </summary>
-            <param name="newPos">The new position for the object </param>
+            <param name="newPos">The target position to move to.</param>
         </member>
         <member name="M:ECARules4All_DLL.ECAObject.Moves(ECARules4All_DLL.Path)">
             <summary>
-            <b>Moves</b> (on) is a method that moves the object to a new position, following a path.
+            <b>Moves</b> (on) is a method that moves the object along a specified path, following sequential points.
             </summary>
-            <param name="path">The array of positions the object will follow, one after another</param>
+            <param name="path">An array of positions the object will follow, one after another.</param>
         </member>
         <member name="M:ECARules4All_DLL.ECAObject.Rotates(ECARules4All_DLL.Rotation)">
             <summary>
-            <b>Rotates</b> sets the rotation of the object to a new value.
+            <b>Rotates</b> sets the object's rotation to a specified value in the 3D space.
             </summary>
-            <param name="newRot">The new rotation value fo the object. </param>
+            <param name="newRot">The target rotation expressed as a vector with three components: x, y, and z.</param>
         </member>
         <member name="M:ECARules4All_DLL.ECAObject.Looks(UnityEngine.GameObject)">
             <summary>
-            <b>Looks</b> sets the rotation of the object in a way that it looks at a target.
+            <b>Looks</b> adjusts the object's rotation to face a specified target object.
             </summary>
             <param name="o">The target GameObject to look at.</param>
         </member>
         <member name="M:ECARules4All_DLL.ECAObject.Scales(ECARules4All_DLL.Scale)">
             <summary>
-            <b>Scales</b> sets the scale of the object to a new value.
+            <b>Scales</b> sets the object's scale to a specified value.
             </summary>
-            <param name="newScale">The new scale value fo the object. </param>
+            <param name="newScale">The new scale value fo the object. The scale is a vector with three components: x, y, and z.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.ECAObject.MovesOriginalPosition">
+            <summary>
+            Restores the object's original position, rotation, and scale to their initial values.
+            </summary>
         </member>
         <member name="M:ECARules4All_DLL.ECAObject.Shows">
             <summary>
-            <b>Shows</b> makes the object visible. It makes it visible if it is not already.
+            <b>Shows</b> maakes the object visible if it is not already.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.ECAObject.Hides">
             <summary>
-            <b>Hides</b> makes the object invisible. It makes it invisible if it is not already.
+            <b>Hides</b> makes the object invisible if it is not already.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.ECAObject.Activates">
             <summary>
-            <b>Activates</b> makes the object active. It makes it active if it is not already. 
+            <b>Activates</b> makes the object both interactable and visible.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.ECAObject.Deactivates">
             <summary>
-            <b>Deactivates</b> makes the object inactive. It makes it inactive if it is not already.
+            <b>Deactivates</b> makes the object invisible and non-interactable.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.ECAObject.ShowsHides(ECARules4All_DLL.Utils.ECABoolean)">
             <summary>
-            <b>ShowsHides</b> sets the visibility of the object, defined by a parameter.
+            <b>ShowsHides</b> changes the visibility state of the object based on a parameter. The parameter can be either "yes" or "no".
             </summary>
-            <param name="yesNo">The new visibility state for the object. </param>
+            <param name="yesNo">The new visibility state.</param>
         </member>
         <member name="M:ECARules4All_DLL.ECAObject.ActivatesDeactivates(ECARules4All_DLL.Utils.ECABoolean)">
             <summary>
-            <b>ActivatesDeactivates</b> sets the active state of the object, defined by a parameter.
+            <b>ActivatesDeactivates</b> changes the active state of the object based on a parameter. The parameter can be either "yes" or "no".
             </summary>
-            <param name="yesNo"></param>
+            <param name="yesNo">The new active state.</param>
         </member>
         <member name="T:ECARules4All_DLL.Parsers.ECARulesParserBaseListener">
             <summary>
@@ -7778,53 +7786,49 @@
             <param name="meshName">The path of the mesh in the user-accessible mesh folder</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound">
-            <summary>
-            <b>ECASound</b> is a <see cref="!:ECABehaviour"/> that works like a media player, and it is specific to audio files.
-            </summary>
+            <b>Sound</b> is a behavior that functions as a media player specifically designed for audio files.
+            It extends <see cref="!:ECABehaviour"/> to provide audio-related functionalities such as playback, volume control, and source management.
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.source">
             <summary>
-            <b>Source</b> is the audio source that will be used to play the audio.
+            <b>Source</b> is the audio filename that serves as the source for playback.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.volume">
             <summary>
-            <b>Volume</b> is the volume of the audio.
+            <b>Volume</b> is the current volume level of the audio.
+            Accepts values between 0 and the maximum volume, defined by <see cref="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.maxVolume"/>.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.maxVolume">
             <summary>
-            <b>MaxVolume</b> is the maximum volume the audio can reach.
-            </summary>
-        </member>
-        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.duration">
-            <summary>
-            <b>duration</b> is the duration of the audio.
+            <b>MaxVolume</b> is the maximum volume level the audio can reach.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.currentTime">
             <summary>
-            <b>currentTime</b> is the current time of the audio.
+            <b>currentTime</b> is the current playback position in seconds. 
+            Tracks the progression of the audio clip.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.playing">
             <summary>
-            <b>isPlaying</b> is a boolean that indicates if the audio is playing.
+            <b>playing</b> indicates whether the audio is currently playing. The value is either "yes" or "no". If paused or stopped are "yes", playing will be "no".
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.paused">
             <summary>
-            <b> Paused </b> is a boolean that indicates if the audio is paused.
+            <b>paused</b> indicates whether the audio playback is paused. The value is either "yes" or "no". When playing again, the audio will resume from the paused time.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.stopped">
             <summary>
-            <b> Stopped </b> is a boolean that indicates if the audio is stopped.
+            <b> Stopped </b> indicates whether the audio playback is stopped. The value is either "yes" or "no". When playing again, the audio will start from the beginning.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound._audioSource">
             <summary>
-            <b> AudioSource </b> is the audio _audioSource that will be used to play the audio.
+            <b>AudioSource</b> is the audio _audioSource that will be used to play the audio.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.sourcePath">
@@ -7834,34 +7838,34 @@
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.Plays">
             <summary>
-            <b>Plays</b> starts the audio.
+            <b>Plays</b> starts the audio playback.
+            Updates the state variables playing, stopped, and paused to reflect that playback is active.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.Pauses">
             <summary>
-            <b>Pauses</b> pauses the audio.
+            <b>Pauses</b> pauses the audio playback.
+            Maintains the current playback time (currentTime) for resuming later (by calling Plays).
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.Stops">
             <summary>
-            <b>Stops</b> stops the audio.
+            <b>Stops</b> stops the audio playback and resets the playback time (currentTime) to the beginning.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.ChangesVolume(System.Single)">
             <summary>
-            <b>ChangesVolume</b> changes the volume of the audio to the given value.
-            <para>If the value is greater than the maximum volume, the volume will be set to the maximum volume; if
-            the value is less than 0, the volume will be set to 0.</para>
+            <b>ChangesVolume</b> changes the volume of the audio to a given value.
+            <para>Ensures the value remains within the range of 0 to <see cref="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.maxVolume"/></para>
             </summary>
-            <param name="v">The new volume setting.</param>
+            <param name="v">The new volume value.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Sound.ChangesSource(System.String)">
             <summary>
-            <b>ChangesSource</b> changes the source of the audio to the given path.
-            <p>The path must be relative to the project's user-accessible Inventory folder.</p>
-            <p>If the path is not valid, the audio will not be played.</p>
+            <b>ChangesSource</b> changes the audio filename source to the given filename.
+            <p>Validates the path and dynamically loads the audio for playback.</p>
             </summary>
-            <param name="newSource">The new audio file path.</param>
+            <param name="newSource">The new audio filename.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Switch">
             <summary>
@@ -7882,17 +7886,18 @@
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer">
             <summary>
-            <b>Timer</b> is a <see cref="T:ECARules4All_DLL.Behaviour"/> that can be used to trigger an action after a certain amount of time.
+            Represents a time-based <see cref="T:ECARules4All_DLL.Behaviour"/> that helps triggering actions after specified durations.
+            The Timer class provides functionality to configure, start, pause, stop, and reset a timer, as well as to emit events when specific time milestones are reached or elapsed.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.duration">
             <summary>
-            <b>Duration</b> is the maximum time the timer will run for.
+            <b>Duration</b> specifies the total duration for which the timer will run.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.current">
             <summary>
-            <b>Current</b> is the current time the timer has been running for.
+            <b>Current</b> represents the current time of the timer, meaning the elapsed time from the start. It dynamically updates as the timer counts down.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.active">
@@ -7907,46 +7912,40 @@
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.ChangeDuration(System.Single)">
             <summary>
-            <b>ChangesDuration</b> sets the duration of the timer.
+            <b>ChangesDuration</b> sets the total duration of the timer with a non-negative value.
             </summary>
-            <param name="amount">The new maximum time the timer will run for. </param>
+            <param name="amount">The new duration value for the timer.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.ChangeCurrentTime(System.Single)">
             <summary>
-            <b>ChangeCurrentTime</b> sets the current time of the timer.
+            <b>ChangeCurrentTime</b> sets the elapsed time of the timer. It ensures that the new value is within the valid range [0, duration].
             </summary>
             <param name="amount"> The new </param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.Starts">
             <summary>
-            <b>Starts</b> starts the timer.
+            <b>Starts</b> activates the timer to begin counting down, resuming its operation from the last paused state.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.Stops">
             <summary>
-            <b>Stops</b> stops the timer.
+            <b>Stops</b> deactivates the timer, resetting the elapsed time to zero.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.Pauses">
             <summary>
-            <b>Pauses</b> pauses the timer.
+            <b>Pauses</b> deactivates the timer, leaving the elapsed time unchanged.
             </summary>
-        </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.Elapses(System.Int32)">
-            <summary>
-            <b>Elapses</b> emits an event when the timer has elapsed a set amount of time.
-            </summary>
-            <param name="seconds">The amount of time elapsed from the start.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.Reaches(System.Int32)">
             <summary>
-            <b>Reaches</b> emits an event when the timer has reached a set amount of time.
+            <b>Reaches</b> emits an event when the timer reaches a specified elapsed time. It can be used to trigger actions at predefined points in the elapsed timeline.
             </summary>
-            <param name="seconds">The amount of time that the time have to reach in order to trigger an event.</param>
+            <param name="seconds">The elapsed time at which the event is triggered.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.Resets">
             <summary>
-            <b>Resets</b> resets the timer to the maximum duration.
+            <b>Resets</b> resets the timer to its maximum duration and deactivates it.
             </summary>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Transition">
@@ -7979,225 +7978,235 @@
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Animal">
             <summary>
-            <b>Animal</b> is a subclass of Character. It is used to represent the animals character.
+            Represents an animal character within the ECA rules framework. 
+            An <b>Animal</b> is a specialized subclass of <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Character"/> that embodies animal-like traits 
+            and behaviors, enabling interactions and actions unique to animal entities.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Animal.Speaks(System.String)">
             <summary>
-            <b>Speaks</b>: allows to send a message to the player
+            <b>Speaks</b> allows the animal to produce a sound or "speak" by playing an associated audio clip.
+            The audio clip is identified by the provided string, which must correspond to a valid resource.
             </summary>
-            <param name="s">The string that recalls the audioclip</param>
+            <param name="s">The name of the audio resource to be played.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.AquaticAnimal">
             <summary>
-            This class represents an animal that can swim.
+            The <b>AquaticAnimal</b> class represents an aquatic animal.
+            An AquaticAnimal can swim to specific positions or follow predefined paths, with animations for both swimming and idling states.
+            This class extends the functionality of <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Animal"/> to include aquatic-specific behaviors.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.AquaticAnimal.IdleAnimation">
             <summary>
-            <b>IdleAnimation</b>: is the animation that is played when the aquatic animal is idle.
+            <b>IdleAnimation</b> specifies the name of the animation clip played when the aquatic animal is idle.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.AquaticAnimal.SwimAnimation">
             <summary>
-            <b>SwimAnimation</b>: is the animation that is played when the aquatic animal is swimming.
+            <b>SwimAnimation</b> specifies the name of the animation clip played when the aquatic animal is swimming.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.AquaticAnimal.Swims(ECARules4All_DLL.Position)">
             <summary>
-            <b>Swims</b>: This method is used to move the aquatic animal to a specific position with a swimming animation.
+            <b>Swims</b> (to) is a method that moves the aquatic animal to a specific position with a swimming animation.
             </summary>
-            <param name="p">The position where to swim</param>
+            <param name="p">The target position to swim to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.AquaticAnimal.Swims(ECARules4All_DLL.Path)">
             <summary>
-            <b>Swims</b>: This method is used to move the aquatic animal through a path with a swimming animation.
+            <b>Swims</b> (on) is a method that moves the aquatic animal along a specified path while playing the swimming animation.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path to follow while swimming.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature">
             <summary>
-            This class represents a generic creature
+            The <b>Creature</b> class represents a generic creature.
+            A Creature can perform various movements such as running, walking, and swimming, each with a specific animation.
+            This class extends the functionality of <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Animal"/> to include creature-specific behaviors.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.IdleAnimation">
             <summary>
-            <b>IdleAnimation</b>: is the animation that is played when the creature is idle.
+            <b>IdleAnimation</b> specifies the name of the animation clip played when the creature is idle.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.SwimAnimation">
             <summary>
-            <b>SwimAnimation</b>: is the animation that is played when the creature is swimming.
+            <b>SwimAnimation</b> specifies the name of the animation clip played when the creature is swimming.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.FlyAnimation">
             <summary>
-            <b>FlyAnimation</b>: is the animation that is played when the creature is flying.
+            <b>FlyAnimation</b> specifies the name of the animation clip played when the creature is running.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.RunAnimation">
             <summary>
-            <b>RunAnimation</b>: is the animation that is played when the creature is running.
+            <b>RunAnimation</b> specifies the name of the animation clip played when the creature is running.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.WalkAnimation">
             <summary>
-            <b>WalkAnimation</b>: is the animation that is played when the creature is walking.
+            <b>WalkAnimation</b> specifies the name of the animation clip played when the creature is walking.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Flies(ECARules4All_DLL.Position)">
             <summary>
-            <b>Flies</b>: This method is used to move the creature to a specific position with a flying animation.
+            <b>Flies</b> (to) is a method that moves the creature to a specific position with a flying animation.
             </summary>
-            <param name="p">The position where to fly</param>
+            <param name="p">The target position to fly to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Flies(ECARules4All_DLL.Path)">
             <summary>
-            <b>Flies</b>: This method is used to move the creature through path with a flying animation.
+            <b>Flies</b> (on) is a method that moves the creature along a specified path while playing the flying animation.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path to follow while flying.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Runs(ECARules4All_DLL.Position)">
             <summary>
-            <b>Runs</b>: This method is used to move the creature to a specific position with a running animation.
+            <b>Runs</b> (to) is a method that moves the creature to a specific position with a running animation.
             </summary>
-            <param name="p">The position where to run</param>
+            <param name="p">The target position to run to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Runs(ECARules4All_DLL.Path)">
             <summary>
-            <b>Runs</b>: This method is used to move the creature through a path with a running animation.
+            <b>Runs</b> (on) is a method that moves the creature along a specified path while playing the running animation.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path to follow while running.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Swims(ECARules4All_DLL.Position)">
             <summary>
-            <b>Swims</b>: This method is used to move the creature to a specific position with a swimming animation.
+            <b>Swims</b> (to) is a method that moves the creature to a specific position with a swimming animation.
             </summary>
-            <param name="p">The position where to swim</param>
+            <param name="p">The target position to swim to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Swims(ECARules4All_DLL.Path)">
             <summary>
-            <b>Swims</b>: This method is used to move the creature through a path with a swimming animation.
+            <b>Swims</b> (on) is a method that moves the creature along a specified path while playing the swimming animation.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path to follow while swimming.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Walks(ECARules4All_DLL.Position)">
             <summary>
-            <b>Walks</b>: This method is used to move the creature to a specific position with a waling animation.
+            <b>Walks</b> (to) is a method that moves the creature to a specific position with a walking animation.
             </summary>
-            <param name="p">The position where to walk</param>
+            <param name="p">The target position to walk to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Walks(ECARules4All_DLL.Path)">
             <summary>
-            <b>Walks</b>: This method is used to move the creature through a path with a walking animation.
+            <b>Walks</b> (on) is a method that moves the creature along a specified path while playing the walking animation.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path to follow while walking.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal">
             <summary>
-            This class represents an animal that can fly.
+            The <b>FlyingAnimal</b> class represents a flying animal.
+            An FlyingAnimal can move using flying or walking animations and supports navigation to specific positions or along predefined paths.
+            This class extends the functionality of <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Animal"/> to include flying-specific behaviors.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.IdleAnimation">
             <summary>
-            <b>IdleAnimation</b>: is the animation that is played when the flying animal is idle.
+            <b>IdleAnimation</b> specifies the name of the animation clip played when the flying animal is idle.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.FlyAnimation">
             <summary>
-            <b>FlyAnimation</b>: is the animation that is played when the flying animal is flying.
+            <b>FlyAnimation</b> specifies the name of the animation clip played when the flying animal is flying.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.WalkAnimation">
             <summary>
-            <b>WalkAnimation</b>: is the animation that is played when the flying animal is walking.
+            <b>WalkAnimation</b> specifies the name of the animation clip played when the flying animal is walking.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.Flies(ECARules4All_DLL.Position)">
             <summary>
-            <b>Flies</b>: This method is used to move the flying animal to a specific position with a flying animation.
+            <b>Flies</b> (to) is a method that moves the flying animal to a specific position with a flying animation.
             </summary>
-            <param name="p">The position where to fly</param>
+            <param name="p">The target position to fly to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.Flies(ECARules4All_DLL.Path)">
             <summary>
-            <b>Flies</b>: This method is used to move the flying animal through path with a flying animation.
+            <b>Flies</b> (on) is a method that moves the flying animal along a specified path while playing the flying animation.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path to follow while flying.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.Walks(ECARules4All_DLL.Position)">
             <summary>
-            <b>Walks</b>: This method is used to move the flying animal to a specific position with a waling animation.
+            <b>Walks</b> (to) is a method that moves the flying animal to a specific position with a walking animation.
             </summary>
-            <param name="p">The position where to walk</param>
+            <param name="p">The target position to walk to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.Walks(ECARules4All_DLL.Path)">
             <summary>
-            <b>Walks</b>: This method is used to move the flying animal through a path with a walking animation.
+            <b>Walks</b> (on) is a method that moves the flying animal along a specified path while playing the walking animation.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path to follow while walking.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Human">
             <summary>
-            The <b>Human</b> class is used to represent a human character.
-            A human can run, walk and swim. 
+            The <b>Human</b> class represents a human character.
+            A Human can perform various movements such as running, walking, and swimming, each with a specific animation.
+            This class extends the functionality of <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Animal"/> to include human-specific behaviors.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Human.IdleAnimation">
             <summary>
-            <b>IdleAnimation</b>: is the animation that is played when the human is idle.
+            <b>IdleAnimation</b> specifies the name of the animation clip played when the human character is idle.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Human.SwimAnimation">
             <summary>
-            <b>SwimAnimation</b>: is the animation that is played when the human is swimming.
+            <b>SwimAnimation</b> specifies the name of the animation clip played when the human character is swimming.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Human.RunAnimation">
             <summary>
-            <b>RunAnimation</b>: is the animation that is played when the human is running.
+            <b>RunAnimation</b> specifies the name of the animation clip played when the human character is running.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Human.WalkAnimation">
             <summary>
-            <b>WalkAnimation</b>: is the animation that is played when the human is walking.
+            <b>WalkAnimation</b> specifies the name of the animation clip played when the human character is walking.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Human.Runs(ECARules4All_DLL.Position)">
             <summary>
-            <b>Runs</b>: This method is used to move the human to a specific position with a running animation.
+            <b>Runs</b> (to) is a method that moves the human to a specific position with a running animation.
             </summary>
-            <param name="p">The position where to run</param>
+            <param name="p">The target position to run to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Human.Runs(ECARules4All_DLL.Path)">
             <summary>
-            <b>Runs</b>: This method is used to move the human through a path with a running animation.
+            <b>Runs</b> (on) is a method that moves the human along a specified path while playing the running animation.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path to follow while running.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Human.Swims(ECARules4All_DLL.Position)">
             <summary>
-            <b>Swims</b>: This method is used to move the human to a specific position with a swimming animation.
+            <b>Swims</b> (to) is a method that moves the human to a specific position with a swimming animation.
             </summary>
-            <param name="p">The position where to swim</param>
+            <param name="p">The target position to swim to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Human.Swims(ECARules4All_DLL.Path)">
             <summary>
-            <b>Swims</b>: This method is used to move the human through a path with a swimming animation.
+            <b>Swims</b> (on) is a method that moves the human along a specified path while playing the swimming animation.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path to follow while swimming.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Human.Walks(ECARules4All_DLL.Position)">
             <summary>
-            <b>Walks</b>: This method is used to move the human to a specific position with a waling animation.
+            <b>Walks</b> (to) is a method that moves the human to a specific position with a walking animation.
             </summary>
-            <param name="p">The position where to walk</param>
+            <param name="p">The target position to move to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Human.Walks(ECARules4All_DLL.Path)">
             <summary>
-            <b>Walks</b>: This method is used to move the human through a path with a walking animation.
+            <b>Walks</b> (on) is a method that moves the human along a specified path while playing the walking animation.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path to follow while walking.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Mannequin">
             <summary>
@@ -8205,7 +8214,7 @@
             have rigging skeletons. Since the mannequin is supposed to stay still in the environment, the implementation contains
             for automatically positioning it on top of the mannequin according to the specified position (e.g., head, torso,
             left or right leg, arm, etc.). Provided that the distinction between a mannequin and a not-playable human is
-            technical, it is up to the TB to decide which object offers the best configuration options considering the
+            technical, it is up to the Unity developer to decide which object offers the best configuration options considering the
             template under development.
             </summary>
         </member>
@@ -8253,194 +8262,203 @@
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Robot">
             <summary>
-            The <b>Robot</b> class derives from Character, it represents the the non-animal counterpart of human.
-            A robot can run, walk and swim.
+            The <b>Robot</b> class represents a robot character (non-animal counterpart of a human).
+            A Robot can perform various movements such as running, walking, and swimming, each with a specific animation.
+            This class extends the functionality of <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Animal"/> to include robot-specific behaviors.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Robot.IdleAnimation">
             <summary>
-            <b>IdleAnimation</b>: is the animation that is played when the robot is idle.
+            <b>IdleAnimation</b> specifies the name of the animation clip played when the robot is idle.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Robot.SwimAnimation">
             <summary>
-            <b>SwimAnimation</b>: is the animation that is played when the robot is swimming.
+            <b>SwimAnimation</b> specifies the name of the animation clip played when the robot is swimming.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Robot.RunAnimation">
             <summary>
-            <b>RunAnimation</b>: is the animation that is played when the robot is running.
+            <b>RunAnimation</b> specifies the name of the animation clip played when the robot is running.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Robot.WalkAnimation">
             <summary>
-            <b>WalkAnimation</b>: is the animation that is played when the robot is walking.
+            <b>WalkAnimation</b> specifies the name of the animation clip played when the robot is walking.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Robot.Runs(ECARules4All_DLL.Position)">
             <summary>
-            <b>Runs</b>: This method is used to move the robot to a specific position with a running animation.
+            <b>Runs</b> (to) is a method that moves the robot to a specific position with a running animation.
             </summary>
-            <param name="p">The position where to run</param>
+            <param name="p">The target position to run to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Robot.Runs(ECARules4All_DLL.Path)">
             <summary>
-            <b>Runs</b>: This method is used to move the robot through a path with a running animation.
+            <b>Runs</b> (on) is a method that moves the robot along a specified path while playing the running animation.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path to follow while running.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Robot.Swims(ECARules4All_DLL.Position)">
             <summary>
-            <b>Swims</b>: This method is used to move the robot to a specific position with a swimming animation.
+            <b>Swims</b> (to) is a method that moves the robot to a specific position with a swimming animation.
             </summary>
-            <param name="p">The position where to swim</param>
+            <param name="p">The target position to swim to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Robot.Swims(ECARules4All_DLL.Path)">
             <summary>
-            <b>Swims</b>: This method is used to move the robot through a path with a swimming animation.
+            <b>Swims</b> (on) is a method that moves the robot along a specified path while playing the swimming animation.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path to follow while swimming.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Robot.Walks(ECARules4All_DLL.Position)">
             <summary>
-            <b>Walks</b>: This method is used to move the robot to a specific position with a waling animation.
+            <b>Walks</b> (to) is a method that moves the robot to a specific position with a walking animation.
             </summary>
-            <param name="p">The position where to walk</param>
+            <param name="p">The target position to move to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Robot.Walks(ECARules4All_DLL.Path)">
             <summary>
-            <b>Walks</b>: This method is used to move the robot through a path with a walking animation.
+            <b>Walks</b> (on) is a method that moves the robot along a specified path while playing the walking animation.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path to follow while walking.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal">
             <summary>
-            The <b>Terrestrial animal</b> class is a subclass of the <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Animal"/> class.
-            It represents a generic terrestrial animal.
+            The <b>TerrestrialAnimal</b> class represents a terrestrial animal.
+            A TerrestrialAnimal can perform actions like running and walking, with corresponding animations for movement to specific positions or along paths.
+            This class extends the functionality of <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Animal"/> to include terrestrial-specific behaviors.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.IdleAnimation">
             <summary>
-            <b>IdleAnimation</b>: is the animation that is played when the terrestrial animal is idle.
+            <b>IdleAnimation</b> specifies the name of the animation clip played when the terrestrial animal is idle.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.RunAnimation">
             <summary>
-            <b>RunAnimation</b>: is the animation that is played when the terrestrial animal is running.
+            <b>RunAnimation</b> specifies the name of the animation clip played when the terrestrial animal is running.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.WalkAnimation">
             <summary>
-            <b>WalkAnimation</b>: is the animation that is played when the terrestrial animal is walking.
+            <b>IdleAnimation</b> specifies the name of the animation clip played when the terrestrial animal is walking.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.Runs(ECARules4All_DLL.Position)">
             <summary>
-            <b>Runs</b>: This method is used to move the terrestrial animal to a specific position with a running animation.
+            <b>Runs</b> (to) is a method that moves the terrestrial animal to a specific position with a running animation.
             </summary>
-            <param name="p">The position where to run</param>
+            <param name="p">The target position to run to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.Runs(ECARules4All_DLL.Path)">
             <summary>
-            <b>Runs</b>: This method is used to move the terrestrial animal to a specific position with a running animation.
+            <b>Runs</b> (on) is a method that moves the terrestrial animal along a specified path while playing the running animation.
             </summary>
-            <param name="p">The position where to run</param>
+            <param name="p">The path to follow while running.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.Walks(ECARules4All_DLL.Position)">
             <summary>
-            <b>Runs</b>: This method is used to move the terrestrial animal to a specific position with a running animation.
+            <b>Walks</b> (to) is a method that moves the terrestrial animal to a specific position with a walking animation.
             </summary>
-            <param name="p">The position where to run</param>
+            <param name="p">The target position to walk to.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.Walks(ECARules4All_DLL.Path)">
             <summary>
-            <b>Runs</b>: This method is used to move the terrestrial animal to a specific position with a running animation.
+            <b>Walks</b> (on) is a method that moves the terrestrial animal along a specified path while playing the walking animation.
             </summary>
-            <param name="p">The position where to run</param>
+            <param name="p">The path to follow while walking.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Character">
             <summary>
-            A <b>Character</b> is a type of ECAObject, it represents an animal, a humanoid, a robot or a generic creature.
-            A Character can be autonomous or controlled by the player.
+            Represents a versatile character within the ECA rules framework. 
+            A <b>Character</b> can embody various forms, including animals, humanoids, robots, or generic creatures. 
+            It can operate autonomously or be controlled by the player, supporting a range of actions and state attributes 
+            to interact dynamically with the environment
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Characters.Character.life">
             <summary>
-            <b>life</b> is the life of the character.
+            <b>life</b> is the current life of the character, represented as a float number.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Characters.Character.playing">
             <summary>
-            <b>playing</b> to identify whether it is player-controlled or not.
+            <b>playing</b> indicates whether the character is controlled by the player ("yes") or operating autonomously ("no").
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Character.Interacts(ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Interactable)">
             <summary>
-            <b>Interacts</b>: a character can interact with other interactable objects.
-            There is no need for implementation, see <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Interactable"/> for more details.
+            <b>Interacts</b> enables the character to interact with a specified interactable object.
+            The implementation details are managed by the <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Interactable"/> class logic.
             </summary>
-            <param name="o">The interactable object</param>
+            <param name="o">The target interactable object</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Character.StopsInteracting(ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Interactable)">
             <summary>
-            <b>Stops interaction</b>: a character can stop the interaction with other interactable objects.
-            There is no need for implementation, see <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Interactable"/> for more details.
+            <b>Stops interaction</b> allows the character to stop its interaction with a specified interactable object.
+            The implementation details are managed by the <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Interactable"/> class logic.
             </summary>
-            <param name="o">The interactable object</param>
+            <param name="o">The target interactable object</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Character.Points(ECARules4All_DLL.ECAObject)">
             <summary>
-            <b>Points</b>: a character can point to other interactable objects.
+            <b>Points</b> the character to point at a specified object, emphasizing its focus or attention on the target.
             </summary>
-            <param name="o">The pointed game object</param>
+            <param name="o">The target object to point at.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Character.StopsPointing(ECARules4All_DLL.ECAObject)">
             <summary>
-            <b>Stops interaction</b>: a character can stop the interaction with other interactable objects.
+            <b>StopsPointing</b> commands the character to stop pointing at a specified object, ceasing its focus or attention on the target.
             </summary>
-            <param name="o">The pointed game object</param>
+            <param name="o">The target object to stop pointing at.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Character.Jumps(ECARules4All_DLL.Position)">
             <summary>
-            <b>Jumps</b>: The character can jump to a given position
+            <b>Jumps</b> commands the character to jump to a specific position in the 3D world.
             </summary>
-            <param name="p">The position where to jump</param>
+            <param name="p">The destination position where the character will jump.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Character.Jumps(ECARules4All_DLL.Path)">
             <summary>
-            <b>Jumps</b>: The character can jump to a given path
+            <b>Jumps</b> directs the character to follow a predefined path, jumping between each position in the path.
             </summary>
-            <param name="p">The path</param>
+            <param name="p">The path consisting of multiple positions to follow. Each position is a vector in the 3D world with x, y, and z coordinates.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Character.StartsAnimation(System.String)">
             <summary>
-            <b>Starts animation</b>: The character can start an animation
+            <b>StartsAnimation</b> triggers a predefined animation for the character, using the provided animation identifier.
             </summary>
-            <param name="s">The string that represents the already built animation of the character game object</param>
+            <param name="s">The string of the animation clip to play</param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.Artwork">
+            <summary>
+            <b>Artwork</b> represents an artwork in the environment.
+            The Artwork class defines properties such as the author, price, and creation year of the artwork.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.Artwork.author">
+            <summary>
+            <b>author</b> specifies the name of the artist of the artwork.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.Artwork.price">
+            <summary>
+            <b>price</b> represents the monetary value of the artwork.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.Artwork.year">
+            <summary>
+            <b>year</b> denotes the year in which the artwork was created.
+            </summary>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Interaction">
             <summary>
-            <b>Interaction</b> contains all the elements allowing some interaction with the scene and its objects.
-            The difference between interactions and <see cref="!:ECARules4All.RuleEngine.Behaviour">Behaviours </see> is that interactions
-            are the ones that a typical user would perceive as physical entities of their own, which would exists
-            independently from other objects.
+            <b>Interaction</b> represents entities in the scene that facilitate interaction with other objects or the environment.
+            Unlike <see cref="!:ECARules4All.RuleEngine.Behaviour">Behaviours</see>, which define object-based rules and logic, 
+            <b>Interaction</b> focuses on physical entities that are perceived as independent objects by the user. 
+            These entities exist as standalone components within the environment, enhancing user engagement and interaction.
             </summary>
-        </member>
-        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.Bounds">
-            <summary>
-            <b>Bounds</b> is an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Interaction"/> subclass that represents the scene bounds.
-            </summary>
-        </member>
-        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.Bounds.scale">
-            <summary>
-            <b>Scale</b> is the scale of the scene bounds.
-            </summary>
-        </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.Bounds.Scales(System.Single)">
-            <summary>
-            <b>Scales</b> sets the scale of the scene bounds.
-            </summary>
-            <param name="newScale">The new scale value.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.Button">
             <summary>
@@ -8516,28 +8534,28 @@
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight">
             <summary>
-            <b>ECALight</b> is an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Interaction"/> subclass that represents a light source. It can control a light source
-            referenced inside this class.
+            <b>ECALight</b> represents a controllable light source in the environment.
+            The ECALight class extends <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Interaction"/> to manage light properties such as intensity, color, and if it's on.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.intensity">
             <summary>
-            <b> Intensity </b> is the intensity of the light source.
+            <b>intensity</b> represents the brightness level of the light source. It cannot exceed the maximum intensity value.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.maxIntensity">
             <summary>
-            <b> MaxIntensity </b> is the maximum intensity of the light source.
+            <b>maxIntensity</b> specifies the upper limit for the light's brightness. It ensures that the light's intensity does not exceed a predefined threshold.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.color">
             <summary>
-            <b> Color </b> is the color of the light source.
+            <b>color</b> represents the color of the light source. The value is a string that represents the color name (e.g., "red", "blue", "green").
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.on">
             <summary>
-            <b>On</b> is a boolean that represents the state of the light source.
+            <b>on</b> indicates whether the light source is currently active or inactive. The accepted values are "on" or "off".
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.componentLight">
@@ -8547,35 +8565,30 @@
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.Turns(ECARules4All_DLL.Utils.ECABoolean)">
             <summary>
-            <b> Turns</b> sets the light source on or off.
+             <b>Turns</b> toggles the light source on or off based on the specified value ("on" or "off"), enabling or disabling illumination.
             </summary>
-            <param name="newStatus">The boolean of the new state.</param>
+            <param name="newStatus">The desired state of the light source (on or off).</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.IncreasesIntensity(System.Single)">
             <summary>
-            <b>IncreasesIntensity</b> increases the intensity of the light source by the given value.
-            If the intensity is greater than the maximum intensity, the intensity is set to the maximum intensity.
+            <b>IncreasesIntensity</b> increases the brightness of the light source by a specified non-negative amount.
+            If the resulting intensity exceeds the maximum allowed value, it is capped at <b>maxIntensity</b>.
             </summary>
-            <param name="amount"> The amount to add to the current intensity. </param>
+            <param name="amount">The value to add to the current intensity.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.DecreasesIntensity(System.Single)">
             <summary>
-            <b> DecreasesIntensity</b> decreases the intensity of the light source by the given value.
-            If the intensity is less than 0, the intensity is set to 0.
+            <b> DecreasesIntensity</b> reduces the brightness of the light source by a specified non-negative amount.
+            If the resulting intensity drops below zero, it is set to zero to avoid negative values.
             </summary>
-            <param name="amount">The amount to subtract from the current intensity.</param>
+            <param name="amount">The value to subtract from the current intensity.</param>
         </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.SetsIntensity(System.Single)">
-            <summary>
-            <b>SetsIntensity</b> sets the intensity of the light source to the given value.
-            </summary>
-            <param name="i">The new intensity value.</param>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.SetsIntensity(System.Single)" -->
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.ChangesColor(ECARules4All_DLL.Utils.ECAColor)">
             <summary>
-            <b>SetsColor</b> sets the color of the light source to the given value.
+            <b>SetsColor</b> updates the light's color to the specified value. The allowed values are predefined color names (e.g., "red", "blue", "green").
             </summary>
-            <param name="inputColor">The new color value.</param>
+            <param name="inputColor">The desired color to apply to the light source.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECAVideo">
             <summary>
@@ -8888,6 +8901,54 @@
             <summary>
             <b>Power</b>: a float value that represents the power of the weapon.
             </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetSubjectsNameAsSet">
+            <summary>
+            Restituisce l'insieme dei soggetti (ECA Object) nella scena
+            </summary>
+            <remarks>Richiama la funzione RuleUtils.FindSubjects</remarks>
+            <returns>HashSet(string) subjectsName</returns>
+        </member>
+        <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetActionAttributesForAllSubjects_AsStringifiedDict">
+            <summary>
+            Restituisce, serializzato JSON, il dizionario di tutte le actionAttributes per tutti i soggetti
+            </summary>
+            <remarks>Richiama la funzione GetSubjectsNameAsSet</remarks>
+            <returns>Json(Dictionary(string, string)) actionAttributesDic</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:ECARules4All_DLL.Utils.ECAObjectInfo.GetDropdownOptionsAfterVerbForAllSubjects_AsDict" -->
+        <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetActionAttributesDictionary(UnityEngine.GameObject,System.Collections.Generic.Dictionary{System.Int32,System.Collections.Generic.Dictionary{UnityEngine.GameObject,System.String}},System.String)">
+            <summary>
+            Restituisce un dizionario, dove la chiave è il verbo (string) e il valore la lista di tutti gli action attributes con quel verbo contenente tutti gli action attributes per un determinato soggetto.
+            </summary>
+            <remarks>
+            Richiama la FindActiveVerbs, FindPassiveVerbs e ritorna il valore restituito da PopulateVerbsString dei verbi ottenuti nelle altre due. Tutte le funzioni richiamate sono di RuleUtils.
+            </remarks>
+            <example>Per il verbo 'changes', la lista (value del dizionario) avrà due valori</example>
+        </member>
+        <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetDropdownOptionsAfterVerb_AsJsonString(System.String)">
+            <summary>
+            Restituisce, dato il nome del soggetto, la serializzazione JSON della funzione GetDropdownOptionsAfterVerbAsDictionary
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetActionAttributes_AsString(System.String)">
+            <summary>
+            Restituisce, dato il nome del soggetto, tutte le sue actionAttributes
+            </summary>
+            <remarks>Richiama la funzione RuleUtils.FindSubjects</remarks>
+            <returns>HashSet(string) subjectsName</returns>
+        </member>
+        <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetVerbsByObjectNameAsJson(System.String)">
+            <summary>
+            Serializza il risultato della funzione GetVerbsByObjectName
+            </summary>
+            <returns>List(string) verbs</returns>
+        </member>
+        <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetVerbsByObjectName(System.String)">
+            <summary>
+            Restituisce, dato il nome del soggetto, tutti i verbi ad esso associato.
+            </summary>
+            <returns>List(string) verbs</returns>
         </member>
         <member name="M:ECARules4All_DLL.Utils.RuleUtils.FindBehaviourChildrenAmongEcaAttributes(System.Collections.Generic.List{System.Type})">
             <summary>

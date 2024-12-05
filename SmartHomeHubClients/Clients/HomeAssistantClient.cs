@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using UnityEngine;
+using Newtonsoft.Json;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 using Serilog;
 
 
@@ -35,7 +29,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
             //var lastContent = this.updates.GetUpdates();
             //var lastContent = new List<Update> {this.updates.Dequeue()};
             var lastContent = this.updates.Dequeue();
-            string jsonBody = JsonSerializer.Serialize(new
+            string jsonBody = JsonConvert.SerializeObject(new
             {
 	            content = lastContent.jsonContent,
 	            timestamp = lastContent.timestamp
@@ -105,11 +99,11 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 
 		        payload.Add(p);
 	        }
-	        var options = new JsonSerializerOptions
+	        var options = new JsonSerializerSettings
 	        {
-		        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+		        NullValueHandling = NullValueHandling.Ignore
 	        };
-	        string jsonBody = JsonSerializer.Serialize(new {pairs = payload}, options);
+	        string jsonBody = JsonConvert.SerializeObject(new {pairs = payload}, options);
 	        
 	        using (HttpClient client = new HttpClient())
 	        {

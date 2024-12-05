@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text.Json;
+using Newtonsoft.Json;
 using Serilog;
 
 
@@ -93,7 +93,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
                 try
                 {
-                    ActionDTO data = JsonSerializer.Deserialize<ActionDTO>(requestBody);
+                    ActionDTO data = JsonConvert.DeserializeObject<ActionDTO>(requestBody);
                     ActionUpdate?.Invoke(this, data);
 
                     context.Response.StatusCode = (int)HttpStatusCode.OK;
@@ -117,7 +117,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 
                 try
                 {
-                    List<AutomationDTO> data = JsonSerializer.Deserialize<List<AutomationDTO>>(requestBody);
+                    List<AutomationDTO> data = JsonConvert.DeserializeObject<List<AutomationDTO>>(requestBody);
                     RegisteredAutomations?.Invoke(this, data);
 
                     context.Response.StatusCode = (int)HttpStatusCode.OK;

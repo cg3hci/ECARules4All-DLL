@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 
@@ -9,10 +8,10 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 {
     public class ContentNotification
     {
-        [JsonPropertyName("timestamp")] 
+        [JsonProperty("timestamp")] 
         public long timestamp { get; private set; }
 
-        [JsonPropertyName("json_content")] public Dictionary<string, object> jsonContent { get; private set; }
+        [JsonProperty("json_content")] public Dictionary<string, object> jsonContent { get; private set; }
 
         public ContentNotification(string entity, string attribute, object newValue)
         {
