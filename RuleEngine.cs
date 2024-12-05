@@ -769,7 +769,7 @@ namespace ECARules4All_DLL
         private string checkSymbol;
         private object compareWith = null;
 
-        private FieldInfo variable;
+        private MemberInfo variable;
         private Component componentToCheck;
 
         ///<summary>
@@ -829,6 +829,10 @@ namespace ECARules4All_DLL
 
         public bool IsValid()
         {
+            FieldInfo fieldInfoTemp = null;
+            PropertyInfo propertyInfoTemp = null;
+            var valueType = compareWith.GetType();
+            
             if (toCheck != null && (property != null || property != ""))
             {
                 string[] mathValues = {"<", ">", "<=", ">="};
@@ -841,7 +845,9 @@ namespace ECARules4All_DLL
                     {
                         // we found a ECARules4All managed type
                         //Si va alla ricerca del campo che ci serve
-                        foreach (FieldInfo m in cType.GetFields())
+                        var x = from it in cType.GetMembers( BindingFlags.Public | BindingFlags.Instance) where it is PropertyInfo || it is FieldInfo select it;
+                        foreach (var m in x)
+                        // foreach (FieldInfo m in cType.GetFields())
                         {
                             //Per ogni variabile etichettata con l'attributo "StateVariable" si controlla se i tipi combaciano, nel caso si fa un controllo sull'uguaglianza sui valori
                             StateVariableAttribute[] variables =
@@ -854,13 +860,34 @@ namespace ECARules4All_DLL
                                 //If the operation is supported check whether is true or not
                                 if (!res && !mathValues.Contains(checkSymbol) || res)
                                 {
-                                    if (a.Name == GetProperty() && m.FieldType == GetValueType() ||
-                                        a.Name == GetProperty() && m.FieldType == typeof(ECABoolean) &&
-                                        compareWith is bool)
+                                    if (m.MemberType.Equals(MemberTypes.Field))
                                     {
-                                        variable = m;
-                                        componentToCheck = c;
-                                        return true;
+                                        fieldInfoTemp = ((FieldInfo)m);
+                                        if (a.Name == property && fieldInfoTemp.FieldType == valueType ||
+                                            a.Name == property && fieldInfoTemp.FieldType == typeof(ECABoolean) &&
+                                            compareWith is bool)
+                                        {
+                                            variable = fieldInfoTemp;
+                                            componentToCheck = c;
+                                            return true;
+                                        }
+                                    }
+                                    else if (m.MemberType.Equals(MemberTypes.Property))
+                                    {
+                                        propertyInfoTemp = ((PropertyInfo)m);
+
+                                        if (a.Name == property && propertyInfoTemp.PropertyType == valueType ||
+                                            a.Name == property && propertyInfoTemp.PropertyType == typeof(ECABoolean) &&
+                                            compareWith is bool)
+                                        {
+                                            variable = propertyInfoTemp;
+                                            componentToCheck = c;
+                                            return true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        throw new Exception($"Type [{m.MemberType}] not managed yet");
                                     }
                                 }
                             }
@@ -876,7 +903,18 @@ namespace ECARules4All_DLL
         {
             if (IsValid())
             {
-                return CompareValues(variable.GetValue(componentToCheck), GetValueToCompare(), GetSymbol());
+                if (variable is FieldInfo f)
+                {
+                    return CompareValues(f.GetValue(componentToCheck), GetValueToCompare(), GetSymbol());
+                } else if (variable is PropertyInfo p)
+                {
+                    return CompareValues(p.GetValue(componentToCheck), GetValueToCompare(), GetSymbol());
+                }
+                else
+                {
+                    throw new Exception("Type not managed yet");
+                }
+                // return CompareValues(variable.GetValue(componentToCheck), GetValueToCompare(), GetSymbol());
             }
 
             return false;
