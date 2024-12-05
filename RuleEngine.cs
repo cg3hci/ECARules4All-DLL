@@ -140,7 +140,7 @@ namespace ECARules4All_DLL
 
             if (type != Action.ActionType.INVALID)
             {
-                List<FieldInfo> fields = new List<FieldInfo>();
+                List<FieldInfo> fields = new List<FieldInfo>(); //TODO Do we want to use GetProperties() as well?
                 List<MethodInfo> methods = new List<MethodInfo>();
                 List<Component> subjects = act.GetSubjectComponent();
                 List<Component> objects = new List<Component>();
@@ -148,7 +148,7 @@ namespace ECARules4All_DLL
 
                 if (act.AreThereAnyObjects())
                     objects = act.GetObjectComponent();
-                if (type == Action.ActionType.CHANGES || type == Action.ActionType.INCREMENTSDECREMENTS)
+                if (type == Action.ActionType.CHANGES || type == Action.ActionType.INCREMENTSDECREMENTS) //TODO Do we want to use GetProperties() as well?
                 {
                     fields = act.GetField();
                     count = fields.Count;
@@ -253,7 +253,7 @@ namespace ECARules4All_DLL
             //}
 
             List<String> variables = new List<String>();
-            foreach (FieldInfo m in c.GetFields())
+            foreach (FieldInfo m in c.GetFields()) //TODO Do we want to use GetProperties() as well?
             {
                 object[] a = m.GetCustomAttributes(typeof(StateVariableAttribute), true);
                 if (a.Length > 0)
@@ -1009,7 +1009,7 @@ namespace ECARules4All_DLL
         private string a_unit = null;
 
         private List<MethodInfo> method = new List<MethodInfo>();
-        private List<FieldInfo> field = new List<FieldInfo>();
+        private List<FieldInfo> field = new List<FieldInfo>(); //TODO Do we want to use GetProperties() as well?
         private List<Component> subject = new List<Component>(), objct = new List<Component>();
         private bool objects = false;
         private ActionType type;
@@ -1291,7 +1291,7 @@ namespace ECARules4All_DLL
             return method;
         }
 
-        public List<FieldInfo> GetField()
+        public List<FieldInfo> GetField() //TODO Do we want to use GetProperties() as well?
         {
             return field;
         }
@@ -1366,7 +1366,7 @@ namespace ECARules4All_DLL
                             }
 
 
-                            foreach (FieldInfo f in cType.GetFields())
+                            foreach (FieldInfo f in cType.GetFields()) //TODO Do we want to use GetProperties() as well?
                             {
                                 StateVariableAttribute[] variables =
                                     (StateVariableAttribute[]) f.GetCustomAttributes(typeof(StateVariableAttribute),
