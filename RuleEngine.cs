@@ -359,6 +359,7 @@ namespace ECARules4All_DLL
         // Test
         private void Update()
         {
+            Debug.LogError("Se premi I succedono cose. Ricordarsi di cancellarlo");
             if (Input.GetKeyDown(KeyCode.I))
             {
                 var components = ComponentTracker.Instance.GetAllComponents();
@@ -697,21 +698,20 @@ namespace ECARules4All_DLL
 
         public override bool Evaluate()
         {
-            bool res;
-            bool temp = Op == ConditionType.AND ? true : false;
+            bool currEval = Op == ConditionType.AND ? true : false;
 
             foreach (Condition c in children)
             {
                 switch (Op)
                 {
                     case ConditionType.OR:
-                        temp = temp || c.Evaluate();
-                        if (temp) return temp;
+                        currEval = currEval || c.Evaluate();
+                        if (currEval == true) return true;
                         break;
 
                     case ConditionType.AND:
-                        temp = temp && c.Evaluate();
-                        if (!temp) return temp;
+                        currEval = currEval && c.Evaluate();
+                        if (currEval == false) return false;
                         break;
 
                     case ConditionType.NOT:
@@ -719,7 +719,7 @@ namespace ECARules4All_DLL
                 }
             }
 
-            return temp;
+            return currEval;
         }
 
         public override bool IsLeaf()
