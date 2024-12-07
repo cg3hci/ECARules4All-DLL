@@ -384,6 +384,21 @@ namespace ECARules4All_DLL
                 }
             }
         }
+        
+        public List<Rule> GetRulesInvolvingGameObject(GameObject gO)
+        {
+            var involvedRules = new List<Rule>();
+
+            foreach (var r in Rules())
+            {
+                if (r.InvolvesGameObject(gO))
+                {
+                    involvedRules.Add(r);
+                }
+            }
+
+            return involvedRules;
+        }
     }
 
     ///<summary>
@@ -557,6 +572,11 @@ namespace ECARules4All_DLL
             //////////////////////////////////////////////////////////////////
             Log.Information("All went well!");
             return true;
+        }
+        
+        public bool InvolvesGameObject(GameObject gO)
+        {
+            return Event.InvolvesGameObject(gO) || (conditions?.InvolvesGameObject(gO) == true) || actions.Any(action => action.InvolvesGameObject(gO));
         }
     }
 
