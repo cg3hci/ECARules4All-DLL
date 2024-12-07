@@ -34,7 +34,7 @@ namespace ECARules4All_DLL.Utils
         public void assignPrefabToPlaceholder(String element, GameObject target)
         {
             //TODO: This snippet of code is in beta phase, it'll be surely updated to a better implementation
-            RuleEngine.GetInstance().Add(new Rule(new Action(GameObject.Find("Player"), "activates"), 
+            RuleEngine.GetInstance().Add(Rule.TryCreateRule(new Action(GameObject.Find("Player"), "activates"), 
                 new List<Action>()
                 {
                     new Action(target, "changes", "mesh", "to", element)

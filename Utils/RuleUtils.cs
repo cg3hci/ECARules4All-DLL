@@ -1156,16 +1156,16 @@ namespace ECARules4All_DLL.Utils
             {
                 if (compositeConditions)
                 {
-                    return new Rule(whenAction, finalCondition, listOfActions);
+                    return Rule.TryCreateRule(whenAction, finalCondition, listOfActions);
                 }
                 else
                 {
-                    return new Rule(whenAction, simpleCondition, listOfActions);
+                    return Rule.TryCreateRule(whenAction, simpleCondition, listOfActions);
                 }
             }
             else
             {
-                return new Rule(whenAction, listOfActions);
+                return Rule.TryCreateRule(whenAction, listOfActions);
             }
         }
         

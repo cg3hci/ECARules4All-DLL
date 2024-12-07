@@ -539,7 +539,7 @@ namespace ECARules4All_DLL.Parsers
             // remove the composite condition if not needed
             Condition c = SimplifyCondition(_c);
             
-            Rule rule = new Rule(_event, c, _actions);
+            Rule rule = Rule.TryCreateRule(_event, c, _actions);
             RuleEngine.GetInstance().Add(rule);
         }
 

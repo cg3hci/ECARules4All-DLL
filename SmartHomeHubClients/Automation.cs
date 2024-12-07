@@ -30,11 +30,11 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	        Rule rule;
 	        if (this.conditions != null)
 	        {
-		        rule = new Rule(trigger, this.conditions.ConvertToCondition(), actions);
+		        rule = Rule.TryCreateRule(trigger, this.conditions.ConvertToCondition(), actions);
 	        }
 	        else
 	        {
-		        rule = new Rule(when: trigger, listOfActions: actions);
+		        rule = Rule.TryCreateRule(trigger, actions);
 	        }
 
 	        return rule;
