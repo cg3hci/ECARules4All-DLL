@@ -76,7 +76,18 @@ namespace ECARules4All_DLL
         ///</summary>        
         public void Add(Rule r)
         {
+            // Check for null.
+            // No need for other  checks, the Rule.TryCreateRule method will take care of them.
+            // Rule constructors are now private
+            if (r == null)
+            {
+                Log.Error("You are trying to add a Rule r equals to null");
+                return;
+            }
+
+
             rules.Add(r);
+
             //Si sottoscrive nell'Eventbus un ascoltatore per la regola in questione
             eventQueue.Subscribe(r.GetEvent(), this);
         }
@@ -397,7 +408,7 @@ namespace ECARules4All_DLL
         ///</list>
         ///<para/>
         ///</summary>
-        public Rule(Action when, Condition ifStatements, List<Action> listOfActions)
+        private Rule(Action when, Condition ifStatements, List<Action> listOfActions)
         {
             Event = when;
             conditions = ifStatements;
@@ -415,7 +426,7 @@ namespace ECARules4All_DLL
         ///</list>
         ///<para/>
         ///</summary>
-        public Rule(Action when, List<Action> listOfActions)
+        private Rule(Action when, List<Action> listOfActions)
         {
             Event = when;
             conditions = null;
@@ -461,25 +472,16 @@ namespace ECARules4All_DLL
          */
         public static Rule TryCreateRule(Action lWhen, Condition lIf, List<Action> lActions)
         {
-            Rule rule = null; //result
             bool areArgsValid = AreRuleArgsValid(lWhen, lIf, lActions, out bool atLeastOneCondition);
             if (!areArgsValid)
             {
                 Log.Error("Invalid rule");
+                throw new Exception("Invalid rule"); // Per ora lancio un'eccezione per accorgersi subito se qualcosa non funziona
                 return null;
             }
 
-            if (atLeastOneCondition)
-            {
-                rule = new Rule(lWhen, lIf, lActions);
-            }
-            else
-            {
-                rule = new Rule(lWhen, lActions);
-            }
-
             Log.Information("Valid rule");
-            return rule;
+            return atLeastOneCondition ? new Rule(lWhen, lIf, lActions) : new Rule(lWhen, lActions);
         }
 
         public static Rule TryCreateRule(Action lWhen, List<Action> lActions)
@@ -492,14 +494,9 @@ namespace ECARules4All_DLL
         {
             atLeastOneCondition = lIf != null;
 
-            bool isWhenValid;
-            bool isConditionValid;
-            bool thenValid;
-
-
             ////////////////////// EVENT //////////////////////
-            isWhenValid = whenAction != null && whenAction.IsValid();
-            if (!isWhenValid)
+            Log.Information("Evaluated when");
+            if (whenAction?.IsValid() == false)
             {
                 Log.Information("Invalid when");
                 return false; //the findAction returns null, so something is missing
@@ -508,32 +505,38 @@ namespace ECARules4All_DLL
 
 
             ////////////////////// CONDITIONS  //////////////////////
-            CompositeCondition compositeCondition = null;
-            SimpleCondition simpleCondition = null;
-            isConditionValid = true;
-
             if (atLeastOneCondition)
             {
-                bool isConditionComposite = lIf is CompositeCondition;
-
-                if (isConditionComposite)
+                switch (lIf)
                 {
-                    compositeCondition = (CompositeCondition)lIf;
-                    Log.Information("Trying to evaluate the composite condition " + compositeCondition);
-                    isConditionValid = compositeCondition.IsValid();
-                }
-                else
-                {
-                    simpleCondition = (SimpleCondition)lIf;
-                    Log.Information("Trying to evaluate the simple condition " + simpleCondition);
-                    isConditionValid = simpleCondition.IsValid();
-                }
-            }
+                    case CompositeCondition compositeCondition:
+                    {
+                        Log.Information($"Trying to evaluate the composite condition {compositeCondition}");
+                        if (!compositeCondition.IsValid())
+                        {
+                            Log.Information($"Invalid Composite Condition {compositeCondition}");
+                            return false;
+                        }
 
-            if (!isConditionValid)
-            {
-                Log.Information("Invalid condition");
-                return false; //if one of the action is not valid, the rule is null
+                        Log.Information("Composite condition is valid");
+                        break;
+                    }
+                    case SimpleCondition simpleCondition:
+                    {
+                        Log.Information($"Trying to evaluate the simple condition {simpleCondition}");
+                        if (!simpleCondition.IsValid())
+                        {
+                            Log.Information($"Invalid Simple Condition {simpleCondition}");
+                            return false;
+                        }
+
+                        Log.Information("Simple condition is valid");
+                        break;
+                    }
+                    default:
+                        Log.Information("Unknown condition type");
+                        return false;
+                }
             }
             ///////////////////////////////////////////////////////
 
@@ -545,22 +548,14 @@ namespace ECARules4All_DLL
                 return false;
             }
 
-            thenValid = true;
-            foreach (var thenAction in lActions)
+            foreach (var thenAction in lActions.Where(thenAction => thenAction?.IsValid() == false))
             {
-                if (thenAction.IsValid()) continue;
-
-                thenValid = false;
-                break;
+                Log.Information($"Invalid then action: {thenAction}");
+                return false;
             }
 
-            if (!thenValid)
-            {
-                Log.Information("Invalid then");
-                return false; //if one of the action is not valid, the rule is null
-            }
             //////////////////////////////////////////////////////////////////
-
+            Log.Information("All went well!");
             return true;
         }
     }
@@ -627,8 +622,8 @@ namespace ECARules4All_DLL
                 {
                     // Check if the subject of the condition is the GameObject before doing cache-heavy operations
                     if (sc.GetSubject() == gO) return true;
-                    
-                    
+
+
                     // Cache the result of GetValueToCompare() to avoid redundant calls
                     var valueToCompare = sc.GetValueToCompare();
 
@@ -797,24 +792,9 @@ namespace ECARules4All_DLL
 
         public bool IsValid()
         {
-            bool isValid = true;
-            foreach (var compChildren in this.Children())
-            {
-                if (compChildren == null) return false;
-
-                if (compChildren is SimpleCondition simpleCondition)
-                {
-                    isValid = isValid && simpleCondition.IsValid();
-                }
-                else if (compChildren is CompositeCondition compositeCondition)
-                    isValid = isValid && compositeCondition.IsValid();
-                else
-                {
-                    throw new Exception("Invalid Condition");
-                }
-            }
-
-            return isValid;
+            return Children().All(c =>
+                (c is SimpleCondition sc && sc.IsValid()) || (c is CompositeCondition cc && cc.IsValid())
+            );
         }
     }
 
