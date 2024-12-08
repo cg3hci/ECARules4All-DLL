@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
+// ReSharper disable InconsistentNaming
 
 
 namespace ECARules4All_DLL
@@ -136,6 +135,7 @@ namespace ECARules4All_DLL
         {
             gameCollider = this.gameObject.GetComponents<Collider>();
             gameRenderer = this.gameObject.GetComponents<Renderer>();
+            canvas = this.GetComponent<Canvas>();
 
             if (gameRenderer.Length == 0)
                 gameRenderer = this.gameObject.GetComponentsInChildren<Renderer>();
@@ -155,14 +155,11 @@ namespace ECARules4All_DLL
             }
         }
 
-        void Start()
+        private void Start()
         {
-            // TryGetComponent<Canvas>(out _canvas);
             _originalPosition = gameObject.transform.localPosition;
             _originalQuaternion = gameObject.transform.localRotation;
             _originalScale = gameObject.transform.localScale;
-            //p.Owner = this;
-            TryGetComponent<Canvas>(out canvas);
             UpdateVisibility();
         }
 
@@ -248,7 +245,7 @@ namespace ECARules4All_DLL
         [Action(typeof(ECAObject), "restores original settings")]
         public void MovesOriginalPosition()
         {
-            float speed = 3.0F; ;
+            // float speed = 3.0F;
             //StartCoroutine(MoveObject(speed, _originalPosition));
             gameObject.transform.localPosition = _originalPosition;
             p = new Position(_originalPosition);
@@ -333,13 +330,13 @@ namespace ECARules4All_DLL
                 c.enabled = isActive;
             }
 
-            foreach (Renderer r in gameRenderer)
+            foreach (Renderer rend in gameRenderer)
             {
                 if (!isActive || !isVisible)
                 {
-                    r.enabled = false;
+                    rend.enabled = false;
                 }
-                else r.enabled = true;
+                else rend.enabled = true;
             }
             
             if (canvas != null)
@@ -378,7 +375,7 @@ namespace ECARules4All_DLL
             isBusyMoving = false;
         }
 
-        public void Update()
+        private void Update()
         {
             // check if object is within the camera's field of view.
             // the object must be active

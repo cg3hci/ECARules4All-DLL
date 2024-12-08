@@ -3,7 +3,28 @@ using UnityEngine;
 
 namespace ECARules4All_DLL.Utils
 {
-    public abstract class Singleton<T> : Singleton where T : MonoBehaviour
+    // Before: public abstract class Singleton<T> : Singleton where T : MonoBehaviour
+    
+    /// <summary>
+    /// Optionally, specify a base class != MonoBehaviour but that still inherits from MonoBehaviour (e.g. GenericUIMenu)
+    /// The Singleton works still on T and not on TBase (there can be multiple references to TBase)
+    ///</summary>
+    /// 
+    /// <example>
+    /// <code>
+    /// public class A : MonoBehaviour { ... }
+    /// public class B : A { ... }
+    /// public class BSingleton : Singleton &lt;B, A> { }
+    ///
+    /// void SomeCode() {
+    ///     BSingleton.Instance.DoSomething();
+    /// }
+    /// </code>
+    /// A is the base class. It is not a Singleton.
+    /// B is the derived class. We want it a Singleton, but there is a step more
+    /// BSingleton is the Singleton of B (but not of A)
+    /// </example>
+    public abstract class Singleton<T, TBase> : Singleton where T : TBase where TBase : MonoBehaviour
     {
         #region  Fields
         [CanBeNull]
@@ -65,6 +86,9 @@ namespace ECARules4All_DLL.Utils
         #endregion
     }
 
+    // Default Singleton where the base type is not specified (MonoBehaviour)
+    public abstract class Singleton<T> : Singleton<T, MonoBehaviour> where T : MonoBehaviour { } // new
+    
     public abstract class Singleton : MonoBehaviour
     {
         #region  Properties

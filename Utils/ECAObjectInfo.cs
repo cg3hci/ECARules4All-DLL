@@ -817,5 +817,24 @@ namespace ECARules4All_DLL.Utils
 
             return verbList;
         }
+        
+        //TODO Refactor perché fa schifo
+        public string GetCapabilitiesAsString(ECAObject ecaObject)
+        {
+            var output = "";
+    
+            var info = ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects();
+    
+            var name = ecaObject.gameObject.name;
+    
+            var ecaStateVariables = RuleUtils.FindStateVariables(GameObject.Find(name))
+                .Select(kv => kv.Value.Item1 + " " + kv.Key).ToList();
+            var ecaMethodNames = info.allActionAttributes[name].Select(kv => kv.Key).Distinct().ToList();
+        
+            output += "Name: " + name + "\n"
+                      + "StateVariables: " + string.Join(", ", ecaStateVariables) + "\n"
+                      + "Actions: " + string.Join(", ", ecaMethodNames);
+            return output;
+        }
     }
 }

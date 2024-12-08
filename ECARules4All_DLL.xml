@@ -7282,7 +7282,6 @@
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Rule.TryCreateRule(ECARules4All_DLL.Action,ECARules4All_DLL.Condition,System.Collections.Generic.List{ECARules4All_DLL.Action})">
-            TODO test it
             Tries to create a rule from the given parameters.
             @param lWhen The event that triggers the rule
             @param lIf The condition that must be true for the rule to be executed
@@ -7318,6 +7317,15 @@
             <para/>
             <strong>Returns:</strong> The parent <seealso cref="T:ECARules4All_DLL.Condition"/> object for this one.
             </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Condition.InvolvesGameObject(UnityEngine.GameObject,System.Boolean)">
+            <summary>
+            <c>InvolvesGameObject</c> returns true if the GameObject is involved in the condition. False otherwise.
+            </summary>
+            <param name="gO">The GameObject to check</param>
+            <param name="efficient">If true, it will use a more efficient method to check if the GameObject is involved in the condition</param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
         </member>
         <member name="M:ECARules4All_DLL.CompositeCondition.Children">
             <summary>
@@ -7529,6 +7537,13 @@
             <para/>
             <strong>Returns:</strong> The Type of the value element
             </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Action.InvolvesGameObject(UnityEngine.GameObject,System.Boolean)">
+            <summary>
+            <c>GetModifierValue</c> returns true if the action involves the GameObject passed as parameter, false otherwise
+            </summary>
+            <param name="gO">The GameObject to check</param>
+            <param name="efficient">If true, the function will use the most efficient way to check if the GameObject is involved in the action</param>
         </member>
         <member name="T:ECARules4All_DLL.ActionListener">
             <summary>
@@ -9039,6 +9054,27 @@
             </summary>
             <param name="rule">The rule to format.</param>
             <returns>The formatted rule label.</returns>
+        </member>
+        <member name="T:ECARules4All_DLL.Utils.Singleton`2">
+             <summary>
+             Optionally, specify a base class != MonoBehaviour but that still inherits from MonoBehaviour (e.g. GenericUIMenu)
+             The Singleton works still on T and not on TBase (there can be multiple references to TBase)
+            </summary>
+             
+             <example>
+             <code>
+             public class A : MonoBehaviour { ... }
+             public class B : A { ... }
+             public class BSingleton : Singleton &lt;B, A> { }
+            
+             void SomeCode() {
+                 BSingleton.Instance.DoSomething();
+             }
+             </code>
+             A is the base class. It is not a Singleton.
+             B is the derived class. We want it a Singleton, but there is a step more
+             BSingleton is the Singleton of B (but not of A)
+             </example>
         </member>
         <member name="M:ECARules4All_DLL.Utils.TaxonomyUtils.getBaseURL">
             <summary> Restituisce l'indirizzo base del dominio.
