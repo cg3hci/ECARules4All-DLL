@@ -836,5 +836,23 @@ namespace ECARules4All_DLL.Utils
                       + "Actions: " + string.Join(", ", ecaMethodNames);
             return output;
         }
+        
+        //TODO Decidere come mostrare queste regole
+        public string GetRulesInvolvingGameObjectAsString(GameObject gO)
+        {
+            var involvedRules = RuleEngine.GetInstance().GetRulesInvolvingGameObject(gO);
+            var involvedRulesString = "";
+            foreach (var r in involvedRules)
+            {
+                involvedRulesString += r.GetEvent() + " -> " + r.GetActions() + "\n";
+            }
+
+            return involvedRulesString;
+        }
+        
+        public string GetRulesInvolvingECAObjectAsString(ECAObject ecaObject)
+        {
+            return GetRulesInvolvingGameObjectAsString(ecaObject.gameObject);
+        }
     }
 }
