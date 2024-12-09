@@ -123,7 +123,7 @@ namespace ECARules4All_DLL.UI
 
                 //
                 var infoCapabilities =
-                    ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects(); //todo make it a singleton
+                    ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Efficient();
                 var actionAttributesList = infoCapabilities.allActionAttributes[Subject][Verb];
                 if (actionAttributesList != null)
                 {
