@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Serilog;
 
 
@@ -14,7 +18,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
     {
 	    private static class URLS
 	    {
-		    public static readonly string SEND_NOTIFICATION = "";
+		    public static readonly string SEND_NOTIFICATION = "/api/services/eud4xr/receive_update_from_unity";
 		    public static readonly string REGISTER_VIRTUAL_OBJECT = "/api/services/eud4xr/add_virtual_object";
 		    public static readonly string AUTOMATIONS = "/api/eud4xr/automations";
 	    }
@@ -126,19 +130,14 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 	        }
         }
 
-        protected override void RegisteredAutomations(object sender, List<AutomationDTO> automations)
+        public override void RegisteredAutomations(object sender, List<AutomationDTO> automations)
         {
-	        var rules = new List<Rule>();
-	        foreach (var a in automations)
-	        {
-		        rules.Add(a.ConvertToRule());
-	        }
-	        registereAutomations = rules;
+	        registeredAutomations = this.ConvertAutomationsToRules(automations);
         }
-
-        /*protected override async Task<List<AutomationDTO>> GetAutomations()
+        
+        public override async Task<List<Rule>> GetListAutomations()
         {
-	        List<AutomationDTO> automations = new List<AutomationDTO>();
+	        List<Rule> rules = new List<Rule>();
 	        
 	        using (HttpClient client = new HttpClient())
 	        {
@@ -152,18 +151,11 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 			        
 			        // get automations and convert them to rules
 			        string jsonResponse = await response.Content.ReadAsStringAsync();
-			        var options = new JsonSerializerOptions
-			        {
-				        PropertyNameCaseInsensitive = true
-			        };
-			        automations = JsonSerializer.Deserialize<List<AutomationDTO>>(
-				        jsonResponse, 
-				        options
-			        );
-			        foreach (var automation in automations)
-			        {
-				        automation.ConvertToRule();
-			        }
+			        JObject jsonObject = JObject.Parse(jsonResponse);
+			        var a = jsonObject["automations"]?.ToString() ;
+			        Log.Information($"Received Automations: {a}");
+			        List<AutomationDTO> automations = JsonConvert.DeserializeObject<List<AutomationDTO>>(jsonObject["automations"]?.ToString() ?? throw new InvalidOperationException());
+			        rules = this.ConvertAutomationsToRules(automations);
 			        
 			        Log.Information($"Receive automations list by contacting {this.url}");
 		        }
@@ -173,7 +165,17 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 		        }
 	        }
 
-	        return automations;
-        }*/
+	        return rules;
+        }
+
+        private List<Rule> ConvertAutomationsToRules(List<AutomationDTO> automations)
+        {
+	        var rules = new List<Rule>();
+	        foreach (var a in automations)
+	        {
+		        rules.Add(a.ConvertToRule());
+	        }
+	        return rules;
+        }
     }
 }

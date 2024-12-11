@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ECARules4All_DLL
 {
-    [RequireComponent(typeof(ECAObjectInfo))]
+    //[RequireComponent(typeof(ECAObjectInfo))]
     public class RuleEngineLoader : MonoBehaviour
     {
         private RuleEngine ruleEngine;

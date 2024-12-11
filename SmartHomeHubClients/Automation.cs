@@ -11,7 +11,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 {
     public class AutomationDTO
     {
-	    public ActionDTO trigger { get; set; } = null;
+	    public List<ActionDTO> trigger { get; set; } = null;
 	    public ConditionDTO conditions { get; set; } = null;
 	    public List<ActionDTO> actions { get; set; } = null;
         public string id { get; set; } = null;
@@ -20,7 +20,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         
         public Rule ConvertToRule()
         {
-	        Action trigger = this.trigger.ConvertToAction();
+	        Action trigger = this.trigger[0].ConvertToAction();
 	        List<Action> actions = new List<Action>();
 	        foreach (var action in this.actions)
 	        {
