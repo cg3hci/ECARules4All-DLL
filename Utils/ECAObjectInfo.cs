@@ -1406,14 +1406,14 @@ namespace ECARules4All_DLL.Utils
 
 
         //TODO Refactor perché fa schifo
-        public string GetCapabilitiesAsString(ECAObject ecaObject)
+        private string GetCapabilitiesAsString(ECAObject ecaObject)
         {
             var output = "";
             var gameObjectName = ecaObject.gameObject.name;
 
             
             // State variable
-            var ecaStateVariables = RuleUtils.FindStateVariables(ecaObject.gameObject)
+            var ecaStateVariables = RuleUtils.FindStateVariables(ecaObject.gameObject, filterEcaRelevant: true)
                 .Select(kv => kv.Value.Item1 + " " + kv.Key).ToList();
             
             
@@ -1437,7 +1437,7 @@ namespace ECARules4All_DLL.Utils
 
             
             // State variable
-            var ecaStateVariables = RuleUtils.FindStateVariables(ecaObject.gameObject)
+            var ecaStateVariables = RuleUtils.FindStateVariables(ecaObject.gameObject, filterEcaRelevant:true)
                 .Select(kv => kv.Value.Item1 + " " + kv.Key).ToList();
             
             
@@ -1453,13 +1453,13 @@ namespace ECARules4All_DLL.Utils
             return (s1, s2);
         }
         
-        public (List<string> Variables, List<string> Actions) GetCapabilities(ECAObject ecaObject)
+        private (List<string> Variables, List<string> Actions) GetCapabilities(ECAObject ecaObject)
         {
             var gameObjectName = ecaObject.gameObject.name;
 
             
             // State variable
-            var ecaStateVariables = RuleUtils.FindStateVariables(ecaObject.gameObject)
+            var ecaStateVariables = RuleUtils.FindStateVariables(ecaObject.gameObject, filterEcaRelevant:true)
                 .Select(kv => kv.Value.Item1 + " " + kv.Key).ToList();
             
             

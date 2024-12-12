@@ -31,7 +31,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         /// <b>Swims</b> (to) is a method that moves the aquatic animal to a specific position with a swimming animation.
         /// </summary>
         /// <param name="p">The target position to swim to.</param>
-        [ECARelevance(true)]
+        [ECARelevance(false)]
         [Action(typeof(AquaticAnimal), "swims to", typeof(Position))]
         public void Swims(Position p)
         {

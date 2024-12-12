@@ -173,7 +173,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         /// <b>StartsAnimation</b> triggers a predefined animation for the character, using the provided animation identifier.
         /// </summary>
         /// <param name="s">The string of the animation clip to play</param>
-        [ECARelevance(true)]
+        [ECARelevance(false)]
         [Action(typeof(Character), "starts-animation", typeof(string))]
         public void StartsAnimation(string s)
         {

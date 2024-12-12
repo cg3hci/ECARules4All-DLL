@@ -738,7 +738,7 @@ namespace ECARules4All_DLL.Utils
         }
         
         // Returns for each state variable the name and the ECARules4AllType
-        public static Dictionary<string, (ECARules4AllType, Type)> FindStateVariables(GameObject gameObject)
+        public static Dictionary<string, (ECARules4AllType, Type)> FindStateVariables(GameObject gameObject, bool filterEcaRelevant = false)
         {
             var variables = new Dictionary<string, (ECARules4AllType, Type)>();
 
@@ -750,7 +750,7 @@ namespace ECARules4All_DLL.Utils
                 if (Attribute.IsDefined(cType, typeof(ECARules4AllAttribute)))
                 {
                     //foreach component we find the verbs
-                    var componentVariables = ListStateVariables(cType);
+                    var componentVariables = filterEcaRelevant ? ListRelevantStateVariables(cType) : ListStateVariables(cType);
                     foreach (var var in componentVariables)
                     {
                         if (!variables.ContainsKey(var.Key)) {
@@ -776,6 +776,39 @@ namespace ECARules4All_DLL.Utils
                     {
                         StateVariableAttribute var = (StateVariableAttribute)item;
                         variables.Add(var.Name, var.type);
+                    }
+                }
+            }
+
+            return variables;
+        }
+        
+        public static Dictionary<string, ECARules4AllType> ListRelevantStateVariables(Type cType)
+        {
+            Dictionary<string, ECARules4AllType> variables = new Dictionary<string, ECARules4AllType>();
+            var members = from it in cType.GetMembers(BindingFlags.Public | BindingFlags.Instance) where it is PropertyInfo || it is FieldInfo select it;
+
+            foreach (var m in members)
+            {
+                // Check for StateVariableAttribute
+                object[] stateVarAttributes = m.GetCustomAttributes(typeof(StateVariableAttribute), true);
+
+                // Check for ECARelevanceAttribute
+                object[] ecaRelevantAttributes = m.GetCustomAttributes(typeof(ECARelevanceAttribute), true);
+
+                if (stateVarAttributes.Length > 0 && ecaRelevantAttributes.Length > 0)
+                {
+                    foreach (var ecaAttr in ecaRelevantAttributes)
+                    {
+                        ECARelevanceAttribute ecaRelevance = (ECARelevanceAttribute)ecaAttr;
+                        if (ecaRelevance.isRelevance)
+                        {
+                            foreach (var stateVarAttr in stateVarAttributes)
+                            {
+                                StateVariableAttribute stateVar = (StateVariableAttribute)stateVarAttr;
+                                variables.Add(stateVar.Name, stateVar.type);
+                            }
+                        }
                     }
                 }
             }
