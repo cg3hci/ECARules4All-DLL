@@ -14,7 +14,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
     [ECARules4All("clothing")]
     [RequireComponent(typeof(Prop))]
     [DisallowMultipleComponent]
-    public class Clothing : ECAScript
+    public class Clothing : MonoBehaviour
     {
         /// <summary>
         /// <b>ClothingCategories</b>: This enum is used to define the clothing categories: TOP, PANTS, SHOES and HAT.
@@ -40,7 +40,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
             set
             {
                 _brand = value;
-                NotifyUpdate(nameof(brand), brand);
+                ECAScript.NotifyUpdate(this, nameof(brand), brand);
             }
         }
         [SerializeField]
@@ -56,7 +56,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
             set
             {
                 _color = value;
-                NotifyUpdate(nameof(color), color.ToString());
+                ECAScript.NotifyUpdate(this, nameof(color), color.ToString());
             }
         }
         [SerializeField]
@@ -72,7 +72,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
             set
             {
                 _size = value;
-                NotifyUpdate(nameof(size), size);
+                ECAScript.NotifyUpdate(this, nameof(size), size);
             }
         }
         [SerializeField]
@@ -88,7 +88,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
             set
             {
                 _weared = value;
-                NotifyUpdate(nameof(weared), weared.ToString());
+                ECAScript.NotifyUpdate(this, nameof(weared), weared.ToString());
             }
         }
         [SerializeField]

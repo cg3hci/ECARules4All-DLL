@@ -11,7 +11,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("switch")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Switch : ECAScript
+    public class Switch : MonoBehaviour
     {
         /// <summary>
         /// <b>On</b> is the state of the switch.
@@ -23,7 +23,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _on = value;
-                NotifyUpdate(nameof(on), on.ToString());
+                ECAScript.NotifyUpdate(this, nameof(on), on.ToString());
             }
         }
         [SerializeField] 

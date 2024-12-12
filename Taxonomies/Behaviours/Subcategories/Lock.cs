@@ -11,7 +11,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("lock")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Lock : ECAScript
+    public class Lock : MonoBehaviour
     {
         /// <summary>
         /// <b>locked</b> defines whether the lock is open or not.
@@ -23,7 +23,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _locked = value;
-                NotifyUpdate(nameof(locked), locked.ToString());
+                ECAScript.NotifyUpdate(this, nameof(locked), locked.ToString());
             }
         }
         [SerializeField] 

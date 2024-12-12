@@ -10,7 +10,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcat
     [ECARules4All("bullet")]
     [RequireComponent(typeof(Weapon))]
     [DisallowMultipleComponent]
-    public class Bullet : ECAScript
+    public class Bullet : MonoBehaviour
     {
         /// <summary>
         /// <b>Speed</b>: this is the speed of the bullet
@@ -22,7 +22,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcat
             set
             {
                 _speed = value;
-                NotifyUpdate(nameof(speed), speed.ToString());
+                ECAScript.NotifyUpdate(this, nameof(speed), speed.ToString());
             }
         }
         [SerializeField]

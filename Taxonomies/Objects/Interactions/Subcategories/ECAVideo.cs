@@ -14,7 +14,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
     [ECARules4All("video")]
     [RequireComponent(typeof(Interaction), typeof(VideoPlayer))] //gerarchia 
     [DisallowMultipleComponent]
-    public class ECAVideo : ECAScript
+    public class ECAVideo : MonoBehaviour
     {
         /// <summary>
         /// <b>Source</b> is the video source.
@@ -26,7 +26,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _source = value;
-                NotifyUpdate(nameof(source), source);
+                ECAScript.NotifyUpdate(this, nameof(source), source);
             }
         }
         [SerializeField]
@@ -42,7 +42,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _volume = value;
-                NotifyUpdate(nameof(volume), volume.ToString());
+                ECAScript.NotifyUpdate(this, nameof(volume), volume.ToString());
             }
         }
         [SerializeField]
@@ -58,7 +58,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _maxVolume = value;
-                NotifyUpdate(nameof(maxVolume), maxVolume.ToString());
+                ECAScript.NotifyUpdate(this, nameof(maxVolume), maxVolume.ToString());
             }
         }
         [SerializeField]
@@ -75,7 +75,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _duration = value;
-                NotifyUpdate(nameof(duration), duration.ToString());
+                ECAScript.NotifyUpdate(this, nameof(duration), duration.ToString());
             }
         }
         [SerializeField]
@@ -91,7 +91,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _currentTime = value;
-                NotifyUpdate(nameof(currentTime), currentTime.ToString());
+                ECAScript.NotifyUpdate(this, nameof(currentTime), currentTime.ToString());
             }
         }
         [SerializeField]
@@ -107,7 +107,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _playing = value;
-                NotifyUpdate(nameof(playing), playing.ToString());
+                ECAScript.NotifyUpdate(this, nameof(playing), playing.ToString());
             }
         }
         [SerializeField]
@@ -123,7 +123,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _paused = value;
-                NotifyUpdate(nameof(paused), paused.ToString());
+                ECAScript.NotifyUpdate(this, nameof(paused), paused.ToString());
             }
         }
         [SerializeField]
@@ -139,7 +139,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _stopped = value;
-                NotifyUpdate(nameof(stopped), stopped.ToString());
+                ECAScript.NotifyUpdate(this, nameof(stopped), stopped.ToString());
             }
         }
         [SerializeField]

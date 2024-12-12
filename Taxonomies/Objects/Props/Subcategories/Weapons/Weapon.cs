@@ -10,7 +10,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons
     [ECARules4All("weapon")]
     [RequireComponent(typeof(Prop))] 
     [DisallowMultipleComponent]
-    public class Weapon:ECAScript
+    public class Weapon: MonoBehaviour
     {
         /// <summary>
         /// <b>Power</b>: a float value that represents the power of the weapon.
@@ -22,7 +22,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons
             set
             {
                 _power = value;
-                NotifyUpdate(nameof(power), power.ToString());
+                ECAScript.NotifyUpdate(this, nameof(power), power.ToString());
             }
         }
         [SerializeField]

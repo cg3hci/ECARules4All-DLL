@@ -9,7 +9,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcat
     [ECARules4All("firearm")]
     [RequireComponent(typeof(Weapon))]
     [DisallowMultipleComponent]
-    public class Firearm : ECAScript
+    public class Firearm : MonoBehaviour
     {
         /// <summary>
         /// <b>ParticleFire</b> is a reference to the particle system that is used to simulate the fire.
@@ -39,7 +39,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcat
             set
             {
                 _charge = value;
-                NotifyUpdate(nameof(charge), charge.ToString());
+                ECAScript.NotifyUpdate(this, nameof(charge), charge.ToString());
             }
         }
         [SerializeField]

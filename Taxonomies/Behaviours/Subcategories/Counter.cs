@@ -12,7 +12,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("counter")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Counter : ECAScript
+    public class Counter : MonoBehaviour
     {
         /// <summary>
         /// <b>count</b> is the current count of the counter
@@ -24,7 +24,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _count = value;
-                NotifyUpdate(nameof(count), count.ToString());
+                ECAScript.NotifyUpdate(this, nameof(count), count.ToString());
             }
         }
         [SerializeField] private float _count;

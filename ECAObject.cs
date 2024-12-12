@@ -15,7 +15,7 @@ namespace ECARules4All_DLL
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ECATracker))]
     [ECARules4All("object")]
-    public class ECAObject : ECAScript
+    public class ECAObject : MonoBehaviour
     {
         /// <summary>
         /// <b> GameCollider </b> is the collider of the object.
@@ -29,10 +29,11 @@ namespace ECARules4All_DLL
         /// <b>isBusyMoving</b> is a boolean that indicates if the object is moving.
         /// </summary>
         private bool isBusyMoving = false;
-
+        
         /// <summary>
         /// <b>p</b> represents the position of the virtual object in the 3D space. It's a vector with three components: x, y, and z.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("position", ECARules4AllType.Position)]
         public Position p
         {
@@ -40,7 +41,7 @@ namespace ECARules4All_DLL
             set
             {
                 _p = value;
-                NotifyUpdate(nameof(p), _p);
+                ECAScript.NotifyUpdate(this, nameof(p), _p);
             }
         }
         private Position _p;
@@ -55,7 +56,7 @@ namespace ECARules4All_DLL
             set
             {
                 _r = value;
-                NotifyUpdate(nameof(r), _r);
+                ECAScript.NotifyUpdate(this, nameof(r), _r);
             }
         }
         private Rotation _r;
@@ -70,7 +71,7 @@ namespace ECARules4All_DLL
             set
             {
                 _s = value;
-                NotifyUpdate(nameof(s), _s);
+                ECAScript.NotifyUpdate(this, nameof(s), _s);
             }
         }
         private Scale _s;
@@ -83,6 +84,7 @@ namespace ECARules4All_DLL
         /// <b>visible</b> indicates whether the object is visible. The allowed values are either "yes" or "no".
         /// If invisible, the object is not rendered but remains interactive for collisions.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("visible", ECARules4AllType.Boolean)]
         public ECABoolean isVisible // = new ECABoolean(ECABoolean.BoolType.YES);
         {
@@ -90,7 +92,7 @@ namespace ECARules4All_DLL
             set
             {
                 _isVisible = value;
-                NotifyUpdate(nameof(isVisible), isVisible.ToString());
+                ECAScript.NotifyUpdate(this, nameof(isVisible), isVisible.ToString());
             }
         }
         [SerializeField]
@@ -107,7 +109,7 @@ namespace ECARules4All_DLL
             set
             {
                 _isActive = value;
-                NotifyUpdate(nameof(isActive), isActive.ToString());
+                ECAScript.NotifyUpdate(this, nameof(isActive), isActive.ToString());
             }
         }
         [SerializeField]
@@ -123,7 +125,7 @@ namespace ECARules4All_DLL
             set
             {
                 _isInsideCamera = value;
-                NotifyUpdate(nameof(isInsideCamera), isInsideCamera.ToString());
+                ECAScript.NotifyUpdate(this, nameof(isInsideCamera), isInsideCamera.ToString());
             }
         }
         private ECABoolean _isInsideCamera = new ECABoolean(ECABoolean.BoolType.NO);
@@ -259,6 +261,7 @@ namespace ECARules4All_DLL
         /// <b>Shows</b> maakes the object visible if it is not already.
         /// </summary>
         [Action(typeof(ECAObject), "shows")]
+        [ECARelevance(true)]
         public void Shows()
         {
             //isVisible.Assign(ECABoolean.BoolType.YES);
@@ -269,6 +272,7 @@ namespace ECARules4All_DLL
         /// <summary>
         /// <b>Hides</b> makes the object invisible if it is not already.
         /// </summary>
+        [ECARelevance(true)]
         [Action(typeof(ECAObject), "hides")]
         public void Hides()
         {
@@ -303,6 +307,7 @@ namespace ECARules4All_DLL
         /// <b>ShowsHides</b> changes the visibility state of the object based on a parameter. The parameter can be either "yes" or "no".
         /// </summary>
         /// <param name="yesNo">The new visibility state.</param>
+        [ECARelevance(true)]
         [Action(typeof(ECAObject), "changes", "visible", "to", typeof(YesNo))]
         public void ShowsHides(ECABoolean yesNo)
         {

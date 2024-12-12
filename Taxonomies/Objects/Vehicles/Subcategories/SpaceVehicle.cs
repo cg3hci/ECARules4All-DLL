@@ -8,7 +8,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles.Subcategories
     [ECARules4All("space-vehicle")]
     [RequireComponent(typeof(Vehicle))]
     [DisallowMultipleComponent]
-    public class SpaceVehicle : ECAScript
+    public class SpaceVehicle : MonoBehaviour
     {
         [StateVariable("oxygen", ECARules4AllType.Float)]
         public float oxygen
@@ -17,7 +17,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles.Subcategories
             set
             {
                 _oxygen = value;
-                NotifyUpdate(nameof(oxygen), oxygen.ToString());
+                ECAScript.NotifyUpdate(this, nameof(oxygen), oxygen.ToString());
             }
         }
         [SerializeField]
@@ -30,7 +30,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles.Subcategories
             set
             {
                 _gravity = value;
-                NotifyUpdate(nameof(gravity), gravity.ToString());
+                ECAScript.NotifyUpdate(this, nameof(gravity), gravity.ToString());
             }
         }
         [SerializeField]

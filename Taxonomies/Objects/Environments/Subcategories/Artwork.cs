@@ -11,7 +11,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
     [ECARules4All("artwork")]
     [RequireComponent(typeof(Environment))]
     [DisallowMultipleComponent]
-    public class Artwork : ECAScript
+    public class Artwork : MonoBehaviour
     {
         /// <summary>
         /// <b>author</b> specifies the name of the artist of the artwork.
@@ -23,7 +23,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
             set
             {
                 _author = value;
-                NotifyUpdate(nameof(author), author);
+                ECAScript.NotifyUpdate(this, nameof(author), author);
             }
         }
         [SerializeField]
@@ -39,7 +39,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
             set
             {
                 _price = value;
-                NotifyUpdate(nameof(price), price.ToString());
+                ECAScript.NotifyUpdate(this, nameof(price), price.ToString());
             }
         }
         [SerializeField]
@@ -55,7 +55,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
             set
             {
                 _year = value;
-                NotifyUpdate(nameof(year), year.ToString());
+                ECAScript.NotifyUpdate(this, nameof(year), year.ToString());
             }
         }
         [SerializeField]

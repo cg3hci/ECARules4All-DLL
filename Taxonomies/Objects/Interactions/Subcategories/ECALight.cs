@@ -11,7 +11,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
     [ECARules4All("light")]
     [RequireComponent(typeof(Interaction), typeof(Light))] //gerarchia 
     [DisallowMultipleComponent]
-    public class ECALight : ECAScript
+    public class ECALight : MonoBehaviour
     {
         /// <summary>
         /// <b>intensity</b> represents the brightness level of the light source. It cannot exceed the maximum intensity value.
@@ -23,7 +23,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _intensity = value;
-                NotifyUpdate(nameof(intensity), intensity.ToString());
+                ECAScript.NotifyUpdate(this, nameof(intensity), intensity.ToString());
             }
         }
         [SerializeField]
@@ -39,7 +39,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _maxIntensity = value;
-                NotifyUpdate(nameof(maxIntensity), maxIntensity.ToString());
+                ECAScript.NotifyUpdate(this, nameof(maxIntensity), maxIntensity.ToString());
             }
         }
         [SerializeField]
@@ -55,7 +55,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _color = value;
-                NotifyUpdate(nameof(color), color.ToString());
+                ECAScript.NotifyUpdate(this, nameof(color), color.ToString());
             }
         }
         [SerializeField]
@@ -71,7 +71,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _on = value;
-                NotifyUpdate(nameof(on), on.ToString());
+                ECAScript.NotifyUpdate(this, nameof(on), on.ToString());
             }
         }
         [SerializeField]

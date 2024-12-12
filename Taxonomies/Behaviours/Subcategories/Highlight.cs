@@ -11,7 +11,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("highlight")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Highlight : ECAScript
+    public class Highlight : MonoBehaviour
     {
         /// <summary>
         /// <b>Color</b> is the color that will be used to highlight the objects.
@@ -23,7 +23,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _color = value;
-                NotifyUpdate(nameof(color), color.ToString());
+                ECAScript.NotifyUpdate(this, nameof(color), color.ToString());
             }
         }
         [SerializeField] 
@@ -39,7 +39,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _on = value;
-                NotifyUpdate(nameof(on), on.ToString());
+                ECAScript.NotifyUpdate(this, nameof(on), on.ToString());
             }
         }
         [SerializeField] 

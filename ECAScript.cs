@@ -10,7 +10,64 @@ using Serilog;
 namespace ECARules4All_DLL
 {
     
-    public class ECAScript : MonoBehaviour
+    public static class ECAScript
+    {
+        public static string GetGameObjectComponentName(MonoBehaviour component)
+        {
+            return $"{component.gameObject.name}@{component.GetType().Name}";
+        }
+
+        public static string GetGameObjectName(MonoBehaviour component)
+        {
+            return $"{component.name}";
+        }
+        
+        public static StateVariableAttribute GetStateVariableProperty(MonoBehaviour component, string nameProperty)
+        {
+            var property = component.GetType().GetProperty(nameProperty);
+            // return a StateVariableAttribute if the object contains a property named $"{nameProperty}" 
+            if (property != null)
+            {
+                return property.GetCustomAttribute<StateVariableAttribute>();
+            }
+
+            return null;
+        }
+        
+        public static void NotifyUpdate(MonoBehaviour component, string propertyName, object value)
+        {
+            var attribute = GetStateVariableProperty(component, propertyName);
+            if (attribute != null && RuleEngine.GetInstance().clients.Count > 0)
+            {
+                AbstractClient<object>.NotifyAttribute(
+                    GetGameObjectComponentName(component),
+                    attribute.Name,
+                    value
+                );
+            }
+        }
+
+        public static void NotifyUpdate(MonoBehaviour component, Action action)
+        {
+            if (RuleEngine.GetInstance().clients.Count > 0)
+            {
+                try
+                {
+                    AbstractClient<object>.NotifyAction(
+                        GetGameObjectName(component),
+                        action
+                    );
+                }
+                catch (Exception e)
+                {
+                    Log.Information($"Error on NotifyUpdate - {e}");
+                }
+            }
+        }
+    }
+    
+    
+    /*public class ECAScript : MonoBehaviour
     {
         protected string GetGameObjectComponentName()
         {
@@ -64,7 +121,7 @@ namespace ECARules4All_DLL
                 }
             }
         }
-    }
+    }*/
     
     [DefaultExecutionOrder(100)]
     public class ECATracker : MonoBehaviour

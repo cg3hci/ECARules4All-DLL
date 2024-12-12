@@ -9,7 +9,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Scenes
     [ECARules4All("scene")]
     [RequireComponent(typeof(ECAObject))]
     [DisallowMultipleComponent]
-    public class Scene : ECAScript
+    public class Scene : MonoBehaviour
     {
         //DOUBT: Aggiunto in questo file nome e posizione della scena di arrivo, può avere senso?
         //This component renames the GameObject to the Scene name, for "rule starting on start" purposes
@@ -20,7 +20,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Scenes
             set
             {
                 _name = value;
-                NotifyUpdate(nameof(name), name);
+                ECAScript.NotifyUpdate(this, nameof(name), name);
             }
         }
         [SerializeField]
@@ -39,7 +39,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Scenes
                     { "y", position.y },
                     { "z", position.z },
                 };
-                NotifyUpdate(nameof(position), v);
+                ECAScript.NotifyUpdate(this, nameof(position), v);
             }
         }
         private Position _position;

@@ -8,7 +8,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles
     [ECARules4All("vehicle")]
     [RequireComponent(typeof(ECAObject))]
     [DisallowMultipleComponent]
-    public class Vehicle : ECAScript
+    public class Vehicle : MonoBehaviour
     {
         [StateVariable("speed", ECARules4AllType.Float)]
         public float speed
@@ -17,7 +17,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles
             set
             {
                 _speed = value;
-                NotifyUpdate(nameof(speed), speed.ToString());
+                ECAScript.NotifyUpdate(this, nameof(speed), speed.ToString());
             }
         }
         [SerializeField]
@@ -30,7 +30,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles
             set
             {
                 _on = value;
-                NotifyUpdate(nameof(on), on.ToString());
+                ECAScript.NotifyUpdate(this, nameof(on), on.ToString());
             }
         }
         [SerializeField]

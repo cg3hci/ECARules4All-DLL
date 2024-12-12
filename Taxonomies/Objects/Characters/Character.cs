@@ -16,7 +16,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
     [ECARules4All("character")]
     [RequireComponent(typeof(ECAObject), typeof(Animator))]
     [DisallowMultipleComponent]
-    public class Character : ECAScript
+    public class Character : MonoBehaviour
     {
         /// <summary>
         /// <b>life</b> is the current life of the character, represented as a float number.
@@ -28,7 +28,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
             set
             {
                 _life = value;
-                NotifyUpdate(nameof(_life), _life.ToString());
+                ECAScript.NotifyUpdate(this, nameof(_life), _life.ToString());
             }
         }
         [SerializeField]
@@ -44,7 +44,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
             set
             {
                 _playing = value;
-                NotifyUpdate(nameof(playing), playing.ToString());
+                ECAScript.NotifyUpdate(this, nameof(playing), playing.ToString());
             }
         }
         

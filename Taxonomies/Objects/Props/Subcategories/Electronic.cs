@@ -10,7 +10,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
     [ECARules4All("electronic")]
     [RequireComponent(typeof(Prop))]
     [DisallowMultipleComponent]
-    public class Electronic : ECAScript
+    public class Electronic : MonoBehaviour
     {
         /// <summary>
         /// <b>Brand</b> is the brand of the electronic.
@@ -22,7 +22,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
             set
             {
                 _brand = value;
-                NotifyUpdate(nameof(brand), brand);
+                ECAScript.NotifyUpdate(this, nameof(brand), brand);
             }
         }
         [SerializeField]
@@ -38,7 +38,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
             set
             {
                 _model = value;
-                NotifyUpdate(nameof(model), model);
+                ECAScript.NotifyUpdate(this, nameof(model), model);
             }
         }
         [SerializeField]
@@ -54,7 +54,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
             set
             {
                 _on = value;
-                NotifyUpdate(nameof(on), on.ToString());
+                ECAScript.NotifyUpdate(this, nameof(on), on.ToString());
             }
         }
         [SerializeField]

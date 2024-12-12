@@ -17,7 +17,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [RequireComponent(typeof(AudioSource))]
     [JsonObject(MemberSerialization.OptIn)]
     [DisallowMultipleComponent]
-    public class Sound : ECAScript
+    public class Sound : MonoBehaviour
     {
         private string status = "";
 
@@ -31,7 +31,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _source = value;
-                NotifyUpdate(nameof(source), source);
+                ECAScript.NotifyUpdate(this, nameof(source), source);
             }
         }
         [SerializeField] private string _source;
@@ -47,7 +47,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _volume = value;
-                NotifyUpdate(nameof(volume), volume.ToString());
+                ECAScript.NotifyUpdate(this, nameof(volume), volume.ToString());
             }
         }
         [SerializeField] private float _volume;
@@ -62,7 +62,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _maxVolume = value; //TODO What if the volume is greater than the maxVolume?
-                NotifyUpdate(nameof(maxVolume), maxVolume.ToString());
+                ECAScript.NotifyUpdate(this, nameof(maxVolume), maxVolume.ToString());
             }
         }
         [SerializeField] private float _maxVolume;
@@ -78,7 +78,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _currentTime = value;
-                NotifyUpdate(nameof(currentTime), currentTime.ToString());
+                ECAScript.NotifyUpdate(this, nameof(currentTime), currentTime.ToString());
             }
         }
         [SerializeField] private float _currentTime;
@@ -93,7 +93,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _playing = value;
-                NotifyUpdate(nameof(playing), playing.ToString());
+                ECAScript.NotifyUpdate(this, nameof(playing), playing.ToString());
             }
         }
         [SerializeField] private ECABoolean _playing = new ECABoolean(ECABoolean.BoolType.NO);
@@ -108,7 +108,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _paused = value;
-                NotifyUpdate(nameof(paused), paused.ToString());
+                ECAScript.NotifyUpdate(this, nameof(paused), paused.ToString());
             }
         }
         [SerializeField] private ECABoolean _paused = new ECABoolean(ECABoolean.BoolType.NO);
@@ -123,7 +123,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _stopped = value;
-                NotifyUpdate(nameof(stopped), stopped.ToString());
+                ECAScript.NotifyUpdate(this, nameof(stopped), stopped.ToString());
             }
         }
         [SerializeField] private ECABoolean _stopped = new ECABoolean(ECABoolean.BoolType.YES);

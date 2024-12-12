@@ -202,6 +202,7 @@
         <Compile Include="Utils\ECARules4AllType.cs" />
         <Compile Include="Utils\Inventory.cs" />
         <Compile Include="Utils\MeshIdentifier.cs" />
+        <Compile Include="Utils\RelevanceAttribute.cs" />
         <Compile Include="Utils\RuleUtils.cs" />
         <Compile Include="Utils\SerializeUtils.cs" />
         <Compile Include="Utils\Singleton.cs" />

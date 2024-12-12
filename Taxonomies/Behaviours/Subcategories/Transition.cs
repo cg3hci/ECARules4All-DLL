@@ -12,7 +12,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("transition")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Transition : ECAScript
+    public class Transition : MonoBehaviour
     {
         /// <summary>
         /// <b>Reference</b> is the Unity Scene to transition to.
@@ -24,7 +24,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _references = value;
-                NotifyUpdate(nameof(reference), reference.ToString());
+                ECAScript.NotifyUpdate(this, nameof(reference), reference.ToString());
             }
         }
         [SerializeField]

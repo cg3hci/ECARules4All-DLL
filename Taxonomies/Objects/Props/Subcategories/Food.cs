@@ -12,7 +12,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
     [ECARules4All("food")]
     [RequireComponent(typeof(Prop))]
     [DisallowMultipleComponent]
-    public class Food : ECAScript
+    public class Food : MonoBehaviour
     {
         /// <summary>
         /// <b>Weight</b>: is the weight of the food.
@@ -24,7 +24,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
             set
             {
                 _weight = value;
-                NotifyUpdate(nameof(weight), weight.ToString());
+                ECAScript.NotifyUpdate(this, nameof(weight), weight.ToString());
             }
         }
         [SerializeField]
@@ -40,7 +40,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
             set
             {
                 _expiration = value;
-                NotifyUpdate(nameof(expiration), expiration.ToString());
+                ECAScript.NotifyUpdate(this, nameof(expiration), expiration.ToString());
             }
         }
         [SerializeField]
@@ -56,7 +56,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
             set
             {
                 _description = value;
-                NotifyUpdate(nameof(description), description);
+                ECAScript.NotifyUpdate(this, nameof(description), description);
             }
         }
         [SerializeField]
@@ -72,7 +72,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
             set
             {
                 _eaten = value;
-                NotifyUpdate(nameof(eaten), eaten.ToString());
+                ECAScript.NotifyUpdate(this, nameof(eaten), eaten.ToString());
             }
         }
         [SerializeField]

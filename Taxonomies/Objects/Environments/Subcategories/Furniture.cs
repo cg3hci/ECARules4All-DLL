@@ -7,7 +7,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
     [ECARules4All("forniture")]
     [RequireComponent(typeof(Environment))]
     [DisallowMultipleComponent]
-    public class Furniture : ECAScript
+    public class Furniture : MonoBehaviour
     {
         [StateVariable("price", ECARules4AllType.Float)]
         public float price
@@ -16,7 +16,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
             set
             {
                 _price = value;
-                NotifyUpdate(nameof(price), price.ToString());
+                ECAScript.NotifyUpdate(this, nameof(price), price.ToString());
             }
         }
 
@@ -29,7 +29,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
             set
             {
                 _color = value;
-                NotifyUpdate(nameof(color), color.ToString());
+                ECAScript.NotifyUpdate(this, nameof(color), color.ToString());
             }
         }
 
@@ -42,7 +42,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
             set
             {
                 _dimension = value;
-                NotifyUpdate(nameof(dimension), dimension.ToString());
+                ECAScript.NotifyUpdate(this, nameof(dimension), dimension.ToString());
             }
         }
 

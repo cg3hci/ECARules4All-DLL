@@ -14,7 +14,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [RequireComponent(typeof(Collider))]
     [RequireComponent(typeof(Rigidbody))]
     [DisallowMultipleComponent]
-    public class Interactable : ECAScript
+    public class Interactable : MonoBehaviour
     {
         private void OnTriggerEnter(Collider other)
         {
@@ -24,7 +24,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             Action action = new Action(other.gameObject, "interacts with", this.gameObject);
             Log.Information("Interacts-with (trigger) " + other.gameObject);
             EventBus.GetInstance().Publish(action);
-            NotifyUpdate(action);
+            ECAScript.NotifyUpdate(this, action);
         }
 
         private void OnCollisionEnter(Collision other)
@@ -32,9 +32,9 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             if (other.gameObject.CompareTag("NonEcaInteractable")) return;
 
             Action action = new Action(other.gameObject, "interacts with", this.gameObject);
-            Log.Information("Interacts-with (collision) " + other.gameObject);
             EventBus.GetInstance().Publish(action);
-            NotifyUpdate(action);
+            ECAScript.NotifyUpdate(this, action);
+            Log.Information("Interacts-with (collision) " + other.gameObject);
         }
 
         private void OnTriggerExit(Collider other)
@@ -43,17 +43,16 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             if (other.CompareTag("NonEcaInteractable")) return;
             Action action = new Action(other.gameObject, "stops-interacting with", this.gameObject);
             EventBus.GetInstance().Publish(action);
-            NotifyUpdate(action);
+            ECAScript.NotifyUpdate(this, action);
         }
 
         private void OnCollisionExit(Collision other)
         {
             if (other.gameObject.CompareTag("NonEcaInteractable")) return;
-            Log.Information("OnCollisionExit 1");
             Action action = new Action(other.gameObject, "stops-interacting with", this.gameObject);
             EventBus.GetInstance().Publish(action);
-            NotifyUpdate(action);
-            Log.Information($"OnCollisionExit 2 - other: {other.gameObject.name} - obj: {this.gameObject.name}");
+            ECAScript.NotifyUpdate(this, action);
+            Log.Information($"OnCollisionExit - other: {other.gameObject.name} - obj: {this.gameObject.name}");
         }
     }
 }

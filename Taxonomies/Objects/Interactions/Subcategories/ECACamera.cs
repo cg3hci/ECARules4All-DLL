@@ -12,7 +12,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
     [ECARules4All("camera")]
     [RequireComponent(typeof(Interaction), typeof(Camera))] //gerarchia 
     [DisallowMultipleComponent]
-    public class ECACamera : ECAScript
+    public class ECACamera : MonoBehaviour
     {
         /// <summary>
         /// <b>Camera</b> is the <see cref="Camera"/> component the script will control.
@@ -49,7 +49,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _pov = value;
-                NotifyUpdate(nameof(pov), pov.ToString());
+                ECAScript.NotifyUpdate(this, nameof(pov), pov.ToString());
             }
         }
         [SerializeField]
@@ -65,7 +65,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _zoomLevel = value;
-                NotifyUpdate(nameof(zoomLevel), zoomLevel.ToString());
+                ECAScript.NotifyUpdate(this, nameof(zoomLevel), zoomLevel.ToString());
             }
         }
         [SerializeField]
@@ -81,7 +81,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _playing = value;
-                NotifyUpdate(nameof(playing), playing.ToString());
+                ECAScript.NotifyUpdate(this, nameof(playing), playing.ToString());
             }
         }
         [SerializeField]

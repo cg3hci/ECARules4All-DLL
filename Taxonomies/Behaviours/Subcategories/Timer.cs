@@ -11,7 +11,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("timer")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Timer : ECAScript
+    public class Timer : MonoBehaviour
     {
         /// <summary>
         /// <b>Duration</b> specifies the total duration for which the timer will run.
@@ -23,7 +23,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _duration = value;
-                NotifyUpdate(nameof(duration), duration.ToString());
+                ECAScript.NotifyUpdate(this, nameof(duration), duration.ToString());
             }
         }
         [SerializeField] 
@@ -39,7 +39,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _current = value;
-                NotifyUpdate(nameof(current), current.ToString());
+                ECAScript.NotifyUpdate(this, nameof(current), current.ToString());
             }
         }
         [SerializeField] 
@@ -129,7 +129,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         {
             Action action = new Action(this.gameObject, "reaches", seconds);
             EventBus.GetInstance().Publish(action);
-            NotifyUpdate(action);
+            ECAScript.NotifyUpdate(this, action);
         }
 
         /// <summary>

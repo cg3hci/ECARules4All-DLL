@@ -13,7 +13,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("container")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Container : ECAScript
+    public class Container : MonoBehaviour
     {
         /// <summary>
         /// <b>Capacity</b> is the maximum number of objects that can be held by the container.
@@ -25,7 +25,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _capacity = value;
-                NotifyUpdate(nameof(capacity), capacity.ToString());
+                ECAScript.NotifyUpdate(this, nameof(capacity), capacity.ToString());
             }
         }
         [SerializeField] 
@@ -41,7 +41,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _objectsCount = value;
-                NotifyUpdate(nameof(objectsCount), objectsCount.ToString());
+                ECAScript.NotifyUpdate(this, nameof(objectsCount), objectsCount.ToString());
             }
         }
         [SerializeField] 

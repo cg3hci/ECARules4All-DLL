@@ -12,7 +12,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props
     [ECARules4All("prop")]
     [RequireComponent(typeof(ECAObject))]
     [DisallowMultipleComponent]
-    public class Prop : ECAScript
+    public class Prop : MonoBehaviour
     {
         /// <summary>
         /// <b>Price</b>: The price of the prop object.
@@ -24,7 +24,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props
             set
             {
                 _price = value;
-                NotifyUpdate(nameof(price), price.ToString());
+                ECAScript.NotifyUpdate(this, nameof(price), price.ToString());
             }
         }
         [SerializeField]

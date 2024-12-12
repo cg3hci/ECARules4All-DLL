@@ -12,7 +12,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("keypad")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Keypad : ECAScript
+    public class Keypad : MonoBehaviour
     {
         /// <summary>
         /// <b>Keycode</b> is the code that the keypad will accept.
@@ -24,7 +24,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _keycode = value;
-                NotifyUpdate(nameof(keycode), keycode);
+                ECAScript.NotifyUpdate(this, nameof(keycode), keycode);
             }
         }
         [SerializeField]
@@ -40,7 +40,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _input = value;
-                NotifyUpdate(nameof(input), input);
+                ECAScript.NotifyUpdate(this, nameof(input), input);
             }
         }
         [SerializeField]

@@ -10,7 +10,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("particle")]
     [RequireComponent(typeof(Behaviour))]
     [DisallowMultipleComponent]
-    public class Particle : ECAScript
+    public class Particle : MonoBehaviour
     {
         /// <summary>
         /// <b>On</b> is a boolean that indicates if the particle system is active.
@@ -22,7 +22,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             set
             {
                 _on = value;
-                NotifyUpdate(nameof(on), on.ToString());
+                ECAScript.NotifyUpdate(this, nameof(on), on.ToString());
             }
         }
         [SerializeField] 
