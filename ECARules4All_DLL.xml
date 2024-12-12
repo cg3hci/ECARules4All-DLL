@@ -8932,7 +8932,7 @@
             <returns>Json(Dictionary(string, string)) actionAttributesDic</returns>
         </member>
         <!-- Badly formed XML comment ignored for member "M:ECARules4All_DLL.Utils.ECAObjectInfo.GetDropdownOptionsAfterVerbForAllSubjects_AsDict" -->
-        <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetActionAttributesDictionary(UnityEngine.GameObject,System.Collections.Generic.Dictionary{System.Int32,System.Collections.Generic.Dictionary{UnityEngine.GameObject,System.String}},System.String)">
+        <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetActionAttributesDictionary(UnityEngine.GameObject,System.Collections.Generic.Dictionary{System.Int32,System.Collections.Generic.Dictionary{UnityEngine.GameObject,System.String}},System.String,System.Boolean)">
             <summary>
             Restituisce un dizionario, dove la chiave è il verbo (string) e il valore la lista di tutti gli action attributes con quel verbo contenente tutti gli action attributes per un determinato soggetto.
             </summary>

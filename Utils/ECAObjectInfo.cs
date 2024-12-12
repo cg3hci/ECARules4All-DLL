@@ -742,10 +742,10 @@ namespace ECARules4All_DLL.Utils
         /// </remarks>
         /// <example>Per il verbo 'changes', la lista (value del dizionario) avrà due valori</example>
         private Dictionary<string, List<ActionAttribute>> GetActionAttributesDictionary(GameObject subject,
-            Dictionary<int, Dictionary<GameObject, string>> subjects, string selectedType)
+            Dictionary<int, Dictionary<GameObject, string>> subjects, string selectedType, bool filterEcaRelevant = false)
         {
-            var verbCompositionsDic = RuleUtils.FindActiveVerbs(subject, subjects, selectedType, false);
-            RuleUtils.FindPassiveVerbs(subject, subjects, selectedType, ref verbCompositionsDic);
+            var verbCompositionsDic = RuleUtils.FindActiveVerbs(subject, subjects, selectedType, false, filterEcaRelevant);
+            RuleUtils.FindPassiveVerbs(subject, subjects, selectedType, ref verbCompositionsDic, filterEcaRelevant);
 
             return PopulateVerbsString(verbCompositionsDic);
         }
@@ -820,8 +820,7 @@ namespace ECARules4All_DLL.Utils
             return JsonConvert.SerializeObject(dictionaryJson);
         }
 
-        private Dictionary<string, List<Dictionary<string, string>>> GetActionAttributes_AsDictionary(
-            string subjectName)
+        private Dictionary<string, List<Dictionary<string, string>>> GetActionAttributes_AsDictionary(string subjectName, bool filterEcaRelevant=false)
         {
             var subjects = RuleUtils.FindSubjects();
 
@@ -858,7 +857,7 @@ namespace ECARules4All_DLL.Utils
                 }
             }
 
-            var actionAttributes = GetActionAttributesDictionary(objectCheck.Item2, subjects, subjectSelectedType);
+            var actionAttributes = GetActionAttributesDictionary(objectCheck.Item2, subjects, subjectSelectedType, filterEcaRelevant);
 
             var dictionaryJson = new Dictionary<string, List<Dictionary<string, string>>>();
 
@@ -1419,7 +1418,7 @@ namespace ECARules4All_DLL.Utils
             
             // Actions
             // var info = ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Efficient();
-            var actionAttributes = GetActionAttributes_AsDictionary(gameObjectName);
+            var actionAttributes = GetActionAttributes_AsDictionary(gameObjectName, filterEcaRelevant:true);
             // var ecaMethodNames = GetAllInfoAboutCurrentECAObjects().allActionAttributes[name].Select(kv => kv.Key).Distinct().ToList();
             var ecaMethodNames = actionAttributes.Select(kv => kv.Key).Distinct().ToList();
 
@@ -1430,7 +1429,7 @@ namespace ECARules4All_DLL.Utils
             return output;
         }
         
-        public (string Variables, string Actions) GetCapabilitiesAsDoubleString(ECAObject ecaObject)
+        public (string Variables, string Actions) GetCapabilitiesAsDoubleString(ECAObject ecaObject, bool filterEcaRelevant=false)
         {
             string s1 = string.Empty, s2=String.Empty;
             var gameObjectName = ecaObject.gameObject.name;
@@ -1443,7 +1442,7 @@ namespace ECARules4All_DLL.Utils
             
             // Actions
             // var info = ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Efficient();
-            var actionAttributes = GetActionAttributes_AsDictionary(gameObjectName);
+            var actionAttributes = GetActionAttributes_AsDictionary(gameObjectName, filterEcaRelevant);
             // var ecaMethodNames = GetAllInfoAboutCurrentECAObjects().allActionAttributes[name].Select(kv => kv.Key).Distinct().ToList();
             var ecaMethodNames = actionAttributes.Select(kv => kv.Key).Distinct().ToList();
 
@@ -1465,7 +1464,7 @@ namespace ECARules4All_DLL.Utils
             
             // Actions
             // var info = ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Efficient();
-            var actionAttributes = GetActionAttributes_AsDictionary(gameObjectName);
+            var actionAttributes = GetActionAttributes_AsDictionary(gameObjectName, filterEcaRelevant:true);
             // var ecaMethodNames = GetAllInfoAboutCurrentECAObjects().allActionAttributes[name].Select(kv => kv.Key).Distinct().ToList();
             var ecaMethodNames = actionAttributes.Select(kv => kv.Key).Distinct().ToList();
 

@@ -523,8 +523,7 @@ namespace ECARules4All_DLL.Utils
 
         //we pass bool passive when we have to retrieve passive verbs
         public static Dictionary<int, VerbComposition> FindActiveVerbs(GameObject subjSelected,
-            Dictionary<int, Dictionary<GameObject, string>> subjects, [CanBeNull] string selectedType,
-            bool passive)
+            Dictionary<int, Dictionary<GameObject, string>> subjects, [CanBeNull] string selectedType, bool passive, bool filterEcaRelevant=false)
         {
             Dictionary<int, VerbComposition> result = new Dictionary<int, VerbComposition>();
             int i = 0;
@@ -540,7 +539,7 @@ namespace ECARules4All_DLL.Utils
                     if (behaviourExist)
                     {
                         //foreach component we find the verbs
-                        var componentVerbs = ListActionsItem(cType);
+                        var componentVerbs = filterEcaRelevant ? ListRelevantActionsItem(cType) : ListActionsItem(cType);
                         foreach (var el in componentVerbs)
                         {
                             result.Add(i, el);
@@ -550,7 +549,7 @@ namespace ECARules4All_DLL.Utils
                     else
                     {
                         //foreach component we find the verbs
-                        var componentVerbs = ListActionsItem(cType);
+                        var componentVerbs = filterEcaRelevant ? ListRelevantActionsItem(cType) : ListActionsItem(cType);
                         foreach (var el in componentVerbs)
                         {
                             //for example, food has the verb eats, that has as subject Character, we don't
@@ -585,7 +584,7 @@ namespace ECARules4All_DLL.Utils
 
         public static void FindPassiveVerbs(GameObject subjSelected,
             Dictionary<int, Dictionary<GameObject, string>> subjects, string selectedType,
-            ref Dictionary<int, VerbComposition> activeVerbs)
+            ref Dictionary<int, VerbComposition> activeVerbs, bool filterEcaRelevant=false)
         {
             List<string> ecaScriptOfTheGameobject = FindECAScripts(subjSelected);
             foreach (var subj in subjects)
@@ -596,7 +595,7 @@ namespace ECARules4All_DLL.Utils
                     {
                         //we pass "passive" as false in order to include in the verbs of each subject even those who don't
                         //have itself as subject. (e.g. among Food verbs there will be Eats)
-                        Dictionary<int, VerbComposition> verbs = FindActiveVerbs(var.Key, subjects, null, false);
+                        Dictionary<int, VerbComposition> verbs = FindActiveVerbs(var.Key, subjects, null, false, filterEcaRelevant);
                         //foreach verb of each subject
                         foreach (var v in verbs)
                         {
@@ -736,6 +735,47 @@ namespace ECARules4All_DLL.Utils
 
             return actions;
         }
+        
+        public static List<VerbComposition> ListRelevantActionsItem(Type c)
+        {
+            List<VerbComposition> actions = new List<VerbComposition>();
+            foreach (MethodInfo m in c.GetMethods())
+            {
+                // Check for ActionAttribute
+                object[] actionAttributes = m.GetCustomAttributes(typeof(ActionAttribute), true);
+
+                // Check for ECARelevanceAttribute
+                object[] ecaRelevantAttributes = m.GetCustomAttributes(typeof(ECARelevanceAttribute), true);
+
+                if (actionAttributes.Length > 0 && ecaRelevantAttributes.Length > 0)
+                {
+                    foreach (var ecaAttr in ecaRelevantAttributes)
+                    {
+                        ECARelevanceAttribute ecaRelevance = (ECARelevanceAttribute)ecaAttr;
+                        if (ecaRelevance.isRelevance)
+                        {
+                            foreach (var actionAttr in actionAttributes)
+                            {
+                                ActionAttribute ac = (ActionAttribute)actionAttr;
+                                if (ac.ObjectType != null)
+                                {
+                                    VerbComposition verbComposition = new VerbComposition(ac.ObjectType.ToString(), ac);
+                                    actions.Add(verbComposition);
+                                }
+                                else
+                                {
+                                    VerbComposition verbComposition = new VerbComposition(ac.variableName, ac);
+                                    actions.Add(verbComposition);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return actions;
+        }
+
         
         // Returns for each state variable the name and the ECARules4AllType
         public static Dictionary<string, (ECARules4AllType, Type)> FindStateVariables(GameObject gameObject, bool filterEcaRelevant = false)
