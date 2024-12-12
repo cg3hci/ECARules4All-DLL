@@ -69,7 +69,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 }
                 else if(path.Contains(this.apiAutomations))
                 {
-                    this.HandleAnotherEndpoint(context);
+                    this.HandleAutomations(context);
                 }
                 else
                 {
@@ -108,7 +108,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             }
         }
 
-        private void HandleAnotherEndpoint(HttpListenerContext context)
+        private void HandleAutomations(HttpListenerContext context)
         {
             using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
             {
