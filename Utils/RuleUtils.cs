@@ -468,7 +468,6 @@ namespace ECARules4All_DLL.Utils
                 }
             }
             return FindTheInnerOne(listOfEcaAttributes);
-            ;
         }
 
         static List<Type> RetrieveECAAttributes(GameObject gameObject)

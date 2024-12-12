@@ -1404,23 +1404,73 @@ namespace ECARules4All_DLL.Utils
             return verbList;
         }
 
+
         //TODO Refactor perché fa schifo
         public string GetCapabilitiesAsString(ECAObject ecaObject)
         {
             var output = "";
+            var gameObjectName = ecaObject.gameObject.name;
 
-            var info = ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Efficient();
-
-            var name = ecaObject.gameObject.name;
-
-            var ecaStateVariables = RuleUtils.FindStateVariables(GameObject.Find(name))
+            
+            // State variable
+            var ecaStateVariables = RuleUtils.FindStateVariables(ecaObject.gameObject)
                 .Select(kv => kv.Value.Item1 + " " + kv.Key).ToList();
-            var ecaMethodNames = info.allActionAttributes[name].Select(kv => kv.Key).Distinct().ToList();
+            
+            
+            // Actions
+            // var info = ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Efficient();
+            var actionAttributes = GetActionAttributes_AsDictionary(gameObjectName);
+            // var ecaMethodNames = GetAllInfoAboutCurrentECAObjects().allActionAttributes[name].Select(kv => kv.Key).Distinct().ToList();
+            var ecaMethodNames = actionAttributes.Select(kv => kv.Key).Distinct().ToList();
 
-            output += "Name: " + name + "\n\n"
+
+            output += "Name: " + gameObjectName + "\n\n"
                       + "StateVariables\n" + string.Join(", ", ecaStateVariables) + "\n"
                       + "Actions\n" + string.Join(", ", ecaMethodNames);
             return output;
+        }
+        
+        public (string Variables, string Actions) GetCapabilitiesAsDoubleString(ECAObject ecaObject)
+        {
+            string s1 = string.Empty, s2=String.Empty;
+            var gameObjectName = ecaObject.gameObject.name;
+
+            
+            // State variable
+            var ecaStateVariables = RuleUtils.FindStateVariables(ecaObject.gameObject)
+                .Select(kv => kv.Value.Item1 + " " + kv.Key).ToList();
+            
+            
+            // Actions
+            // var info = ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Efficient();
+            var actionAttributes = GetActionAttributes_AsDictionary(gameObjectName);
+            // var ecaMethodNames = GetAllInfoAboutCurrentECAObjects().allActionAttributes[name].Select(kv => kv.Key).Distinct().ToList();
+            var ecaMethodNames = actionAttributes.Select(kv => kv.Key).Distinct().ToList();
+
+
+            s1 += "Variabili\n" + string.Join(", ", ecaStateVariables) + "\n";
+            s2 += "Azioni\n" + string.Join(", ", ecaMethodNames);
+            return (s1, s2);
+        }
+        
+        public (List<string> Variables, List<string> Actions) GetCapabilities(ECAObject ecaObject)
+        {
+            var gameObjectName = ecaObject.gameObject.name;
+
+            
+            // State variable
+            var ecaStateVariables = RuleUtils.FindStateVariables(ecaObject.gameObject)
+                .Select(kv => kv.Value.Item1 + " " + kv.Key).ToList();
+            
+            
+            // Actions
+            // var info = ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Efficient();
+            var actionAttributes = GetActionAttributes_AsDictionary(gameObjectName);
+            // var ecaMethodNames = GetAllInfoAboutCurrentECAObjects().allActionAttributes[name].Select(kv => kv.Key).Distinct().ToList();
+            var ecaMethodNames = actionAttributes.Select(kv => kv.Key).Distinct().ToList();
+
+
+            return (ecaStateVariables, ecaMethodNames);
         }
 
         //TODO Decidere come mostrare queste regole
@@ -1439,6 +1489,12 @@ namespace ECARules4All_DLL.Utils
         public string GetRulesInvolvingECAObjectAsString(ECAObject ecaObject)
         {
             return GetRulesInvolvingGameObjectAsString(ecaObject.gameObject);
+        }
+
+        public string GetDeepestTypePlusNameAsString(ECAObject ecaObject)
+        {
+            string type = RuleUtils.FindInnerTypeNotBehaviour(ecaObject.gameObject);
+            return $"The {type} {ecaObject.gameObject.name}";
         }
     }
 }
