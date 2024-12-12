@@ -21,6 +21,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         /// <summary>
         /// <b>life</b> is the current life of the character, represented as a float number.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("life", ECARules4AllType.Float)]
         public float life
         {
@@ -64,6 +65,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         /// The implementation details are managed by the <see cref="Interactable"/> class logic.
         /// </summary>
         /// <param name="o">The target interactable object</param>
+        [ECARelevance(true)]
         [Action(typeof(Character), "interacts with", typeof(Interactable))]
         public void Interacts(Interactable o)
         {
@@ -74,6 +76,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         /// The implementation details are managed by the <see cref="Interactable"/> class logic.
         /// </summary>
         /// <param name="o">The target interactable object</param>
+        [ECARelevance(true)]
         [Action(typeof(Character), "stops-interacting with", typeof(Interactable))]
         public void StopsInteracting(Interactable o)
         {
@@ -170,6 +173,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         /// <b>StartsAnimation</b> triggers a predefined animation for the character, using the provided animation identifier.
         /// </summary>
         /// <param name="s">The string of the animation clip to play</param>
+        [ECARelevance(true)]
         [Action(typeof(Character), "starts-animation", typeof(string))]
         public void StartsAnimation(string s)
         {

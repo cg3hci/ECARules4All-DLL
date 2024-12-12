@@ -36,6 +36,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles.Subcategories
         [SerializeField]
         private float _gravity;
 
+        [ECARelevance(true)]
         [Action(typeof(SpaceVehicle), "takes-off", typeof(Position))]
         public void TakesOff(Position p)
         {
@@ -44,6 +45,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles.Subcategories
             StartCoroutine(MoveObject(speed, endMarker));
         }
 
+        [ECARelevance(true)]
         [Action(typeof(SpaceVehicle), "lands", typeof(Position))]
         public void Lands(Position p)
         {

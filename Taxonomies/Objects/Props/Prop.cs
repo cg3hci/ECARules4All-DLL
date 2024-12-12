@@ -17,6 +17,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props
         /// <summary>
         /// <b>Price</b>: The price of the prop object.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("price", ECARules4AllType.Float)]
         public float price
         {

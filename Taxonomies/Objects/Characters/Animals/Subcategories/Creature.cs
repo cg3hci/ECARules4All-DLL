@@ -73,6 +73,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         /// </summary>
         /// <param name="p">The target position to run to.</param>
         [Action(typeof(Creature), "runs to", typeof(Position))]
+        [ECARelevance(true)]
         public void Runs(Position p)
         {
             float speed = 2.0F;
@@ -86,6 +87,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         /// </summary>
         /// <param name="p">The path to follow while running.</param>
         [Action(typeof(Creature), "runs on", typeof(Path))]
+        [ECARelevance(true)]
         public void Runs(Path p)
         {
             selected = RunAnimation;

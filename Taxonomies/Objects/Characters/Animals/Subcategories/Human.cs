@@ -92,6 +92,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         /// </summary>
         /// <param name="p">The target position to move to.</param>
         [Action(typeof(Human), "walks to", typeof(Position))]
+        [ECARelevance(true)]
         public void Walks(Position p)
         {
             float speed = 1.0F;
@@ -105,6 +106,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         /// <b>Walks</b> (on) is a method that moves the human along a specified path while playing the walking animation.
         /// </summary>
         /// <param name="p">The path to follow while walking.</param>
+        [ECARelevance(true)]
         [Action(typeof(Human), "walks on", typeof(Path))]
         public void Walks(Path p)
         {

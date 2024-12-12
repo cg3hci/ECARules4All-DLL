@@ -91,6 +91,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         /// <b>Walks</b> (to) is a method that moves the robot to a specific position with a walking animation.
         /// </summary>
         /// <param name="p">The target position to move to.</param>
+        [ECARelevance(true)]
         [Action(typeof(Robot), "walks to", typeof(Position))]
         public void Walks(Position p)
         {
@@ -105,6 +106,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         /// <b>Walks</b> (on) is a method that moves the robot along a specified path while playing the walking animation.
         /// </summary>
         /// <param name="p">The path to follow while walking.</param>
+        [ECARelevance(true)]
         [Action(typeof(Robot), "walks on", typeof(Path))]
         public void Walks(Path p)
         {

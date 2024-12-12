@@ -15,6 +15,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcat
         /// <summary>
         /// <b>Speed</b>: this is the speed of the bullet
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("speed", ECARules4AllType.Float)]
         public float speed
         {

@@ -16,6 +16,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
         /// <summary>
         /// <b>author</b> specifies the name of the artist of the artwork.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("author", ECARules4AllType.Text)]
         public string author
         {
@@ -48,6 +49,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
         /// <summary>
         /// <b>year</b> denotes the year in which the artwork was created.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("year", ECARules4AllType.Integer)]
         public int year
         {

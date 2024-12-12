@@ -38,6 +38,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         /// </summary>
         /// <param name="p">The target position to fly to.</param>
         [Action(typeof(FlyingAnimal), "flies to", typeof(Position))]
+        [ECARelevance(true)]
         public void Flies(Position p)
         {
             float speed = 5.0F;
@@ -51,6 +52,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         /// </summary>
         /// <param name="p">The path to follow while flying.</param>
         [Action(typeof(FlyingAnimal), "flies on", typeof(Path))]
+        [ECARelevance(true)]
         public void Flies(Path p)
         {
             selected = FlyAnimation;
@@ -62,6 +64,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         /// </summary>
         /// <param name="p">The target position to walk to.</param>
         [Action(typeof(FlyingAnimal), "walks to", typeof(Position))]
+        [ECARelevance(true)]
         public void Walks(Position p)
         {
             float speed = 1.0F;

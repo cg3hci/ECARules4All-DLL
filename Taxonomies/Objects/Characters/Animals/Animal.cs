@@ -21,6 +21,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals
         /// </summary>
         /// <param name="s">The name of the audio resource to be played.</param>
         [Action(typeof(Animal), "speaks", typeof(string))]
+        [ECARelevance(true)]
         public void Speaks(string s)
         {
             AudioSource audio = this.gameObject.GetComponent<AudioSource>();

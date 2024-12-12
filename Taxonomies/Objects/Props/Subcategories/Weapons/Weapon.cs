@@ -15,6 +15,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons
         /// <summary>
         /// <b>Power</b>: a float value that represents the power of the weapon.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("power", ECARules4AllType.Float)] 
         public float power
         {

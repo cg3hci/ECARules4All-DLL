@@ -12,6 +12,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles.Subcategories
     {
         private bool isBusyMoving = false;
 
+        [ECARelevance(true)]
         [Action(typeof(AirVehicle), "takes-off", typeof(Position))]
         public void TakesOff(Position p)
         {
@@ -20,6 +21,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles.Subcategories
             StartCoroutine(MoveObject(speed, endMarker));
         }
 
+        [ECARelevance(true)]
         [Action(typeof(AirVehicle), "lands", typeof(Position))]
         public void Lands(Position p)
         {

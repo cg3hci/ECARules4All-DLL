@@ -19,9 +19,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
                 ECAScript.NotifyUpdate(this, nameof(price), price.ToString());
             }
         }
-
         [SerializeField] private float _price;
-
+        
+        [ECARelevance(true)]
         [StateVariable("color", ECARules4AllType.Color)]
         public Color color
         {

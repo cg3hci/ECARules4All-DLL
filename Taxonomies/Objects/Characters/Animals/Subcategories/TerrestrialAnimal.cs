@@ -61,6 +61,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         /// <b>Walks</b> (to) is a method that moves the terrestrial animal to a specific position with a walking animation.
         /// </summary>
         /// <param name="p">The target position to walk to.</param>
+        [ECARelevance(true)]
         [Action(typeof(TerrestrialAnimal), "walks to", typeof(Position))]
         public void Walks(Position p)
         {
@@ -75,6 +76,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         /// <b>Walks</b> (on) is a method that moves the terrestrial animal along a specified path while playing the walking animation.
         /// </summary>
         /// <param name="p">The path to follow while walking.</param>
+        [ECARelevance(true)]
         [Action(typeof(TerrestrialAnimal), "walks on", typeof(Path))]
         public void Walks(Path p)
         {

@@ -48,6 +48,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <summary>
         /// <b>color</b> represents the color of the light source. The value is a string that represents the color name (e.g., "red", "blue", "green").
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("color", ECARules4AllType.Color)]
         public Color color
         {
@@ -64,6 +65,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <summary>
         /// <b>on</b> indicates whether the light source is currently active or inactive. The accepted values are "on" or "off".
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("on", ECARules4AllType.Boolean)]
         public ECABoolean on 
         {
@@ -86,6 +88,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         ///  <b>Turns</b> toggles the light source on or off based on the specified value ("on" or "off"), enabling or disabling illumination.
         /// </summary>
         /// <param name="newStatus">The desired state of the light source (on or off).</param>
+        [ECARelevance(true)]
         [Action(typeof(ECALight), "turns", typeof(ECABoolean))]
         public void Turns(ECABoolean newStatus)
         {
@@ -98,6 +101,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// If the resulting intensity exceeds the maximum allowed value, it is capped at <b>maxIntensity</b>.
         /// </summary>
         /// <param name="amount">The value to add to the current intensity.</param>
+        [ECARelevance(true)]
         [Action(typeof(ECALight), "increases", "intensity", "by", typeof(float))]
         public void IncreasesIntensity(float amount)
         {
@@ -118,6 +122,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// If the resulting intensity drops below zero, it is set to zero to avoid negative values.
         /// </summary>
         /// <param name="amount">The value to subtract from the current intensity.</param>
+        [ECARelevance(true)]
         [Action(typeof(ECALight), "decreases", "intensity", "by", typeof(float))]
         public void DecreasesIntensity(float amount)
         {

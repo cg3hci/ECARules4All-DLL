@@ -23,6 +23,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles
         [SerializeField]
         private float _speed;
 
+        [ECARelevance(true)]
         [StateVariable("on", ECARules4AllType.Boolean)]
         public ECABoolean on 
         {
@@ -39,6 +40,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles
         private Vector3 localForward;
         private ECAObject reference;
 
+        [ECARelevance(true)]
         [Action(typeof(Vehicle), "starts")]
         public void Starts()
         {
@@ -54,6 +56,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles
             gameObject.transform.Rotate(rotation.x, rotation.y + angle, rotation.z);
         }
 
+        [ECARelevance(true)]
         [Action(typeof(Vehicle), "accelerates-by", typeof(float))]
         public void Accelerates(float f)
         {
@@ -66,6 +69,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles
             speed -= f;
         }
 
+        [ECARelevance(true)]
         [Action(typeof(Vehicle), "stops")]
         public void Stops()
         {

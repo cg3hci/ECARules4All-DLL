@@ -83,6 +83,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         /// is not in the subject of the action, but on the object.
         /// </summary>
         /// <param name="c">The character that eats the food</param>
+        [ECARelevance(true)]
         [Action(typeof(Character), "eats", typeof(Food))]
         public void _Eats(Character c)
         {

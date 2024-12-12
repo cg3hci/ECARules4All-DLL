@@ -33,6 +33,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         /// <summary>
         /// <b>Brand</b>: This property is used to define the brand of the clothing.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("brand", ECARules4AllType.Text)]
         public string brand
         {
@@ -49,6 +50,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         /// <summary>
         /// <b>Color</b>: This property is used to define the color of the clothing.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("color", ECARules4AllType.Color)]
         public Color color
         {
@@ -65,6 +67,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         /// <summary>
         /// <b>Size/b> This property is used to define the size of the clothing.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("size", ECARules4AllType.Text)]
         public string size
         {
@@ -81,6 +84,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         /// <summary>
         /// <b>Weared</b>: This property is used to define if the clothing is weared or not.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("weared", ECARules4AllType.Boolean)]
         public ECABoolean weared
         {
@@ -114,6 +118,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         /// <b>_Wears</b>: This method is used to allow the mannequin to wear the clothing.
         /// </summary>
         /// <param name="m">The mannequin that wears the clothing</param>
+        [ECARelevance(true)]
         [Action(typeof(Mannequin), "wears", typeof(Clothing))]
         public void _Wears(Mannequin m)
         {

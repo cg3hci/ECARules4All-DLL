@@ -17,6 +17,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <b>Presses</b> is a <i>passive</i> function that represents the pressing of the button.
         /// </summary>
         /// <param name="c">The <see cref="Character"/> who presses the button. </param>
+        [ECARelevance(true)]
         [Action(typeof(Character), "pushes", typeof(Button))]
         public void _Presses(Character c)
         {

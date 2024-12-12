@@ -93,6 +93,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <p>If the resulting zoom is less than 30 the zoom is set to 30.</p>
         /// </summary>
         /// <param name="amount">The amount of zoom to remove </param>
+        [ECARelevance(true)]
         [Action(typeof(ECACamera), "zooms-in", typeof(float))]
         public void ZoomsIn(float amount)
         {
@@ -114,6 +115,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <p> If the resulting zoom is greater than 100 the zoom is set to 100.</p>
         /// </summary>
         /// <param name="amount">The amount of zoom to add</param>
+        [ECARelevance(true)]
         [Action(typeof(ECACamera), "zooms-out", typeof(float))]
         public void ZoomsOut(float amount)
         {

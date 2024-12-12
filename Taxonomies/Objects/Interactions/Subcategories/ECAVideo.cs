@@ -19,6 +19,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <summary>
         /// <b>Source</b> is the video source.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("source", ECARules4AllType.Text)]
         public string source
         {
@@ -35,6 +36,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <summary>
         /// <b>Volume</b> is the video volume.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("volume", ECARules4AllType.Float)]
         public float volume
         {
@@ -100,6 +102,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <summary>
         /// <b>Playing</b> defines whether the video is playing.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("playing", ECARules4AllType.Boolean)]
         public ECABoolean playing 
         {
@@ -116,6 +119,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <summary>
         /// <b>Paused</b> defines whether the video is paused.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("paused", ECARules4AllType.Boolean)]
         public ECABoolean paused 
         {
@@ -153,6 +157,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <summary>
         /// <b>Plays</b> starts the video.
         /// </summary>
+        [ECARelevance(true)]
         [Action(typeof(ECAVideo), "plays")]
         public void Plays()
         {
@@ -168,6 +173,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <summary>
         /// <b>Pauses</b> pauses the video.
         /// </summary>
+        [ECARelevance(true)]
         [Action(typeof(ECAVideo), "pauses")]
         public void Pauses()
         {
@@ -241,6 +247,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// The new path must be relative to the user-accessible Inventory folder.
         /// </summary>
         /// <param name="newSource">The path for the new video file.</param>
+        [ECARelevance(true)]
         [Action(typeof(ECAVideo), "changes", "source", "to", typeof(string))]
         public void ChangesSource(string newSource)
         {
