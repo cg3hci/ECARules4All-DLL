@@ -18,6 +18,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Reference</b> is the Unity Scene to transition to.
         /// </summary>
         [StateVariable("reference", ECARules4AllType.Identifier)]
+        [ECARelevance(false)]
         public Scenes_Scene reference
         {
             get => _references;
@@ -35,6 +36,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="reference"></param>
         [Action(typeof(Transition), "teleports to", typeof(Scenes_Scene))]
+        [ECARelevance(false)]
         public void Teleports(Scenes_Scene reference)
         {
             if (reference.name != SceneManager.GetActiveScene().name)

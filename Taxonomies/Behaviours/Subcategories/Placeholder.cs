@@ -18,6 +18,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>newMesh</b> is the mesh model that the object will use.
         /// </summary>
         [StateVariable("mesh", ECARules4AllType.Identifier)]
+        [ECARelevance(false)]
         public Mesh newMesh
         {
             get => _newMesh;
@@ -35,6 +36,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="meshName">The path of the mesh in the user-accessible mesh folder</param>
         [Action(typeof(Placeholder), "changes", "mesh", "to", typeof(string))]
+        [ECARelevance(false)]
         public void Changes(string meshName)
         {
             newMesh = new Mesh();

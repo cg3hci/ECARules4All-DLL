@@ -18,6 +18,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="action"> The event to trigger in the scene.</param>
         [Action(typeof(Trigger), "triggers", typeof(Action))]
+        [ECARelevance(false)]
         public void Triggers(Action action)
         {
             EventBus.GetInstance().Publish(action);

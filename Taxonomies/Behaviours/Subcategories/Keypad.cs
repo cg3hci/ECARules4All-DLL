@@ -18,6 +18,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Keycode</b> is the code that the keypad will accept.
         /// </summary>
         [StateVariable("keycode", ECARules4AllType.Text)]
+        [ECARelevance(false)]
         public string keycode
         {
             get => _keycode;
@@ -34,6 +35,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Input</b> is the input that the keypad is currently holding.
         /// </summary>
         [StateVariable("input", ECARules4AllType.Text)]
+        [ECARelevance(false)]
         public string input
         {
             get => _input;
@@ -51,6 +53,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="input"> The complete code to be checked </param>
         [Action(typeof(Keypad), "inserts", typeof(string))]
+        [ECARelevance(false)]
         public void Inserts(string input)
         {
             this.input = input;
@@ -62,6 +65,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <param name="input"></param>
         //TODO: verb not present in grammar
         [Action(typeof(Keypad), "adds", typeof(string))]
+        [ECARelevance(false)]
         public void Add(string input)
         {
             this.input += input;
@@ -71,6 +75,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Resets</b> clears the <see cref="input"/> variable.
         /// </summary>
         [Action(typeof(Keypad), "resets")]
+        [ECARelevance(false)]
         public void Resets()
         {
             input = "";

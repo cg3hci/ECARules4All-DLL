@@ -17,6 +17,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Color</b> is the color that will be used to highlight the objects.
         /// </summary>
         [StateVariable("color", ECARules4AllType.Color)]
+        [ECARelevance(false)]
         public Color color
         {
             get => _color;
@@ -33,6 +34,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>On</b> is a boolean that tells if the highlight is on or off.
         /// </summary>
         [StateVariable("on", ECARules4AllType.Boolean)]
+        [ECARelevance(false)]
         public ECABoolean on
         {
             get => _on;
@@ -72,6 +74,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="c"></param>
         [Action(typeof(Highlight), "changes", "color", "to", typeof(Color))]
+        [ECARelevance(false)]
         public void ChangesColor(Color c)
         {
             color = c;
@@ -83,6 +86,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="on"></param>
         [Action(typeof(Highlight), "turns", typeof(ECABoolean))]
+        [ECARelevance(false)]
         public void Turns(ECABoolean on)
         {
             this.on = on;

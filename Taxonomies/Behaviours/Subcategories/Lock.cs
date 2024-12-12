@@ -17,6 +17,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>locked</b> defines whether the lock is open or not.
         /// </summary>
         [StateVariable("locked", ECARules4AllType.Boolean)]
+        [ECARelevance(false)]
         public ECABoolean locked
         {
             get => _locked;
@@ -33,6 +34,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Opens</b> sets the lock to open.
         /// </summary>
         [Action(typeof(Lock), "opens")]
+        [ECARelevance(false)]
         public void Opens()
         {
             //locked.Assign(ECABoolean.BoolType.NO);
@@ -43,6 +45,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Closes</b> sets the lock to closed.
         /// </summary>
         [Action(typeof(Lock), "closes")]
+        [ECARelevance(false)]
         public void Closes()
         {
             //locked.Assign(ECABoolean.BoolType.YES);

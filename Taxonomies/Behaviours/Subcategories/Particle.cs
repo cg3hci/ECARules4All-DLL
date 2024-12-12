@@ -16,6 +16,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>On</b> is a boolean that indicates if the particle system is active.
         /// </summary>
         [StateVariable("on", ECARules4AllType.Boolean)]
+        [ECARelevance(false)]
         public ECABoolean on
         {
             get => _on;
@@ -36,6 +37,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="on">The status of the particle system.</param>
         [Action(typeof(Particle), "turns", typeof(ECABoolean))]
+        [ECARelevance(false)]
         public void Turns(ECABoolean on)
         {
             this.@on = on;

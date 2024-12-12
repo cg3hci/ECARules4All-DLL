@@ -18,6 +18,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>count</b> is the current count of the counter
         /// </summary>
         [StateVariable("count", ECARules4AllType.Float)]
+        [ECARelevance(false)]
         public float count
         {
             get => _count;
@@ -34,6 +35,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="amount"> the amount to set </param>
         [Action(typeof(Counter), "changes","count", "to", typeof(float))]
+        [ECARelevance(false)]
         public void ChangesCount(float amount)
         {
             count = amount;

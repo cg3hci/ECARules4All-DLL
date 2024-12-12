@@ -18,6 +18,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <summary>
         /// <b>Capacity</b> is the maximum number of objects that can be held by the container.
         /// </summary>
+        [ECARelevance(false)]
         [StateVariable("capacity", ECARules4AllType.Integer)]
         public int capacity
         {
@@ -35,6 +36,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>objectsCount</b> is the number of objects that are currently held by the container.
         /// </summary>
         [StateVariable("objectsCount", ECARules4AllType.Integer)] 
+        [ECARelevance(false)]
         public int objectsCount
         {
             get => _objectsCount;
@@ -65,6 +67,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="o">The gameObject to be stored inside the container</param>
         [Action(typeof(Container), "inserts", typeof(GameObject))]
+        [ECARelevance(false)]
         public void Inserts(GameObject o)
         {
             if (!objectsList.Contains(o))
@@ -84,6 +87,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="o">The gameObject to be removed from the container</param>
         [Action(typeof(Container), "removes", typeof(GameObject))]
+        [ECARelevance(false)]
         public void Removes(GameObject o)
         {
             objectsList.Remove(o);
@@ -101,6 +105,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Empties</b> empties the container.
         /// </summary>
         [Action(typeof(Container), "empties")]
+        [ECARelevance(false)]
         public void Empties()
         {
 

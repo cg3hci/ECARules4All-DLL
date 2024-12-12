@@ -17,6 +17,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Duration</b> specifies the total duration for which the timer will run.
         /// </summary>
         [StateVariable("duration", ECARules4AllType.Float)] 
+        [ECARelevance(false)]
         public float duration
         {
             get => _duration;
@@ -33,6 +34,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Current</b> represents the current time of the timer, meaning the elapsed time from the start. It dynamically updates as the timer counts down.
         /// </summary>
         [StateVariable("current-time", ECARules4AllType.Float)] 
+        [ECARelevance(false)]
         public float current
         {
             get => _current;
@@ -59,6 +61,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="amount">The new duration value for the timer.</param>
         [Action(typeof(Timer), "changes","duration", "to", typeof(float))]
+        [ECARelevance(false)]
         public void ChangeDuration(float amount)
         {
             if (amount > 0.0f)
@@ -70,6 +73,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="amount"> The new </param>
         [Action(typeof(Timer), "changes","current-time", "to", typeof(float))]
+        [ECARelevance(false)]
         public void ChangeCurrentTime(float amount)
         {
             if (amount < 0.0f)
@@ -84,6 +88,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Starts</b> activates the timer to begin counting down, resuming its operation from the last paused state.
         /// </summary>
         [Action(typeof(Timer), "starts")]
+        [ECARelevance(false)]
         public void Starts()
         {
             active = true;
@@ -93,6 +98,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Stops</b> deactivates the timer, resetting the elapsed time to zero.
         /// </summary>
         [Action(typeof(Timer), "stops")]
+        [ECARelevance(false)]
         public void Stops()
         {
             active = false;
@@ -103,6 +109,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Pauses</b> deactivates the timer, leaving the elapsed time unchanged.
         /// </summary>
         [Action(typeof(Timer), "pauses")]
+        [ECARelevance(false)]
         public void Pauses()
         {
             active = false;
@@ -125,6 +132,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="seconds">The elapsed time at which the event is triggered.</param>
         [Action(typeof(Timer), "reaches", typeof(int))]
+        [ECARelevance(false)]
         public void Reaches(int seconds)
         {
             Action action = new Action(this.gameObject, "reaches", seconds);
@@ -136,6 +144,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Resets</b> resets the timer to its maximum duration and deactivates it.
         /// </summary>
         [Action(typeof(Timer), "resets")]
+        [ECARelevance(false)]
         public void Resets()
         {
             active = false;
