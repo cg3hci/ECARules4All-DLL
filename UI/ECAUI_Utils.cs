@@ -90,7 +90,7 @@ namespace ECARules4All_DLL.UI
 
             public void SetFromAction(Action action)
             {
-                if (false) //(action == null) //todo TEMPORARY
+                if (action == null)
                 {
                     throw new ArgumentNullException(nameof(action), "Action is null or undefined");
                 }
@@ -122,8 +122,8 @@ namespace ECARules4All_DLL.UI
                 Value = action.GetModifierValue()?.ToString(); //todo what about ActionAttributeInfo?
 
                 //
-                var infoCapabilities =
-                    ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Efficient();
+                // var infoCapabilities = ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Efficient(); // Prima
+                var infoCapabilities = ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Cached(); // Ora
                 var actionAttributesList = infoCapabilities.allActionAttributes[Subject][Verb];
                 if (actionAttributesList != null)
                 {
@@ -135,7 +135,7 @@ namespace ECARules4All_DLL.UI
 
             public static ActionPlaceholder GenerateFromAction(Action action)
             {
-                if (false) //(action == null) //todo TEMPORARY
+                if (action == null)
                     throw new ArgumentNullException(nameof(action), "Action is null or undefined");
 
                 ActionPlaceholder actionPlaceholder = new ActionPlaceholder();

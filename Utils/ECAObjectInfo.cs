@@ -40,8 +40,11 @@ namespace ECARules4All_DLL.Utils
 
             public Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>>
                 allDropdownOptionsAfterObjects;
+
+            public bool initizialized;
         }
 
+        
 
         private void Awake()
         {
@@ -83,7 +86,33 @@ namespace ECARules4All_DLL.Utils
         }
 
 
-        public ECAObjectsCapabilties GetAllInfoAboutCurrentECAObjects_Efficient()
+        private ECAObjectsCapabilties cachedECAObjectsCapabilties;
+        private void OnEnable()
+        {
+            // Debug.LogError("[ECAOBJECTINFO] [ON ENABLE] START");
+            SetCacheIfNotDoneBefore_ECAObjectsCapabilties();
+            // Debug.LogError("[ECAOBJECTINFO] [ON ENABLE] END");
+        }
+
+        private void SetCacheIfNotDoneBefore_ECAObjectsCapabilties()
+        {
+            if (cachedECAObjectsCapabilties.initizialized == false)
+            {
+                // Debug.LogError("[ECAOBJECTINFO] [SET CACHE...] BEFORE");
+                cachedECAObjectsCapabilties = GetAllInfoAboutCurrentECAObjects_Efficient();
+                // Debug.LogError("[ECAOBJECTINFO] [SET CACHE...] AFTER");
+            }
+        }
+        
+        public ECAObjectsCapabilties GetAllInfoAboutCurrentECAObjects_Cached()
+        {
+            // Debug.LogError("[ECAOBJECTINFO] [GET CACHE...] BEFORE");
+            SetCacheIfNotDoneBefore_ECAObjectsCapabilties();
+            // Debug.LogError("[ECAOBJECTINFO] [GET CACHE...] AFTER");
+            return cachedECAObjectsCapabilties;
+        }
+        
+        internal ECAObjectsCapabilties GetAllInfoAboutCurrentECAObjects_Efficient()
         {
             var cachedRuleUtilsSubjects = RuleUtils.FindSubjects();
 
@@ -205,308 +234,311 @@ namespace ECARules4All_DLL.Utils
                 allSubjects = allSubjects.Select(x => x.name).ToHashSet(),
                 allActionAttributes = allActionAttributes,
                 allDropdownOptionsAfterVerbs = dropdownOptionsAfterVerbForAllSubjects,
-                allDropdownOptionsAfterObjects = dropdownOptionsAfterObjectForAllSubjects
+                allDropdownOptionsAfterObjects = dropdownOptionsAfterObjectForAllSubjects,
+                initizialized = true
             };
         }
 
-        // deprecated TODO: remove
-        private ECAObjectsCapabilties GetAllInfoAboutCurrentECAObjects_Efficient_But_Readible()
-        {
-            var cachedRuleUtilsSubjects = RuleUtils.FindSubjects();
+        // // deprecated TODO: remove
+        // private ECAObjectsCapabilties GetAllInfoAboutCurrentECAObjects_Efficient_But_Readible()
+        // {
+        //     var cachedRuleUtilsSubjects = RuleUtils.FindSubjects();
+        //
+        //     // === allSubjects ===
+        //     var allSubjects = cachedRuleUtilsSubjects
+        //         .SelectMany(item => item.Value.Keys)
+        //         .ToHashSet();
+        //
+        //     // === Precompute Subject Types ===
+        //     var subjectTypes = cachedRuleUtilsSubjects
+        //         .SelectMany(item => item.Value)
+        //         .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        //
+        //     // === Precompute Action Attributes for Each Subject ===
+        //     var actionAttributesCache = new Dictionary<GameObject, Dictionary<string, List<ActionAttribute>>>();
+        //     foreach (var s_gO in allSubjects)
+        //     {
+        //         if (!subjectTypes.TryGetValue(s_gO, out string subjectSelectedType))
+        //             subjectSelectedType = null;
+        //
+        //         // Cache action attributes for the subject
+        //         actionAttributesCache[s_gO] =
+        //             GetActionAttributesDictionary(s_gO, cachedRuleUtilsSubjects, subjectSelectedType);
+        //     }
+        //
+        //     // === allActionAttributes ===
+        //     var allActionAttributes = new Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>>();
+        //     foreach (var s_gO in allSubjects)
+        //     {
+        //         var actionAttributes = actionAttributesCache[s_gO];
+        //
+        //         var dictionaryJson = actionAttributes.ToDictionary(
+        //             kvp => kvp.Key,
+        //             kvp => kvp.Value.Select(attr => new Dictionary<string, string>
+        //             {
+        //                 { "Subject", s_gO.name },
+        //                 { "BoolType", attr.BoolType.ToString() },
+        //                 { "ModifierString", attr.ModifierString },
+        //                 { "ObjectType", attr.ObjectType?.ToString() ?? "null" },
+        //                 { "SubjectType", attr.SubjectType.ToString() },
+        //                 { "TypeId", attr.TypeId.ToString() },
+        //                 { "ValueType", attr.ValueType?.ToString() ?? "null" },
+        //                 { "Verb", attr.Verb },
+        //                 { "variableName", attr.variableName }
+        //             }).ToList()
+        //         );
+        //
+        //         allActionAttributes.Add(s_gO.name, dictionaryJson);
+        //     }
+        //
+        //     // === dropdownOptionsAfterVerbForAllSubjects ===
+        //     var dropdownOptionsAfterVerbForAllSubjects =
+        //         new Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>();
+        //     foreach (var s_gO in allSubjects)
+        //     {
+        //         var actionAttributes = actionAttributesCache[s_gO];
+        //
+        //         var actionAttributes2 = actionAttributes.ToDictionary(
+        //             kvp => kvp.Key,
+        //             kvp => DropdownValueChangedVerb(s_gO.name, kvp.Value)
+        //         );
+        //
+        //         dropdownOptionsAfterVerbForAllSubjects.Add(s_gO.name, actionAttributes2);
+        //     }
+        //
+        //     // === dropdownOptionsAfterObjectForAllSubjects ===
+        //     var dropdownOptionsAfterObjectForAllSubjects =
+        //         new Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>>();
+        //     foreach (var s_gO in allSubjects)
+        //     {
+        //         var actionAttributes = actionAttributesCache[s_gO];
+        //
+        //         var verbsDic = new Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>();
+        //         foreach (var actionAttributeList in actionAttributes.Values)
+        //         {
+        //             var stateVariablesDic = new Dictionary<string, Dictionary<string, List<string>>>();
+        //
+        //             foreach (var actionAttribute in actionAttributeList)
+        //             {
+        //                 if (!string.IsNullOrEmpty(actionAttribute.variableName))
+        //                 {
+        //                     var dropdownsDic =
+        //                         DropdownValueChangedObjectValue(actionAttribute.variableName, actionAttributeList);
+        //                     stateVariablesDic[actionAttribute.variableName] = dropdownsDic;
+        //                 }
+        //             }
+        //
+        //             var verb = actionAttributeList.FirstOrDefault()?.Verb ?? string.Empty;
+        //             verbsDic[verb] = stateVariablesDic;
+        //         }
+        //
+        //         dropdownOptionsAfterObjectForAllSubjects[s_gO.name] = verbsDic;
+        //     }
+        //
+        //     // Construct and return the result
+        //     return new ECAObjectsCapabilties
+        //     {
+        //         allSubjects = allSubjects.Select(x => x.name).ToHashSet(),
+        //         allActionAttributes = allActionAttributes,
+        //         allDropdownOptionsAfterVerbs = dropdownOptionsAfterVerbForAllSubjects,
+        //         allDropdownOptionsAfterObjects = dropdownOptionsAfterObjectForAllSubjects,
+        //         initizialized = true
+        //     };
+        // }
+        //
+        // // deprecated TODO: remove
+        // private ECAObjectsCapabilties GetAllInfoAboutCurrentECAObjects_EfficientMia()
+        // {
+        //     var cachedRuleUtilsSubjects = RuleUtils.FindSubjects();
+        //
+        //     // === allSubjects ===
+        //     var allSubjects = new HashSet<GameObject>();
+        //     foreach (var subDic in cachedRuleUtilsSubjects.Values)
+        //     {
+        //         foreach (var obj in subDic)
+        //         {
+        //             string currentName = obj.Key.name;
+        //             allSubjects.Add(obj.Key);
+        //         }
+        //     }
+        //     // end allSubjects           
+        //
+        //
+        //     // === allActionAttributes ===
+        //     // for each string in the hashset, get the action attributes
+        //     var allActionAttributes = new Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>>();
+        //     foreach (var s_gO in allSubjects)
+        //     {
+        //         // === GetActionAttributes_AsDictionary
+        //         string subjectSelectedType = "";
+        //
+        //         foreach (var item in cachedRuleUtilsSubjects)
+        //         {
+        //             foreach (var keyValuePair in item.Value)
+        //             {
+        //                 if (keyValuePair.Key == s_gO)
+        //                 {
+        //                     subjectSelectedType = keyValuePair.Value;
+        //                 }
+        //             }
+        //         }
+        //
+        //         var actionAttributes =
+        //             GetActionAttributesDictionary(s_gO, cachedRuleUtilsSubjects, subjectSelectedType);
+        //
+        //         var dictionaryJson = new Dictionary<string, List<Dictionary<string, string>>>();
+        //         foreach (var list in actionAttributes.Values)
+        //         {
+        //             var actionAttributesList = new List<Dictionary<string, string>>();
+        //
+        //             foreach (var actionAttribute in list)
+        //             {
+        //                 var tmpDic = new Dictionary<string, string>();
+        //
+        //                 tmpDic.Add("Subject", s_gO.name);
+        //                 tmpDic.Add("BoolType", actionAttribute.BoolType.ToString());
+        //                 tmpDic.Add("ModifierString", actionAttribute.ModifierString);
+        //                 tmpDic.Add("ObjectType",
+        //                     actionAttribute.ObjectType == null ? "null" : actionAttribute.ObjectType.ToString());
+        //                 tmpDic.Add("SubjectType", actionAttribute.SubjectType.ToString());
+        //                 tmpDic.Add("TypeId", actionAttribute.TypeId.ToString());
+        //                 tmpDic.Add("ValueType",
+        //                     actionAttribute.ValueType == null ? "null" : actionAttribute.ValueType.ToString());
+        //                 tmpDic.Add("Verb", actionAttribute.Verb);
+        //                 tmpDic.Add("variableName", actionAttribute.variableName);
+        //
+        //                 actionAttributesList.Add(tmpDic);
+        //             }
+        //
+        //             dictionaryJson.Add(actionAttributesList.Last()["Verb"], actionAttributesList);
+        //         }
+        //
+        //         // === End GetActionAttributes_AsDictionary
+        //         allActionAttributes.Add(s_gO.name, dictionaryJson);
+        //     }
+        //     // === end allActionAttributes ===
+        //
+        //
+        //     // === dropdownOptionsAfterVerbForAllSubjects ===
+        //     // var dropdownOptionsAfterVerbForAllSubjects = GetDropdownOptionsAfterVerbForAllSubjects_AsDict();
+        //     var dropdownOptionsAfterVerbForAllSubjects =
+        //         new Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>();
+        //
+        //     // for each string in the hashset, get the action attributes
+        //     foreach (var s_gO in allSubjects)
+        //     {
+        //         // === actionAttributes
+        //         // var actionAttributes = GetDropdownOptionsAfterVerb_AsDictionary(subjectName);
+        //         var actionAttributes2 = new Dictionary<string, Dictionary<string, List<string>>>();
+        //
+        //         string subjectSelectedType = "";
+        //
+        //         foreach (var item in cachedRuleUtilsSubjects)
+        //         {
+        //             foreach (var keyValuePair in item.Value)
+        //             {
+        //                 if (keyValuePair.Key == s_gO)
+        //                 {
+        //                     subjectSelectedType = keyValuePair.Value;
+        //                 }
+        //             }
+        //         }
+        //
+        //         var actionAttributes =
+        //             GetActionAttributesDictionary(s_gO, cachedRuleUtilsSubjects, subjectSelectedType);
+        //
+        //         foreach (var kvp in actionAttributes)
+        //         {
+        //             var verb = kvp.Key;
+        //             var actionAttributeList = kvp.Value;
+        //
+        //             var dropdownOptions = DropdownValueChangedVerb(s_gO.name, actionAttributeList);
+        //             actionAttributes2.Add(verb, dropdownOptions);
+        //         }
+        //         // === end actionAttributes
+        //
+        //         dropdownOptionsAfterVerbForAllSubjects.Add(s_gO.name, actionAttributes2);
+        //     }
+        //     // === end dropdownOptionsAfterVerbForAllSubjects ===
+        //
+        //
+        //     // === dropdownOptionsAfterObjectForAllSubjects ===
+        //     // var dropdownOptionsAfterObjectForAllSubjects = GetDropdownOptionsAfterObjectForAllSubjects_AsDict();
+        //     var dropdownOptionsAfterObjectForAllSubjects =
+        //         new Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>>();
+        //
+        //
+        //     // for each string in the hashset, get the action attributes
+        //     foreach (var s_gO in allSubjects)
+        //     {
+        //         var actionAttributesDictionary = GetActionAttributesDictionary(s_gO, cachedRuleUtilsSubjects, null);
+        //         var verbsDic = new Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>();
+        //
+        //         foreach (var acList in actionAttributesDictionary.Values)
+        //         {
+        //             var stateVariablesDic = new Dictionary<string, Dictionary<string, List<string>>>();
+        //             string verb = "";
+        //
+        //             if (acList.Count == 1)
+        //             {
+        //                 var actionAttribute = acList.First();
+        //                 if (string.IsNullOrEmpty(actionAttribute.variableName))
+        //                 {
+        //                     verb = acList.First().Verb;
+        //                 }
+        //                 // Serve per variabili come "increases by" che non si fermano all'oggetto ma hanno una sola variabile
+        //                 else
+        //                 {
+        //                     var dropdownsDic =
+        //                         DropdownValueChangedObjectValue(actionAttribute.variableName, acList);
+        //                     stateVariablesDic.Add(actionAttribute.variableName, dropdownsDic);
+        //                     verb = actionAttribute.Verb;
+        //                 }
+        //             }
+        //             else
+        //             {
+        //                 foreach (var actionAttribute in acList)
+        //                 {
+        //                     if (!string.IsNullOrEmpty(actionAttribute.variableName))
+        //                     {
+        //                         var dropdownsDic =
+        //                             DropdownValueChangedObjectValue(actionAttribute.variableName, acList);
+        //
+        //                         stateVariablesDic.Add(actionAttribute.variableName, dropdownsDic);
+        //                     }
+        //
+        //                     verb = actionAttribute.Verb;
+        //                 }
+        //             }
+        //
+        //             verbsDic.Add(verb, stateVariablesDic);
+        //         }
+        //
+        //         dropdownOptionsAfterObjectForAllSubjects.Add(s_gO.name, verbsDic);
+        //     }
+        //     // == end dropdownOptionsAfterObjectForAllSubjects ===
+        //
+        //
+        //     // var d = new Dictionary<string, object>
+        //     // {
+        //     //     { "allSubjects", allSubjects },
+        //     //     { "allActionAttributes", allActionAttributesSerialized },
+        //     //     { "allDropdownOptionsAfterVerbs", dropdownOptionsAfterVerbForAllSubjects },
+        //     //     { "allDropdownOptionsAfterObjects", dropdownOptionsAfterObjectForAllSubjects }
+        //     // }
+        //     var d = new ECAObjectsCapabilties
+        //     {
+        //         allSubjects = allSubjects.Select(x => x.name).ToHashSet(),
+        //         allActionAttributes = allActionAttributes,
+        //         allDropdownOptionsAfterVerbs = dropdownOptionsAfterVerbForAllSubjects,
+        //         allDropdownOptionsAfterObjects = dropdownOptionsAfterObjectForAllSubjects,
+        //         initizialized = true
+        //     };
+        //     return d;
+        // }
 
-            // === allSubjects ===
-            var allSubjects = cachedRuleUtilsSubjects
-                .SelectMany(item => item.Value.Keys)
-                .ToHashSet();
 
-            // === Precompute Subject Types ===
-            var subjectTypes = cachedRuleUtilsSubjects
-                .SelectMany(item => item.Value)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-            // === Precompute Action Attributes for Each Subject ===
-            var actionAttributesCache = new Dictionary<GameObject, Dictionary<string, List<ActionAttribute>>>();
-            foreach (var s_gO in allSubjects)
-            {
-                if (!subjectTypes.TryGetValue(s_gO, out string subjectSelectedType))
-                    subjectSelectedType = null;
-
-                // Cache action attributes for the subject
-                actionAttributesCache[s_gO] =
-                    GetActionAttributesDictionary(s_gO, cachedRuleUtilsSubjects, subjectSelectedType);
-            }
-
-            // === allActionAttributes ===
-            var allActionAttributes = new Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>>();
-            foreach (var s_gO in allSubjects)
-            {
-                var actionAttributes = actionAttributesCache[s_gO];
-
-                var dictionaryJson = actionAttributes.ToDictionary(
-                    kvp => kvp.Key,
-                    kvp => kvp.Value.Select(attr => new Dictionary<string, string>
-                    {
-                        { "Subject", s_gO.name },
-                        { "BoolType", attr.BoolType.ToString() },
-                        { "ModifierString", attr.ModifierString },
-                        { "ObjectType", attr.ObjectType?.ToString() ?? "null" },
-                        { "SubjectType", attr.SubjectType.ToString() },
-                        { "TypeId", attr.TypeId.ToString() },
-                        { "ValueType", attr.ValueType?.ToString() ?? "null" },
-                        { "Verb", attr.Verb },
-                        { "variableName", attr.variableName }
-                    }).ToList()
-                );
-
-                allActionAttributes.Add(s_gO.name, dictionaryJson);
-            }
-
-            // === dropdownOptionsAfterVerbForAllSubjects ===
-            var dropdownOptionsAfterVerbForAllSubjects =
-                new Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>();
-            foreach (var s_gO in allSubjects)
-            {
-                var actionAttributes = actionAttributesCache[s_gO];
-
-                var actionAttributes2 = actionAttributes.ToDictionary(
-                    kvp => kvp.Key,
-                    kvp => DropdownValueChangedVerb(s_gO.name, kvp.Value)
-                );
-
-                dropdownOptionsAfterVerbForAllSubjects.Add(s_gO.name, actionAttributes2);
-            }
-
-            // === dropdownOptionsAfterObjectForAllSubjects ===
-            var dropdownOptionsAfterObjectForAllSubjects =
-                new Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>>();
-            foreach (var s_gO in allSubjects)
-            {
-                var actionAttributes = actionAttributesCache[s_gO];
-
-                var verbsDic = new Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>();
-                foreach (var actionAttributeList in actionAttributes.Values)
-                {
-                    var stateVariablesDic = new Dictionary<string, Dictionary<string, List<string>>>();
-
-                    foreach (var actionAttribute in actionAttributeList)
-                    {
-                        if (!string.IsNullOrEmpty(actionAttribute.variableName))
-                        {
-                            var dropdownsDic =
-                                DropdownValueChangedObjectValue(actionAttribute.variableName, actionAttributeList);
-                            stateVariablesDic[actionAttribute.variableName] = dropdownsDic;
-                        }
-                    }
-
-                    var verb = actionAttributeList.FirstOrDefault()?.Verb ?? string.Empty;
-                    verbsDic[verb] = stateVariablesDic;
-                }
-
-                dropdownOptionsAfterObjectForAllSubjects[s_gO.name] = verbsDic;
-            }
-
-            // Construct and return the result
-            return new ECAObjectsCapabilties
-            {
-                allSubjects = allSubjects.Select(x => x.name).ToHashSet(),
-                allActionAttributes = allActionAttributes,
-                allDropdownOptionsAfterVerbs = dropdownOptionsAfterVerbForAllSubjects,
-                allDropdownOptionsAfterObjects = dropdownOptionsAfterObjectForAllSubjects
-            };
-        }
-
-        // deprecated TODO: remove
-        private ECAObjectsCapabilties GetAllInfoAboutCurrentECAObjects_EfficientMia()
-        {
-            var cachedRuleUtilsSubjects = RuleUtils.FindSubjects();
-
-            // === allSubjects ===
-            var allSubjects = new HashSet<GameObject>();
-            foreach (var subDic in cachedRuleUtilsSubjects.Values)
-            {
-                foreach (var obj in subDic)
-                {
-                    string currentName = obj.Key.name;
-                    allSubjects.Add(obj.Key);
-                }
-            }
-            // end allSubjects           
-
-
-            // === allActionAttributes ===
-            // for each string in the hashset, get the action attributes
-            var allActionAttributes = new Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>>();
-            foreach (var s_gO in allSubjects)
-            {
-                // === GetActionAttributes_AsDictionary
-                string subjectSelectedType = "";
-
-                foreach (var item in cachedRuleUtilsSubjects)
-                {
-                    foreach (var keyValuePair in item.Value)
-                    {
-                        if (keyValuePair.Key == s_gO)
-                        {
-                            subjectSelectedType = keyValuePair.Value;
-                        }
-                    }
-                }
-
-                var actionAttributes =
-                    GetActionAttributesDictionary(s_gO, cachedRuleUtilsSubjects, subjectSelectedType);
-
-                var dictionaryJson = new Dictionary<string, List<Dictionary<string, string>>>();
-                foreach (var list in actionAttributes.Values)
-                {
-                    var actionAttributesList = new List<Dictionary<string, string>>();
-
-                    foreach (var actionAttribute in list)
-                    {
-                        var tmpDic = new Dictionary<string, string>();
-
-                        tmpDic.Add("Subject", s_gO.name);
-                        tmpDic.Add("BoolType", actionAttribute.BoolType.ToString());
-                        tmpDic.Add("ModifierString", actionAttribute.ModifierString);
-                        tmpDic.Add("ObjectType",
-                            actionAttribute.ObjectType == null ? "null" : actionAttribute.ObjectType.ToString());
-                        tmpDic.Add("SubjectType", actionAttribute.SubjectType.ToString());
-                        tmpDic.Add("TypeId", actionAttribute.TypeId.ToString());
-                        tmpDic.Add("ValueType",
-                            actionAttribute.ValueType == null ? "null" : actionAttribute.ValueType.ToString());
-                        tmpDic.Add("Verb", actionAttribute.Verb);
-                        tmpDic.Add("variableName", actionAttribute.variableName);
-
-                        actionAttributesList.Add(tmpDic);
-                    }
-
-                    dictionaryJson.Add(actionAttributesList.Last()["Verb"], actionAttributesList);
-                }
-
-                // === End GetActionAttributes_AsDictionary
-                allActionAttributes.Add(s_gO.name, dictionaryJson);
-            }
-            // === end allActionAttributes ===
-
-
-            // === dropdownOptionsAfterVerbForAllSubjects ===
-            // var dropdownOptionsAfterVerbForAllSubjects = GetDropdownOptionsAfterVerbForAllSubjects_AsDict();
-            var dropdownOptionsAfterVerbForAllSubjects =
-                new Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>();
-
-            // for each string in the hashset, get the action attributes
-            foreach (var s_gO in allSubjects)
-            {
-                // === actionAttributes
-                // var actionAttributes = GetDropdownOptionsAfterVerb_AsDictionary(subjectName);
-                var actionAttributes2 = new Dictionary<string, Dictionary<string, List<string>>>();
-
-                string subjectSelectedType = "";
-
-                foreach (var item in cachedRuleUtilsSubjects)
-                {
-                    foreach (var keyValuePair in item.Value)
-                    {
-                        if (keyValuePair.Key == s_gO)
-                        {
-                            subjectSelectedType = keyValuePair.Value;
-                        }
-                    }
-                }
-
-                var actionAttributes =
-                    GetActionAttributesDictionary(s_gO, cachedRuleUtilsSubjects, subjectSelectedType);
-
-                foreach (var kvp in actionAttributes)
-                {
-                    var verb = kvp.Key;
-                    var actionAttributeList = kvp.Value;
-
-                    var dropdownOptions = DropdownValueChangedVerb(s_gO.name, actionAttributeList);
-                    actionAttributes2.Add(verb, dropdownOptions);
-                }
-                // === end actionAttributes
-
-                dropdownOptionsAfterVerbForAllSubjects.Add(s_gO.name, actionAttributes2);
-            }
-            // === end dropdownOptionsAfterVerbForAllSubjects ===
-
-
-            // === dropdownOptionsAfterObjectForAllSubjects ===
-            // var dropdownOptionsAfterObjectForAllSubjects = GetDropdownOptionsAfterObjectForAllSubjects_AsDict();
-            var dropdownOptionsAfterObjectForAllSubjects =
-                new Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>>();
-
-
-            // for each string in the hashset, get the action attributes
-            foreach (var s_gO in allSubjects)
-            {
-                var actionAttributesDictionary = GetActionAttributesDictionary(s_gO, cachedRuleUtilsSubjects, null);
-                var verbsDic = new Dictionary<string, Dictionary<string, Dictionary<string, List<string>>>>();
-
-                foreach (var acList in actionAttributesDictionary.Values)
-                {
-                    var stateVariablesDic = new Dictionary<string, Dictionary<string, List<string>>>();
-                    string verb = "";
-
-                    if (acList.Count == 1)
-                    {
-                        var actionAttribute = acList.First();
-                        if (string.IsNullOrEmpty(actionAttribute.variableName))
-                        {
-                            verb = acList.First().Verb;
-                        }
-                        // Serve per variabili come "increases by" che non si fermano all'oggetto ma hanno una sola variabile
-                        else
-                        {
-                            var dropdownsDic =
-                                DropdownValueChangedObjectValue(actionAttribute.variableName, acList);
-                            stateVariablesDic.Add(actionAttribute.variableName, dropdownsDic);
-                            verb = actionAttribute.Verb;
-                        }
-                    }
-                    else
-                    {
-                        foreach (var actionAttribute in acList)
-                        {
-                            if (!string.IsNullOrEmpty(actionAttribute.variableName))
-                            {
-                                var dropdownsDic =
-                                    DropdownValueChangedObjectValue(actionAttribute.variableName, acList);
-
-                                stateVariablesDic.Add(actionAttribute.variableName, dropdownsDic);
-                            }
-
-                            verb = actionAttribute.Verb;
-                        }
-                    }
-
-                    verbsDic.Add(verb, stateVariablesDic);
-                }
-
-                dropdownOptionsAfterObjectForAllSubjects.Add(s_gO.name, verbsDic);
-            }
-            // == end dropdownOptionsAfterObjectForAllSubjects ===
-
-
-            // var d = new Dictionary<string, object>
-            // {
-            //     { "allSubjects", allSubjects },
-            //     { "allActionAttributes", allActionAttributesSerialized },
-            //     { "allDropdownOptionsAfterVerbs", dropdownOptionsAfterVerbForAllSubjects },
-            //     { "allDropdownOptionsAfterObjects", dropdownOptionsAfterObjectForAllSubjects }
-            // }
-            var d = new ECAObjectsCapabilties
-            {
-                allSubjects = allSubjects.Select(x => x.name).ToHashSet(),
-                allActionAttributes = allActionAttributes,
-                allDropdownOptionsAfterVerbs = dropdownOptionsAfterVerbForAllSubjects,
-                allDropdownOptionsAfterObjects = dropdownOptionsAfterObjectForAllSubjects
-            };
-            return d;
-        }
-
-
-        public ECAObjectsCapabilties GetAllInfoAboutCurrentECAObjects()
+        private ECAObjectsCapabilties GetAllInfoAboutCurrentECAObjects_Original()
         {
             HashSet<string> allSubjects = null;
             Debug.Log("Before GetSubjectsNameAsSet");
@@ -546,7 +578,8 @@ namespace ECARules4All_DLL.Utils
                 allSubjects = allSubjects,
                 allActionAttributes = allActionAttributes,
                 allDropdownOptionsAfterVerbs = dropdownOptionsAfterVerbForAllSubjects,
-                allDropdownOptionsAfterObjects = dropdownOptionsAfterObjectForAllSubjects
+                allDropdownOptionsAfterObjects = dropdownOptionsAfterObjectForAllSubjects,
+                initizialized = true
             };
             return d;
 
@@ -1417,9 +1450,7 @@ namespace ECARules4All_DLL.Utils
             
             
             // Actions
-            // var info = ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Efficient();
             var actionAttributes = GetActionAttributes_AsDictionary(gameObjectName, filterEcaRelevant:true);
-            // var ecaMethodNames = GetAllInfoAboutCurrentECAObjects().allActionAttributes[name].Select(kv => kv.Key).Distinct().ToList();
             var ecaMethodNames = actionAttributes.Select(kv => kv.Key).Distinct().ToList();
 
 
@@ -1441,9 +1472,7 @@ namespace ECARules4All_DLL.Utils
             
             
             // Actions
-            // var info = ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Efficient();
             var actionAttributes = GetActionAttributes_AsDictionary(gameObjectName, filterEcaRelevant);
-            // var ecaMethodNames = GetAllInfoAboutCurrentECAObjects().allActionAttributes[name].Select(kv => kv.Key).Distinct().ToList();
             var ecaMethodNames = actionAttributes.Select(kv => kv.Key).Distinct().ToList();
 
 
@@ -1463,9 +1492,7 @@ namespace ECARules4All_DLL.Utils
             
             
             // Actions
-            // var info = ECAObjectInfo.Instance.GetAllInfoAboutCurrentECAObjects_Efficient();
             var actionAttributes = GetActionAttributes_AsDictionary(gameObjectName, filterEcaRelevant:true);
-            // var ecaMethodNames = GetAllInfoAboutCurrentECAObjects().allActionAttributes[name].Select(kv => kv.Key).Distinct().ToList();
             var ecaMethodNames = actionAttributes.Select(kv => kv.Key).Distinct().ToList();
 
 
