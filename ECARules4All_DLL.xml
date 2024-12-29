@@ -8547,6 +8547,11 @@
             </summary>
             <param name="pov">The new <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECACamera.POV"/> value. </param>
         </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECADoor">
+            <summary>
+            <b>ECADoor</b>: This class is used to define a door beviour.
+            </summary>
+        </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight">
             <summary>
             <b>ECALight</b> represents a controllable light source in the environment.

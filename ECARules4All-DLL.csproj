@@ -170,6 +170,7 @@
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\Bounds.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\Button.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECACamera.cs" />
+        <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECADoor.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECALight.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECAText.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECAVideo.cs" />
