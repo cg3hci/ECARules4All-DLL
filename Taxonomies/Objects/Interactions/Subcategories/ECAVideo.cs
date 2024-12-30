@@ -185,8 +185,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         public void Plays()
         {
             this.playing= new ECABoolean(ECABoolean.BoolType.YES);
-            this.stopped = new ECABoolean(ECABoolean.BoolType.YES);
-            this.paused = new ECABoolean(ECABoolean.BoolType.YES);
+            this.stopped = new ECABoolean(ECABoolean.BoolType.NO);
+            this.paused = new ECABoolean(ECABoolean.BoolType.NO);
             _videoPlayer.Play();
         }
 
