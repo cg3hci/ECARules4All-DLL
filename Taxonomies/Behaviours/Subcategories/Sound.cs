@@ -164,7 +164,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         [Action(typeof(Sound), "pauses")]
         [ECARelevance(false)]
-        void Pauses()
+        public void Pauses()
         {
             this.playing= new ECABoolean(ECABoolean.BoolType.NO);
             this.stopped= new ECABoolean(ECABoolean.BoolType.NO);

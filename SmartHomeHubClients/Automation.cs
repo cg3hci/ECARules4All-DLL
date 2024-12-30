@@ -163,9 +163,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 					    if (methodInfo.GetParameters().Length == 0)
 					    {
 						    action = new Action(gameObject, this.verb);
-						    /*RuleEngine.GetInstance().ExecuteAction(
-							    new Action(gameObject, this.verb)
-						    );*/
+						    //RuleEngine.GetInstance().ExecuteAction(new Action(gameObject, this.verb));
 						    Log.Information($"Action {this.verb} with no parameter runned");
 					    }
 					    else
@@ -181,21 +179,16 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 						    if (String.IsNullOrEmpty(this.variable_name))
 						    {
 							    action = new Action(gameObject, this.verb, parameter);
-							    /*var action = new Action(gameObject, this.verb, parameter);
-							    RuleEngine.GetInstance().ExecuteAction(
-								    action
-							    );*/
+							    //var action = new Action(gameObject, this.verb, parameter);
+							    //RuleEngine.GetInstance().ExecuteAction(action);
 							    Log.Information($"Action {this.verb} with no variable runned");
 						    }
 						    else
 						    {
 							    action = new Action(gameObject, this.verb, this.variable_name,
 								    this.modifier_string, parameter);
-							    /*var action = new Action(gameObject, this.verb, this.variable_name,
-								    this.modifier, parameter);
-							    RuleEngine.GetInstance().ExecuteAction(
-								    action
-							    );*/
+							    //var action = new Action(gameObject, this.verb, this.variable_name,this.modifier, parameter);
+							    //RuleEngine.GetInstance().ExecuteAction(action);
 							    Log.Information($"Action {this.verb} with variable runned");
 						    }
 					    }
@@ -206,7 +199,108 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 		    return action;
 	    }
     }
+	
+    /*public class ActionDTO
+    {
+        public string subject { get; set; } = null;
+        public string verb { get; set; } = null;
 
+        public object obj { get; set; } = null;
+        
+        public string variable { get; set; } = null;
+        
+        public string modifier { get; set; } = null;
+        
+        public object value { get; set; } = null;
+
+        public ActionDTO(string subject, string verb, object obj = null, string variable = null,
+	        string modifier = null, object value = null)
+        {
+            this.subject = subject;
+            this.verb = verb;
+            this.obj = obj;
+            this.variable = variable;
+            this.modifier = modifier;
+            this.value = value;
+        }
+
+        public string ToString()
+        {
+	        return
+		        $"Action: subject: {this.subject} - verb: {this.verb} - obj: {this.obj} - variable: {this.variable} - modifier: {this.modifier} - value: {this.value}";
+        }
+        
+        public Action ConvertToAction()
+	    {
+		    Action action = null;
+		    
+		    if (ComponentTracker.Instance.GetAllComponents().ContainsKey(this.subject))
+		    {
+			    // GameObject.Tag@ECAScript.Name example => T_Shirt_1@ECAObject
+			    string[] names = this.subject.Split('@');
+			    Type ecaScript = AutomationDTO.FindTypeByName(names[1]);
+			    if (ecaScript != null)
+			    {
+				    var gameObject = GameObject.Find(names[0]);
+				    MethodInfo methodInfo = AutomationDTO.FindMethodWithVerb(targetType: ecaScript, verb: this.verb,
+					    variable: this.variable);
+				    
+				    // passive action
+				    if (methodInfo == null)
+				    {
+					    if (ComponentTracker.Instance.GetAllComponents().ContainsKey(this.obj.ToString()))
+					    {
+						    string[] otherNames = this.obj.ToString().Split('@');
+						    var otherGameObject = GameObject.Find(otherNames[0]);
+						    action = new Action(gameObject, this.verb, otherGameObject);
+					    }
+					    else
+					    {
+						    throw new Exception("error method is null and value isnot an object");
+					    }
+				    }
+				    // otherwise
+				    else
+				    {
+					    if (methodInfo.GetParameters().Length == 0)
+					    {
+						    action = new Action(gameObject, this.verb);
+						    RuleEngine.GetInstance().ExecuteAction(new Action(gameObject, this.verb));
+						    Log.Information($"Action {this.verb} with no parameter runned");
+					    }
+					    else
+					    {
+						    // retrieve parameter
+						    ParameterInfo methodParameter = methodInfo.GetParameters()[0];
+						    object receivedParameter = !string.IsNullOrEmpty(this.variable) ? this.value : this.obj;
+						    object parameter = 
+							    SerializeUtils.ConvertObjectToParameter(methodParameter.ParameterType, receivedParameter);
+
+						    // run action
+						    if (String.IsNullOrEmpty(this.variable))
+						    {
+							    action = new Action(gameObject, this.verb, parameter);
+							    //var action = new Action(gameObject, this.verb, parameter);
+							    //RuleEngine.GetInstance().ExecuteAction(action);
+							    Log.Information($"Action {this.verb} with no variable runned");
+						    }
+						    else
+						    {
+							    action = new Action(gameObject, this.verb, this.variable,
+								    this.modifier, parameter);
+							    //var action = new Action(gameObject, this.verb, this.variable_name, this.modifier, parameter);
+							    //RuleEngine.GetInstance().ExecuteAction(action);
+							    Log.Information($"Action {this.verb} with variable runned");
+						    }
+					    }
+				    }
+			    }
+		    }
+		    
+		    return action;
+	    }
+    }*/
+    
     public class ConditionDTO
     {
 	    public string component { get; set; } = null;

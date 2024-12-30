@@ -88,5 +88,52 @@ namespace ECARules4All_DLL.Utils
 
             return parameter;
         }
+        
+        public static object ConvertObjectToParameter(Type typeParameter, object receivedParameter)
+        {
+            object parameter = null;
+            
+            if (typeParameter == typeof(Position))
+            {
+                parameter = new Position(JsonConvert.DeserializeObject<Vector3>(receivedParameter.ToString()));
+            }
+            else if (typeParameter == typeof(Rotation))
+            {
+                parameter = new Rotation(Quaternion.Euler(JsonConvert.DeserializeObject<Vector3>(receivedParameter.ToString())));
+            }
+            else if (typeParameter == typeof(Path))
+            {
+                var matches = Regex.Matches(receivedParameter.ToString(), @"\{[^{}]+\}");
+                List<Position> positions = new List<Position>();
+                foreach (Match match in matches)
+                {
+                    positions.Add(new Position(JsonConvert.DeserializeObject<Vector3>(match.Value)));
+                }
+                parameter = new Path(positions);
+            } else if(typeParameter == typeof(Scale))
+            {
+                parameter = new Scale(JsonConvert.DeserializeObject<Vector3>(receivedParameter.ToString()));
+            }
+            else if (typeParameter == typeof(ECABoolean))
+            {
+                parameter = ECABoolean.FromString(receivedParameter.ToString());
+            }
+            else if (typeParameter == typeof(float) || typeParameter == typeof(int))
+            {
+                parameter = float.Parse(receivedParameter.ToString());
+            }
+            else if (typeParameter == typeof(string))
+            {
+                parameter = receivedParameter;
+            }
+            else
+            {
+                string message = $"Error on converting {receivedParameter} to {typeParameter}";
+                Log.Error(message);
+                throw new Exception(message);
+            }
+
+            return parameter;
+        }
     }
 }
