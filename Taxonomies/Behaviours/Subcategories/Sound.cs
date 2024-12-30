@@ -58,7 +58,6 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>MaxVolume</b> is the maximum volume level the audio can reach.
         /// </summary>
         [StateVariable("maxVolume", ECARules4AllType.Float)]
-        [ECARelevance(true)]
         public float maxVolume
         {
             get => _maxVolume;

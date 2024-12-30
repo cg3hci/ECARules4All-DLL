@@ -8630,16 +8630,6 @@
             <b> MaxVolume</b> is the video max volume.
             </summary>
         </member>
-        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECAVideo.duration">
-            <summary>
-            <b>Duration</b> is the video duration.
-            </summary>
-        </member>
-        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECAVideo.currentTime">
-            <summary>
-            <b>CurrentTime</b> is the video current time.
-            </summary>
-        </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECAVideo.playing">
             <summary>
             <b>Playing</b> defines whether the video is playing.
@@ -8655,7 +8645,7 @@
             <b>Stopped</b> defines whether the video is stopped.
             </summary>
         </member>
-        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECAVideo.player">
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECAVideo._videoPlayer">
             <summary>
             <b>Player</b> is the video player to control through the script.
             </summary>
@@ -8682,12 +8672,6 @@
             If the value is lower than 0, the volume is set to 0.
             </summary>
             <param name="v">The new video volume. </param>
-        </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECAVideo.ChangesCurrentTime(System.Double)">
-            <summary>
-            <b>ChangesCurrentTime</b> changes the video current time to the given value.
-            </summary>
-            <param name="c">The new video current time. </param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECAVideo.ChangesSource(System.String)">
             <summary>

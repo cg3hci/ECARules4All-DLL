@@ -1,10 +1,9 @@
+using System.Linq;
 using ECARules4All_DLL.Utils;
-using PathSystem = System.IO.Path;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Video;
 
-
-// Modifica per usare gli ECABoolean della libreria e non creare problemi coi tests
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
 {
@@ -12,22 +11,82 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
     /// <b>ECAVideo</b> is an <see cref="Interaction"/> that represents a video player.
     /// </summary>
     [ECARules4All("video")]
-    [RequireComponent(typeof(Interaction), typeof(VideoPlayer))] //gerarchia 
+    [RequireComponent(typeof(Interaction))]
     [DisallowMultipleComponent]
     public class ECAVideo : MonoBehaviour
     {
+        [SerializeField] private GameObject screen;
+        
+        private void Start()
+        {
+            this.TrySetCanvas("PlaneVideo");
+            // SelectVideo(source); // Non deve essere fatto allo start perché altrimenti darebbe errore non appena viene aggiunto il componente
+
+            volume = volume > maxVolume ? maxVolume : volume;
+            volume = volume < 0.0f ? 0.0f : volume;
+            ChangesVolume(volume);
+
+            SelectVideo(source);
+
+            if (stopped || paused)
+                this.Stops();
+            else
+                this.Plays();
+        }
+
+        private void TrySetCanvas(string canvasName)
+        {
+            var checkCanvas = gameObject.transform.Find(canvasName);
+            
+            if (checkCanvas == null) // Se è null vuol dire che non esiste un figlio con quel nome
+            { // Nota: Find("") restituisce il gameobject padre (quello a cui appartiene il transform)
+                screen = gameObject;
+            }
+            else
+            {
+                screen = checkCanvas.gameObject;
+            }
+            
+            _videoPlayer = screen.GetComponent<VideoPlayer>();
+            
+            if (_videoPlayer == null)
+                _videoPlayer = screen.AddComponent<VideoPlayer>();
+
+            _videoPlayer.isLooping = true;
+        }
+        
+        public void SelectVideo(string videoName)
+        {
+            if (string.IsNullOrEmpty(videoName))
+            {
+                Debug.LogWarning("Hai inserito un url vuoto per il video!");
+                return;
+            }
+            
+            var oldName = _videoPlayer.url.Split('/').Last(); // Recupero il vecchio nome del file
+            if (string.Equals(oldName, videoName)) 
+                return; // Se il file non è cambiato esco dalla funzione
+            
+            if (_videoPlayer.isPlaying)
+                Stops();
+            
+            _videoPlayer.url = TaxonomyUtils.getFileVideoByName(videoName);
+            source = videoName;
+        }
+        
+        #region ECA
         /// <summary>
         /// <b>Source</b> is the video source.
         /// </summary>
-        [ECARelevance(true)]
         [StateVariable("source", ECARules4AllType.Text)]
+        [ECARelevance(true)]
         public string source
         {
             get => _source;
             set
             {
                 _source = value;
-                ECAScript.NotifyUpdate(this, nameof(source), source);
+                ECAScript.NotifyUpdate(this, nameof(source), _source);
             }
         }
         [SerializeField]
@@ -36,7 +95,6 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <summary>
         /// <b>Volume</b> is the video volume.
         /// </summary>
-        [ECARelevance(true)]
         [StateVariable("volume", ECARules4AllType.Float)]
         public float volume
         {
@@ -44,7 +102,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             set
             {
                 _volume = value;
-                ECAScript.NotifyUpdate(this, nameof(volume), volume.ToString());
+                ECAScript.NotifyUpdate(this, nameof(volume), _volume);
             }
         }
         [SerializeField]
@@ -54,63 +112,30 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <b> MaxVolume</b> is the video max volume.
         /// </summary>
         [StateVariable("maxVolume", ECARules4AllType.Float)]
-        public float maxVolume 
+        public float maxVolume
         {
             get => _maxVolume;
             set
             {
                 _maxVolume = value;
-                ECAScript.NotifyUpdate(this, nameof(maxVolume), maxVolume.ToString());
+                ECAScript.NotifyUpdate(this, nameof(maxVolume), _maxVolume);
             }
         }
         [SerializeField]
         private float _maxVolume = 1.0f;
-
-        /// <summary>
-        /// <b>Duration</b> is the video duration.
-        /// </summary>
-        //TODO: duration e currentTime, abbiamo cambiato il tipo da time a double
-        [StateVariable("duration", ECARules4AllType.Float)]
-        public double duration
-        {
-            get => _duration;
-            set
-            {
-                _duration = value;
-                ECAScript.NotifyUpdate(this, nameof(duration), duration.ToString());
-            }
-        }
-        [SerializeField]
-        private double _duration;
-
-        /// <summary>
-        /// <b>CurrentTime</b> is the video current time.
-        /// </summary>
-        [StateVariable("current-time", ECARules4AllType.Float)]
-        public double currentTime 
-        {
-            get => _currentTime;
-            set
-            {
-                _currentTime = value;
-                ECAScript.NotifyUpdate(this, nameof(currentTime), currentTime.ToString());
-            }
-        }
-        [SerializeField]
-        private double _currentTime;
-
+        
         /// <summary>
         /// <b>Playing</b> defines whether the video is playing.
         /// </summary>
-        [ECARelevance(true)]
         [StateVariable("playing", ECARules4AllType.Boolean)]
+        [ECARelevance(true)]
         public ECABoolean playing 
         {
             get => _playing;
             set
             {
                 _playing = value;
-                ECAScript.NotifyUpdate(this, nameof(playing), playing.ToString());
+                ECAScript.NotifyUpdate(this, nameof(playing), _playing);
             }
         }
         [SerializeField]
@@ -119,15 +144,14 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <summary>
         /// <b>Paused</b> defines whether the video is paused.
         /// </summary>
-        [ECARelevance(true)]
-        [StateVariable("paused", ECARules4AllType.Boolean)]
+        [StateVariable("paused", ECARules4AllType.Boolean)] 
         public ECABoolean paused 
         {
             get => _paused;
             set
             {
                 _paused = value;
-                ECAScript.NotifyUpdate(this, nameof(paused), paused.ToString());
+                ECAScript.NotifyUpdate(this, nameof(paused), _paused);
             }
         }
         [SerializeField]
@@ -136,14 +160,14 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <summary>
         /// <b>Stopped</b> defines whether the video is stopped.
         /// </summary>
-        [StateVariable("stopped", ECARules4AllType.Boolean)]
+        [StateVariable("stopped", ECARules4AllType.Boolean)] 
         public ECABoolean stopped 
         {
             get => _stopped;
             set
             {
                 _stopped = value;
-                ECAScript.NotifyUpdate(this, nameof(stopped), stopped.ToString());
+                ECAScript.NotifyUpdate(this, nameof(stopped), _stopped);
             }
         }
         [SerializeField]
@@ -152,38 +176,30 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <summary>
         /// <b>Player</b> is the video player to control through the script.
         /// </summary>
-        private VideoPlayer player;
+        private VideoPlayer _videoPlayer;
 
         /// <summary>
         /// <b>Plays</b> starts the video.
         /// </summary>
-        [ECARelevance(true)]
         [Action(typeof(ECAVideo), "plays")]
         public void Plays()
         {
-            /*playing.Assign(ECABoolean.BoolType.YES);
-            this.stopped.Assign(ECABoolean.BoolType.NO);
-            this.paused.Assign(ECABoolean.BoolType.NO);*/
-            playing = new ECABoolean(ECABoolean.BoolType.YES);
-            stopped = new ECABoolean(ECABoolean.BoolType.NO);
-            paused = new ECABoolean(ECABoolean.BoolType.NO);
-            player.Play();
+            this.playing= new ECABoolean(ECABoolean.BoolType.YES);
+            this.stopped = new ECABoolean(ECABoolean.BoolType.YES);
+            this.paused = new ECABoolean(ECABoolean.BoolType.YES);
+            _videoPlayer.Play();
         }
 
         /// <summary>
         /// <b>Pauses</b> pauses the video.
         /// </summary>
-        [ECARelevance(true)]
         [Action(typeof(ECAVideo), "pauses")]
         public void Pauses()
         {
-            /*this.playing.Assign(ECABoolean.BoolType.NO);
-            this.stopped.Assign(ECABoolean.BoolType.NO);
-            this.paused.Assign(ECABoolean.BoolType.YES);*/
-            playing = new ECABoolean(ECABoolean.BoolType.NO);
-            stopped = new ECABoolean(ECABoolean.BoolType.NO);
-            paused = new ECABoolean(ECABoolean.BoolType.YES);
-            player.Pause();
+            this.playing= new ECABoolean(ECABoolean.BoolType.NO);
+            this.stopped= new ECABoolean(ECABoolean.BoolType.NO);
+            this.paused= new ECABoolean(ECABoolean.BoolType.YES);
+            _videoPlayer.Pause();
         }
 
         /// <summary>
@@ -192,14 +208,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         [Action(typeof(ECAVideo), "stops")]
         public void Stops()
         {
-            /*this.playing.Assign(ECABoolean.BoolType.NO);
-            this.stopped.Assign(ECABoolean.BoolType.YES);
-            this.paused.Assign(ECABoolean.BoolType.NO);*/
-            playing = new ECABoolean(ECABoolean.BoolType.NO);
-            stopped = new ECABoolean(ECABoolean.BoolType.YES);
-            paused = new ECABoolean(ECABoolean.BoolType.NO);
-            currentTime = 0;
-            player.Stop();
+            this.playing= new ECABoolean(ECABoolean.BoolType.NO);
+            this.stopped= new ECABoolean(ECABoolean.BoolType.YES);
+            this.paused= new ECABoolean(ECABoolean.BoolType.NO);
+            _videoPlayer.Stop();
         }
 
         /// <summary>
@@ -222,24 +234,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
             }
 
             volume = v;
-            player.SetDirectAudioVolume(0, volume);
+            _videoPlayer.SetDirectAudioVolume(0, volume);
             //trackindex is set to 0, but there may be more than 1 audio track
-        }
-
-        /// <summary>
-        /// <b>ChangesCurrentTime</b> changes the video current time to the given value.
-        /// </summary>
-        /// <param name="c">The new video current time. </param>
-        //TODO: possibile conflitto tra grammatica e chiamata di funzione, abbiamo messo il trattino in current time
-        [Action(typeof(ECAVideo), "changes", "current-time", "to", typeof(double))]
-        public void ChangesCurrentTime(double c)
-        {
-            if (c <= duration)
-            {
-                var frameRate = player.frameRate;
-                var seek = (frameRate * c);
-                player.frame = (long)(seek);
-            }
         }
 
         /// <summary>
@@ -247,38 +243,36 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// The new path must be relative to the user-accessible Inventory folder.
         /// </summary>
         /// <param name="newSource">The path for the new video file.</param>
-        [ECARelevance(true)]
         [Action(typeof(ECAVideo), "changes", "source", "to", typeof(string))]
         public void ChangesSource(string newSource)
         {
-            source = newSource;
-            player.url = "file://" + PathSystem.Combine(Application.streamingAssetsPath,
-                PathSystem.Combine("Inventory", PathSystem.Combine("Videos", source)));
-            duration = player.length;
+            SelectVideo(newSource);
         }
-
-        private void Update()
+        
+        /*[Action(typeof(ECAVideo), "changes source randomly")]
+        public void ChangesSourceRandomly()
         {
-            if (playing)
+            #if UNITY_EDITOR
+                var list = new List<string>() { "nature_4k.mp4", "AdvVideo.mp4", "AdvVideo2.mp4" }; 
+                SelectVideo(list[new Random().Next(list.Count)]);
+            #else
+            StartCoroutine(TaxonomyUtils.GetServerFilesInFolder("videos", list =>
             {
-                currentTime = (float)player.time;
-            }
-        }
+                SelectVideo(list[new Random().Next(list.Count)]);
+            }));        
+            #endif
+        }*/
 
-        private void Awake()
-        {
-            maxVolume = 1.0f;
-            player = GetComponent<VideoPlayer>();
-            if (source != "")
-            {
-                player.url = "file://" + PathSystem.Combine(Application.streamingAssetsPath,
-                    PathSystem.Combine("Inventory", PathSystem.Combine("Videos", source)));
-                duration = player.length;
-            }
 
-            volume = volume > maxVolume ? maxVolume : volume;
-            volume = volume < 0.0f ? 0.0f : volume;
-            player.SetDirectAudioVolume(player.audioTrackCount, volume);
-        }
+        // private void Update()
+        // {
+        //     if (playing)
+        //     {
+        //         currentTime = (float) _videoPlayer.time;
+        //     }
+        // }
+        
+        #endregion
+
     }
 }
