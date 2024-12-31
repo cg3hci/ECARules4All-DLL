@@ -99,7 +99,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         }
     }
     
-    public class ActionDTO
+    /*public class ActionDTO
     {
         public string subject { get; set; } = null;
         public string verb { get; set; } = null;
@@ -198,9 +198,9 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 		    
 		    return action;
 	    }
-    }
+    }*/
 	
-    /*public class ActionDTO
+    public class ActionDTO
     {
         public string subject { get; set; } = null;
         public string verb { get; set; } = null;
@@ -299,7 +299,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 		    
 		    return action;
 	    }
-    }*/
+    }
     
     public class ConditionDTO
     {
