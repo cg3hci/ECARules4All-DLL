@@ -265,7 +265,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 					    if (methodInfo.GetParameters().Length == 0)
 					    {
 						    action = new Action(gameObject, this.verb);
-						    RuleEngine.GetInstance().ExecuteAction(new Action(gameObject, this.verb));
+						    //RuleEngine.GetInstance().ExecuteAction(new Action(gameObject, this.verb));
 						    Log.Information($"Action {this.verb} with no parameter runned");
 					    }
 					    else
