@@ -29,6 +29,8 @@ namespace ECARules4All_DLL
         /// <b>isBusyMoving</b> is a boolean that indicates if the object is moving.
         /// </summary>
         private bool isBusyMoving = false;
+
+        private float deltaTimeIsRendered = 0;
         
         /// <summary>
         /// <b>p</b> represents the position of the virtual object in the 3D space. It's a vector with three components: x, y, and z.
@@ -384,7 +386,7 @@ namespace ECARules4All_DLL
         {
             // check if object is within the camera's field of view.
             // the object must be active
-            if (xrCamera)
+            if (xrCamera && Time.time - deltaTimeIsRendered > 0.5f)
             {
                 Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(xrCamera);
 
@@ -397,10 +399,11 @@ namespace ECARules4All_DLL
                         break;
                     }
                 }
-
+                
                 if(this.isInsideCamera != res)
                 {
                     this.isInsideCamera = res;
+                    deltaTimeIsRendered = Time.time;
                 }
             }
         }

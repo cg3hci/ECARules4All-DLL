@@ -17,6 +17,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         private string apiExternalUpdates = $"/api/external_updates/";
         private string apiAutomations = $"/api/automations/";
+        private string apiTest = $"/test/";
 
         public APIServer(string url = "http://localhost",  int port = 8080)
         {
@@ -25,13 +26,13 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             _listener = new HttpListener();
             this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiExternalUpdates}");
             this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiAutomations}");
+            this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiTest}");
             this.Start();
         }
 
         public void Start()
         {
             _listener.Start();
-            Log.Information($"Server started");
             Receive();
         }
 
@@ -70,6 +71,10 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 else if(path.Contains(this.apiAutomations))
                 {
                     this.HandleAutomations(context);
+                }
+                else if(path.Contains(this.apiTest))
+                {
+                    this.HandleTest(context);
                 }
                 else
                 {
@@ -129,6 +134,26 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     context.Response.Close();
                 }
+            }
+        }
+        
+        private void HandleTest(HttpListenerContext context)
+        {
+            using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
+            {
+                var responseObject = new { 
+                    message = "Success",
+                    timestamp = DateTime.Now,
+                };
+                
+                string jsonResponse = JsonConvert.SerializeObject(responseObject);
+                context.Response.ContentType = "application/json";
+                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(jsonResponse);
+                context.Response.ContentLength64 = buffer.Length;
+                context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                context.Response.StatusCode = (int)HttpStatusCode.OK;
+                
+                context.Response.Close();
             }
         }
     }
