@@ -14,7 +14,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
     public class Button : MonoBehaviour
     {
         /// <summary>
-        /// <b>Presses</b> is a <i>passive</i> function that represents the pressing of the button.
+        /// <b>Presses</b> is a <i>passive</i> function that represents the pressing of the button by a character C.
         /// </summary>
         /// <param name="c">The <see cref="Character"/> who presses the button. </param>
         [ECARelevance(true)]
