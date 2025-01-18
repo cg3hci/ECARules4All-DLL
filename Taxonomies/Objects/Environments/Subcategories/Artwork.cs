@@ -62,5 +62,41 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
         }
         [SerializeField]
         private int _year;
+
+        // TODO J Ha aggiunto questo
+        /// <summary>
+        /// <b>type</b> denotes the type of the artwork (e.g., painting, sculpture).
+        /// </summary>
+        [ECARelevance(true)]
+        [StateVariable("type", ECARules4AllType.Text)]
+        public string type
+        {
+            get => _type;
+            set
+            {
+                _type = value;
+                ECAScript.NotifyUpdate(this, nameof(type), type.ToString());
+            }
+        }
+        [SerializeField]
+        private string _type;
+        
+        //////
+        /// <summary>
+        /// <b>description</b> denotes the description of the artwork (e.g., style, technique).
+        /// </summary>
+        [ECARelevance(true)]
+        [StateVariable("description", ECARules4AllType.Text)]
+        public string description
+        {
+            get => _description;
+            set
+            {
+                _description = value;
+                ECAScript.NotifyUpdate(this, nameof(description), description.ToString());
+            }
+        }
+        [SerializeField]
+        private string _description;
     }
 }
