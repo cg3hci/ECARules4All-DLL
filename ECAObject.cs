@@ -137,6 +137,11 @@ namespace ECARules4All_DLL
 
         private void Awake()
         {
+            if (GetComponent<Renderer>() == null)
+            {
+                Debug.LogError($"{gameObject.name} has not renderer component. This is important for insideCamera property.");
+            }
+            
             gameCollider = this.gameObject.GetComponents<Collider>();
             gameRenderer = this.gameObject.GetComponents<Renderer>();
             canvas = this.GetComponent<Canvas>();
@@ -147,7 +152,7 @@ namespace ECARules4All_DLL
             if (gameCollider.Length == 0)
                 gameCollider = this.gameObject.GetComponentsInChildren<Collider>();
             
-            p = new Position(transform.localPosition);
+            p = new Position(transform.position);
             r = new Rotation(transform.localRotation);
             s = new Scale(transform.localScale);
 
@@ -161,7 +166,7 @@ namespace ECARules4All_DLL
 
         private void Start()
         {
-            _originalPosition = gameObject.transform.localPosition;
+            _originalPosition = gameObject.transform.position;
             _originalQuaternion = gameObject.transform.localRotation;
             _originalScale = gameObject.transform.localScale;
             UpdateVisibility();
@@ -251,7 +256,7 @@ namespace ECARules4All_DLL
         {
             // float speed = 3.0F;
             //StartCoroutine(MoveObject(speed, _originalPosition));
-            gameObject.transform.localPosition = _originalPosition;
+            gameObject.transform.position = _originalPosition;
             p = new Position(_originalPosition);
             gameObject.transform.localRotation = _originalQuaternion;
             r = new Rotation(_originalQuaternion);
@@ -360,11 +365,11 @@ namespace ECARules4All_DLL
         {
             isBusyMoving = true;
             //Vector3 startMarker = gameObject.transform.position;
-            Vector3 startMarker = gameObject.transform.localPosition;
+            Vector3 startMarker = gameObject.transform.position;
             float startTime = Time.time;
             float journeyLength = Vector3.Distance(startMarker, endMarker);
             //while (gameObject.transform.position != endMarker)
-            while (gameObject.transform.localPosition != endMarker) {
+            while (gameObject.transform.position != endMarker) {
                 float distCovered = (Time.time - startTime) * speed;
 
                 // Fraction of journey completed equals current distance divided by total distance.
@@ -372,13 +377,13 @@ namespace ECARules4All_DLL
 
                 // Set our position as a fraction of the distance between the markers.
 
-                gameObject.transform.localPosition = Vector3.Lerp(startMarker, endMarker, fractionOfJourney);
+                gameObject.transform.position = Vector3.Lerp(startMarker, endMarker, fractionOfJourney);
                 //GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
-                GetComponent<ECAObject>().p = new Position(gameObject.transform.localPosition);
+                GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
                 yield return null;
             }
             //GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
-            GetComponent<ECAObject>().p = new Position(gameObject.transform.localPosition);
+            GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
             isBusyMoving = false;
         }
 
