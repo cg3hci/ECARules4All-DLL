@@ -66,63 +66,6 @@ namespace ECARules4All_DLL
         }
     }
     
-    
-    /*public class ECAScript : MonoBehaviour
-    {
-        protected string GetGameObjectComponentName()
-        {
-            return $"{gameObject.name}@{GetType().Name}";
-        }
-
-        protected string GetGameObjectName()
-        {
-            return $"{gameObject.name}";
-        }
-        
-        protected StateVariableAttribute GetStateVariableProperty(string nameProperty)
-        {
-            var property = GetType().GetProperty(nameProperty);
-            // return a StateVariableAttribute if the object contains a property named $"{nameProperty}" 
-            if (property != null)
-            {
-                return property.GetCustomAttribute<StateVariableAttribute>();
-            }
-
-            return null;
-        }
-        
-        public void NotifyUpdate(string propertyName, object value)
-        {
-            var attribute = GetStateVariableProperty(propertyName);
-            if (attribute != null && RuleEngine.GetInstance().clients.Count > 0)
-            {
-                AbstractClient<object>.NotifyAttribute(
-                    GetGameObjectComponentName(),
-                    attribute.Name,
-                    value
-                );
-            }
-        }
-
-        public void NotifyUpdate(Action action)
-        {
-            if (RuleEngine.GetInstance().clients.Count > 0)
-            {
-                try
-                {
-                    AbstractClient<object>.NotifyAction(
-                        GetGameObjectName(),
-                        action
-                    );
-                }
-                catch (Exception e)
-                {
-                    Log.Information($"Error on NotifyUpdate - {e}");
-                }
-            }
-        }
-    }*/
-    
     [DefaultExecutionOrder(100)]
     public class ECATracker : MonoBehaviour
     {
@@ -132,6 +75,11 @@ namespace ECARules4All_DLL
         }
         
         protected virtual void Start()
+        {
+            SubscribeObject();
+        }
+
+        public void SubscribeObject()
         {
             List<ComponentTrackerPair> pairs = new List<ComponentTrackerPair>();
             foreach (var component in gameObject.GetComponents<Component>())

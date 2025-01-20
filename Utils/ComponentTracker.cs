@@ -132,6 +132,11 @@ namespace ECARules4All_DLL.Utils
                 _components.Remove(pair);
             }
         }
+        
+        public void RemoveAllComponents()
+        {
+            _components.Clear();
+        }
     
         public Dictionary<string, object> GetAllComponents()
         {

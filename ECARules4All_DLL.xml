@@ -8467,6 +8467,16 @@
             <b>year</b> denotes the year in which the artwork was created.
             </summary>
         </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.Artwork.type">
+            <summary>
+            <b>type</b> denotes the type of the artwork (e.g., painting, sculpture).
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.Artwork.description">
+            <summary>
+            <b>description</b> denotes the description of the artwork (e.g., style, technique).
+            </summary>
+        </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Interaction">
             <summary>
             <b>Interaction</b> represents entities in the scene that facilitate interaction with other objects or the environment.
@@ -8483,7 +8493,7 @@
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.Button._Presses(ECARules4All_DLL.Taxonomies.Objects.Characters.Character)">
             <summary>
-            <b>Presses</b> is a <i>passive</i> function that represents the pressing of the button.
+            <b>Presses</b> is a <i>passive</i> function that represents the pressing of the button by a character C.
             </summary>
             <param name="c">The <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Character"/> who presses the button. </param>
         </member>

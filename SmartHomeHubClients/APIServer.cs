@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
 using Serilog;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 
 namespace ECARules4All_DLL.SmartHomeHubClients
@@ -18,6 +22,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         private string apiExternalUpdates = $"/api/external_updates/";
         private string apiAutomations = $"/api/automations/";
         private string apiTest = $"/test/";
+        private string apiForceRestart = $"/api/force_restart/";
 
         public APIServer(string url = "http://localhost",  int port = 8080)
         {
@@ -27,6 +32,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiExternalUpdates}");
             this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiAutomations}");
             this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiTest}");
+            this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiForceRestart}");
             this.Start();
         }
 
@@ -72,6 +78,10 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 {
                     this.HandleAutomations(context);
                 }
+                else if(path.Contains(this.apiForceRestart))
+                {
+                    this.HandleForceRestart(context);
+                }
                 else if(path.Contains(this.apiTest))
                 {
                     this.HandleTest(context);
@@ -85,6 +95,30 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             else
             {
                 context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
+                context.Response.Close();
+            }
+        }
+        
+        private void HandleTest(HttpListenerContext context)
+        {
+            using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
+            {
+                // Notify message
+                var responseObject = new
+                {
+                    message = "Success",
+                    timestamp = DateTime.Now,
+                };
+                string jsonResponse = JsonConvert.SerializeObject(responseObject);
+                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(jsonResponse);
+
+                // Set status code before writing to the stream
+                context.Response.StatusCode = (int)HttpStatusCode.OK;
+                context.Response.ContentType = "application/json";
+                context.Response.ContentLength64 = buffer.Length;
+
+                // Write to the output stream
+                context.Response.OutputStream.Write(buffer, 0, buffer.Length);
                 context.Response.Close();
             }
         }
@@ -137,24 +171,42 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             }
         }
         
-        private void HandleTest(HttpListenerContext context)
+        private void HandleForceRestart(HttpListenerContext context)
         {
-            using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
+            Boolean success = true;
+
+            try
             {
-                var responseObject = new { 
-                    message = "Success",
-                    timestamp = DateTime.Now,
-                };
-                
-                string jsonResponse = JsonConvert.SerializeObject(responseObject);
-                context.Response.ContentType = "application/json";
-                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(jsonResponse);
-                context.Response.ContentLength64 = buffer.Length;
-                context.Response.OutputStream.Write(buffer, 0, buffer.Length);
-                context.Response.StatusCode = (int)HttpStatusCode.OK;
-                
-                context.Response.Close();
+                // clean component tracker dictionary
+                ComponentTracker.Instance.RemoveAllComponents();
+
+                // force object subscription in hass
+                foreach (var gameObject in Object.FindObjectsByType<ECATracker>(UnityEngine.FindObjectsSortMode.None))
+                {
+                    gameObject.SubscribeObject();
+                }
+            }catch (Exception e)
+            {
+                success = false;
             }
+            
+            // Notify message
+            var responseObject = new
+            {
+                message = success ? "Success" : "Error",
+                timestamp = DateTime.Now,
+            };
+            string jsonResponse = JsonConvert.SerializeObject(responseObject);
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(jsonResponse);
+
+            // Set status code before writing to the stream
+            context.Response.StatusCode = success ? (int)HttpStatusCode.OK : (int)HttpStatusCode.InternalServerError;
+            context.Response.ContentType = "application/json";
+            context.Response.ContentLength64 = buffer.Length;
+
+            // Write to the output stream
+            context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+            context.Response.Close();
         }
     }
 }
