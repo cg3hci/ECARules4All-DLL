@@ -40,5 +40,15 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         {
             this.on = on;
         }
+        
+        /// <summary>
+        /// <b>Toggle status</b> toggles the switch state.
+        /// </summary>
+        [Action(typeof(Switch), "toggle status")]
+        [ECARelevance(false)]
+        public void Toggle()
+        {
+            this.on = ECABoolean.Invert(this.on);
+        }
     }
 }

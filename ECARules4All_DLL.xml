@@ -7899,6 +7899,11 @@
             </summary>
             <param name="on">The new state of the switch.</param>
         </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Switch.Toggle">
+            <summary>
+            <b>Toggle status</b> toggles the switch state.
+            </summary>
+        </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer">
             <summary>
             Represents a time-based <see cref="T:ECARules4All_DLL.Behaviour"/> that helps triggering actions after specified durations.

@@ -109,6 +109,17 @@ namespace ECARules4All_DLL.Utils
             if (!(obj is ECABoolean)) return false;
             return this.choice == ((ECABoolean) obj).choice;
         }
+
+        public static ECABoolean Invert(ECABoolean b)
+        {
+            if (b == ECABoolean.YES) return ECABoolean.NO;
+            if (b == ECABoolean.ON) return ECABoolean.OFF;
+            if (b == ECABoolean.TRUE) return ECABoolean.FALSE;
+            if (b == ECABoolean.NO) return ECABoolean.YES;
+            if (b == ECABoolean.OFF) return ECABoolean.ON;
+            if (b == ECABoolean.FALSE) return ECABoolean.TRUE;
+            throw new ArgumentException("Invalid ECABoolean");
+        }
     }
 
     [System.Serializable]
