@@ -137,17 +137,16 @@ namespace ECARules4All_DLL
 
         private void Awake()
         {
-            if (GetComponent<Renderer>() == null)
-            {
-                Debug.LogError($"{gameObject.name} has not renderer component. This is important for insideCamera property.");
-            }
-            
             gameCollider = this.gameObject.GetComponents<Collider>();
             gameRenderer = this.gameObject.GetComponents<Renderer>();
             canvas = this.GetComponent<Canvas>();
 
             if (gameRenderer.Length == 0)
                 gameRenderer = this.gameObject.GetComponentsInChildren<Renderer>();
+            if (gameRenderer.Length == 0)
+            {
+                Debug.LogError($"{gameObject.name} has not renderer component. This is important for insideCamera property.");
+            }
             
             if (gameCollider.Length == 0)
                 gameCollider = this.gameObject.GetComponentsInChildren<Collider>();
