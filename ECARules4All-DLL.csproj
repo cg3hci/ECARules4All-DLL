@@ -267,6 +267,7 @@
       <Content Include="bin\Debug\System.ValueTuple.xml" />
       <Content Include="bin\Debug\UnityEngine.dll" />
       <Content Include="bin\Debug\UnityEngine.xml" />
+      <Content Include="UnityEngine.dll" />
     </ItemGroup>
     <ItemGroup>
       <None Include="App.config" />
