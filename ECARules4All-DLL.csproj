@@ -235,9 +235,42 @@
       <Content Include="AntLR\extensible\ECARulesLexer.g4.meta" />
       <Content Include="AntLR\extensible\ECARulesParser.g4" />
       <Content Include="AntLR\extensible\ECARulesParser.g4.meta" />
+      <Content Include="bin\Debug\Antlr4.Runtime.Standard.dll" />
+      <Content Include="bin\Debug\ECARules4All_DLL.dll" />
+      <Content Include="bin\Debug\ECARules4All_DLL.pdb" />
+      <Content Include="bin\Debug\ECARules4All_DLL.xml" />
+      <Content Include="bin\Debug\Newtonsoft.Json.dll" />
+      <Content Include="bin\Debug\Newtonsoft.Json.xml" />
+      <Content Include="bin\Debug\Serilog.dll" />
+      <Content Include="bin\Debug\Serilog.Sinks.File.dll" />
+      <Content Include="bin\Debug\Serilog.Sinks.File.xml" />
+      <Content Include="bin\Debug\Serilog.xml" />
+      <Content Include="bin\Debug\System.Buffers.dll" />
+      <Content Include="bin\Debug\System.Buffers.xml" />
+      <Content Include="bin\Debug\System.Diagnostics.DiagnosticSource.dll" />
+      <Content Include="bin\Debug\System.Diagnostics.DiagnosticSource.xml" />
+      <Content Include="bin\Debug\System.IO.Pipelines.dll" />
+      <Content Include="bin\Debug\System.IO.Pipelines.xml" />
+      <Content Include="bin\Debug\System.Memory.dll" />
+      <Content Include="bin\Debug\System.Memory.xml" />
+      <Content Include="bin\Debug\System.Numerics.Vectors.dll" />
+      <Content Include="bin\Debug\System.Numerics.Vectors.xml" />
+      <Content Include="bin\Debug\System.Runtime.CompilerServices.Unsafe.dll" />
+      <Content Include="bin\Debug\System.Runtime.CompilerServices.Unsafe.xml" />
+      <Content Include="bin\Debug\System.Text.Encodings.Web.dll" />
+      <Content Include="bin\Debug\System.Text.Encodings.Web.xml" />
+      <Content Include="bin\Debug\System.Threading.Channels.dll" />
+      <Content Include="bin\Debug\System.Threading.Channels.xml" />
+      <Content Include="bin\Debug\System.Threading.Tasks.Extensions.dll" />
+      <Content Include="bin\Debug\System.Threading.Tasks.Extensions.xml" />
+      <Content Include="bin\Debug\System.ValueTuple.dll" />
+      <Content Include="bin\Debug\System.ValueTuple.xml" />
+      <Content Include="bin\Debug\UnityEngine.dll" />
+      <Content Include="bin\Debug\UnityEngine.xml" />
     </ItemGroup>
     <ItemGroup>
       <None Include="App.config" />
+      <None Include="bin\Debug\ECARules4All_DLL.dll.config" />
       <None Include="packages.config" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
