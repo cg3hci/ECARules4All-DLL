@@ -32,13 +32,25 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcat
         /// <summary>
         /// <b>Charge</b> is the current charge of the firearm.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("charge", ECARules4AllType.Integer)]
-        public int charge;
+        public int charge
+        {
+            get => _charge;
+            set
+            {
+                _charge = value;
+                ECAScript.NotifyUpdate(this, nameof(charge), charge.ToString());
+            }
+        }
+        [SerializeField]
+        private int _charge;
 
         /// <summary>
         /// <b>Recharges</b>: The action of recharging the firearm. It plays the particle system and increases the charge.
         /// </summary>
         /// <param name="charge">The amount of charge</param>
+        [ECARelevance(true)]
         [Action(typeof(Firearm), "recharges", typeof(int))]
         public void Recharges(int charge)
         {
@@ -67,6 +79,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcat
         /// <b>Fires</b>: The action of firing the firearm. It plays the particle system and decreases the charge.
         /// </summary>
         /// <param name="obj">The ECAObject that has been shot</param>
+        [ECARelevance(true)]
         [Action(typeof(Firearm), "fires", typeof(ECAObject))]
         public void Fires(ECAObject obj)
         {
@@ -114,12 +127,15 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcat
         /// <b>Aims</b>: The action of aiming the firearm.
         /// </summary>
         /// <param name="obj"></param>
+        [ECARelevance(true)]
         [Action(typeof(Firearm), "aims", typeof(ECAObject))]
         public void Aims(ECAObject obj)
         {
             transform.LookAt(obj.transform);
-            this.GetComponent<ECAObject>().p.Assign(transform.position);
-            this.GetComponent<ECAObject>().r.Assign(transform.rotation);
+            //this.GetComponent<ECAObject>().p.Assign(transform.position);
+            this.GetComponent<ECAObject>().p = new Position(transform.position);
+            //this.GetComponent<ECAObject>().r.Assign(transform.rotation);
+            this.GetComponent<ECAObject>().r = new Rotation(transform.rotation);
         }
 
     }

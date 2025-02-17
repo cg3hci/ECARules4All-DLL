@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using ECARules4All_DLL.Utils;
+using UnityEngine;
 
 
 namespace ECARules4All_DLL
 {
+    [RequireComponent(typeof(ECAObjectInfo))]
     public class RuleEngineLoader : MonoBehaviour
     {
         private RuleEngine ruleEngine;
@@ -21,7 +23,7 @@ namespace ECARules4All_DLL
             // }
             // foreach (var r in ruleEngine.Rules())
             // {
-            //     Debug.Log(r);
+            //     Log.Information(r);
             // }
         }
     }

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ECARules4All_DLL.Clients;
+using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 
@@ -9,34 +9,12 @@ namespace ECARules4All_DLL
     public class Position
     {
         public string Name { get; set; }
-        //public object Owner { get; set; }
         
         public float x { get; set; }
-        /*public float x 
-        {
-            get => _x;
-            //set => UpdateValueWrapper.UpdateValue(this, nameof(x), _x, value);
-            set => UpdateValueWrapper.UpdateValue(this, nameof(x), ref _x, value);
-        }
-        private float _x;*/
-        
+
         public float y { get; set; }
-        /*public float y
-        {
-            get => _y;
-            //set => UpdateValueWrapper.UpdateValue(this, nameof(y), _y, value);
-            set => UpdateValueWrapper.UpdateValue(this, nameof(y), ref _y, value);
-        }
-        private float _y;*/
 
         public float z { get; set; }
-        /*public float z
-        {
-            get => _z;
-            //set => UpdateValueWrapper.UpdateValue(this, nameof(z), _z, value);
-            set => UpdateValueWrapper.UpdateValue(this, nameof(z), ref _z, value);
-        }
-        private float _z;*/
         
         public Position()
         {
@@ -110,6 +88,16 @@ namespace ECARules4All_DLL
             return x + ", " + y + ", " + z;
         }
 
+        public Dictionary<string, object> ToDict()
+        {
+            return new Dictionary<string, object>
+            {
+                {"x", this.x},
+                {"y", this.y},
+                {"z", this.z}
+            };
+        }
+
         public override bool Equals(object obj)
         {
             if(obj is Position)
@@ -172,6 +160,66 @@ namespace ECARules4All_DLL
             this.z = r.eulerAngles.z;
         }
     }
+    
+    public class Scale
+    {
+        public float x { get; set; }
+        public float y { get; set; }
+        public float z { get; set; }
+        
+        public Scale()
+        {
+            x = 0.0f;
+            y = 0.0f;
+            z = 0.0f;
+        }
+        
+        public Scale(Scale r)
+        {
+            this.x = r.x;
+            this.y = r.y;
+            this.z = r.z;
+        }
+        
+        public Scale(Vector3 s)
+        {
+            this.x = s.x;
+            this.y = s.y;
+            this.z = s.z;
+        }
+        
+        public void Assign(Scale r)
+        {
+            this.x = r.x;
+            this.y = r.y;
+            this.z = r.z;
+        }
+        
+        public void Assign(Vector3 r)
+        {
+            this.x = r.x;
+            this.y = r.y;
+            this.z = r.z;
+        }
+        
+        public override string ToString()
+        {
+            return x + ", " + y + ", " + z;
+        }
+        
+        public override bool Equals(object obj)
+        {
+            if(obj is Scale)
+            {
+                Scale s = obj as Scale;
+                return this.x == s.x && this.y == s.y && this.z == s.z;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
 
     public class Path
     {
@@ -214,6 +262,20 @@ namespace ECARules4All_DLL
             {
                 return false;
             }
+        }
+        
+        public Dictionary<string, object> ToDict()
+        {
+            var list = new List<Dictionary<string, object>>();
+            foreach (var pos in this.Points)
+            {
+                list.Add(pos.ToDict());
+            }
+            
+            return new Dictionary<string, object>
+            {
+                {"points", list}
+            };
         }
     }
 }

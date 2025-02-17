@@ -11,6 +11,7 @@
         Identifier,
         Rotation,
         Text,
-        Time
+        Time,
+        Scale
     }
 }

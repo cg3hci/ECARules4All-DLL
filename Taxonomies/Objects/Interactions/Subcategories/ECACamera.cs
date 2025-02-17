@@ -1,3 +1,4 @@
+using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 
@@ -42,19 +43,49 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <b>POV</b> is the camera's point of view.
         /// </summary>
         [StateVariable("pov", ECARules4AllType.Identifier)]
-        public POV pov;
+        public POV pov
+        {
+            get => _pov;
+            set
+            {
+                _pov = value;
+                ECAScript.NotifyUpdate(this, nameof(pov), pov.ToString());
+            }
+        }
+        [SerializeField]
+        private POV _pov;
 
         /// <summary>
         /// <b>zoomLevel</b> is the camera's zoom level.
         /// </summary>
         [StateVariable("zoomLevel", ECARules4AllType.Float)]
-        public float zoomLevel = 60;
+        public float zoomLevel
+        {
+            get => _zoomLevel;
+            set
+            {
+                _zoomLevel = value;
+                ECAScript.NotifyUpdate(this, nameof(zoomLevel), zoomLevel.ToString());
+            }
+        }
+        [SerializeField]
+        private float _zoomLevel = 60;
 
         /// <summary>
         /// <b>Playing</b> is a boolean that indicates whether the camera is currently playing.
         /// </summary>
         [StateVariable("playing", ECARules4AllType.Boolean)]
-        public ECABoolean playing;
+        public ECABoolean playing
+        {
+            get => _playing;
+            set
+            {
+                _playing = value;
+                ECAScript.NotifyUpdate(this, nameof(playing), playing.ToString());
+            }
+        }
+        [SerializeField]
+        private ECABoolean _playing;
 
         //TODO: conflict between grammar and documentation, float parameter only in documentation
         /// <summary>
@@ -62,6 +93,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <p>If the resulting zoom is less than 30 the zoom is set to 30.</p>
         /// </summary>
         /// <param name="amount">The amount of zoom to remove </param>
+        [ECARelevance(true)]
         [Action(typeof(ECACamera), "zooms-in", typeof(float))]
         public void ZoomsIn(float amount)
         {
@@ -83,6 +115,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         /// <p> If the resulting zoom is greater than 100 the zoom is set to 100.</p>
         /// </summary>
         /// <param name="amount">The amount of zoom to add</param>
+        [ECARelevance(true)]
         [Action(typeof(ECACamera), "zooms-out", typeof(float))]
         public void ZoomsOut(float amount)
         {

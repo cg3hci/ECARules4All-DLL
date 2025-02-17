@@ -6,7 +6,9 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
 {
     /// <summary>
-    /// This class represents a generic creature
+    /// The <b>Creature</b> class represents a generic creature.
+    /// A Creature can perform various movements such as running, walking, and swimming, each with a specific animation.
+    /// This class extends the functionality of <see cref="Animal"/> to include creature-specific behaviors.
     /// </summary>
     [ECARules4All("creature")]
     [RequireComponent(typeof(Animal))]
@@ -16,36 +18,36 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         private bool isBusyMoving = false;
 
         /// <summary>
-        /// <b>IdleAnimation</b>: is the animation that is played when the creature is idle.
+        /// <b>IdleAnimation</b> specifies the name of the animation clip played when the creature is idle.
         /// </summary>
         public string IdleAnimation;
 
         /// <summary>
-        /// <b>SwimAnimation</b>: is the animation that is played when the creature is swimming.
+        /// <b>SwimAnimation</b> specifies the name of the animation clip played when the creature is swimming.
         /// </summary>
         public string SwimAnimation;
 
         /// <summary>
-        /// <b>FlyAnimation</b>: is the animation that is played when the creature is flying.
+        /// <b>FlyAnimation</b> specifies the name of the animation clip played when the creature is running.
         /// </summary>
         public string FlyAnimation;
 
         /// <summary>
-        /// <b>RunAnimation</b>: is the animation that is played when the creature is running.
+        /// <b>RunAnimation</b> specifies the name of the animation clip played when the creature is running.
         /// </summary>
         public string RunAnimation;
 
         /// <summary>
-        /// <b>WalkAnimation</b>: is the animation that is played when the creature is walking.
+        /// <b>WalkAnimation</b> specifies the name of the animation clip played when the creature is walking.
         /// </summary>
         public string WalkAnimation;
 
         private string selected = "";
 
         /// <summary>
-        /// <b>Flies</b>: This method is used to move the creature to a specific position with a flying animation.
+        /// <b>Flies</b> (to) is a method that moves the creature to a specific position with a flying animation.
         /// </summary>
-        /// <param name="p">The position where to fly</param>
+        /// <param name="p">The target position to fly to.</param>
         [Action(typeof(Creature), "flies to", typeof(Position))]
         public void Flies(Position p)
         {
@@ -56,9 +58,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Flies</b>: This method is used to move the creature through path with a flying animation.
+        /// <b>Flies</b> (on) is a method that moves the creature along a specified path while playing the flying animation.
         /// </summary>
-        /// <param name="p">The path</param>
+        /// <param name="p">The path to follow while flying.</param>
         [Action(typeof(Creature), "flies on", typeof(Path))]
         public void Flies(Path p)
         {
@@ -67,10 +69,11 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Runs</b>: This method is used to move the creature to a specific position with a running animation.
+        /// <b>Runs</b> (to) is a method that moves the creature to a specific position with a running animation.
         /// </summary>
-        /// <param name="p">The position where to run</param>
+        /// <param name="p">The target position to run to.</param>
         [Action(typeof(Creature), "runs to", typeof(Position))]
+        [ECARelevance(true)]
         public void Runs(Position p)
         {
             float speed = 2.0F;
@@ -80,10 +83,11 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Runs</b>: This method is used to move the creature through a path with a running animation.
+        /// <b>Runs</b> (on) is a method that moves the creature along a specified path while playing the running animation.
         /// </summary>
-        /// <param name="p">The path</param>
+        /// <param name="p">The path to follow while running.</param>
         [Action(typeof(Creature), "runs on", typeof(Path))]
+        [ECARelevance(true)]
         public void Runs(Path p)
         {
             selected = RunAnimation;
@@ -91,9 +95,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Swims</b>: This method is used to move the creature to a specific position with a swimming animation.
+        /// <b>Swims</b> (to) is a method that moves the creature to a specific position with a swimming animation.
         /// </summary>
-        /// <param name="p">The position where to swim</param>
+        /// <param name="p">The target position to swim to.</param>
         [Action(typeof(Creature), "swims to", typeof(Position))]
         public void Swims(Position p)
         {
@@ -104,20 +108,19 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Swims</b>: This method is used to move the creature through a path with a swimming animation.
+        /// <b>Swims</b> (on) is a method that moves the creature along a specified path while playing the swimming animation.
         /// </summary>
-        /// <param name="p">The path</param>
+        /// <param name="p">The path to follow while swimming.</param>
         [Action(typeof(Creature), "swims on", typeof(Path))]
         public void Swims(Path p)
         {
             selected = SwimAnimation;
             StartCoroutine(WaitForOrderedMovement(p, "swims"));
         }
-
         /// <summary>
-        /// <b>Walks</b>: This method is used to move the creature to a specific position with a waling animation.
+        /// <b>Walks</b> (to) is a method that moves the creature to a specific position with a walking animation.
         /// </summary>
-        /// <param name="p">The position where to walk</param>
+        /// <param name="p">The target position to walk to.</param>
         [Action(typeof(Creature), "walks to", typeof(Position))]
         public void Walks(Position p)
         {
@@ -129,9 +132,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Walks</b>: This method is used to move the creature through a path with a walking animation.
+        /// <b>Walks</b> (on) is a method that moves the creature along a specified path while playing the walking animation.
         /// </summary>
-        /// <param name="p">The path</param>
+        /// <param name="p">The path to follow while walking.</param>
         [Action(typeof(Creature), "walks on", typeof(Path))]
         public void Walks(Path p)
         {
@@ -156,11 +159,13 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
                 // Set our position as a fraction of the distance between the markers.
 
                 gameObject.transform.position = Vector3.Lerp(startMarker, endMarker, fractionOfJourney);
-                GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+                // GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+                GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
                 yield return null;
             }
 
-            GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+            //GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+            GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
             isBusyMoving = false;
             Animate(IdleAnimation);
         }

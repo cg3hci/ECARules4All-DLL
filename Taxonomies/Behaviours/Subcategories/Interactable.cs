@@ -1,5 +1,6 @@
 ﻿using ECARules4All_DLL.Utils;
 using UnityEngine;
+using Serilog;
 
 
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
@@ -11,31 +12,47 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("interactable")]
     [RequireComponent(typeof(Behaviour))]
     [RequireComponent(typeof(Collider))]
+    [RequireComponent(typeof(Rigidbody))] // Confermo che serve
     [DisallowMultipleComponent]
     public class Interactable : MonoBehaviour
     {
         private void OnTriggerEnter(Collider other)
         {
+            if (other.CompareTag("NonEcaInteractable")) return;
+            
             //PROVE
-            EventBus.GetInstance().Publish(new Action(other.gameObject, "interacts with", this.gameObject));
-
+            Action action = new Action(other.gameObject, "interacts with", this.gameObject);
+            Log.Information("Interacts-with (trigger) " + other.gameObject);
+            EventBus.GetInstance().Publish(action);
+            ECAScript.NotifyUpdate(this, action);
         }
 
         private void OnCollisionEnter(Collision other)
         {
-            EventBus.GetInstance().Publish(new Action(other.gameObject, "interacts with", this.gameObject));
+            if (other.gameObject.CompareTag("NonEcaInteractable")) return;
+
+            Action action = new Action(other.gameObject, "interacts with", this.gameObject);
+            EventBus.GetInstance().Publish(action);
+            ECAScript.NotifyUpdate(this, action);
+            Log.Information("Interacts-with (collision) " + other.gameObject);
         }
 
         private void OnTriggerExit(Collider other)
         {
             //PROVE
-            EventBus.GetInstance().Publish(new Action(other.gameObject, "stops-interacting with", this.gameObject));
-
+            if (other.CompareTag("NonEcaInteractable")) return;
+            Action action = new Action(other.gameObject, "stops-interacting with", this.gameObject);
+            EventBus.GetInstance().Publish(action);
+            ECAScript.NotifyUpdate(this, action);
         }
 
         private void OnCollisionExit(Collision other)
         {
-            EventBus.GetInstance().Publish(new Action(other.gameObject, "stops-interacting with", this.gameObject));
+            if (other.gameObject.CompareTag("NonEcaInteractable")) return;
+            Action action = new Action(other.gameObject, "stops-interacting with", this.gameObject);
+            EventBus.GetInstance().Publish(action);
+            ECAScript.NotifyUpdate(this, action);
+            Log.Information($"OnCollisionExit - other: {other.gameObject.name} - obj: {this.gameObject.name}");
         }
     }
 }

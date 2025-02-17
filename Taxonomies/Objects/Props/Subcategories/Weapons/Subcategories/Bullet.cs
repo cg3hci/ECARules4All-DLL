@@ -15,8 +15,19 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcat
         /// <summary>
         /// <b>Speed</b>: this is the speed of the bullet
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("speed", ECARules4AllType.Float)]
-        public float speed;
+        public float speed
+        {
+            get => _speed;
+            set
+            {
+                _speed = value;
+                ECAScript.NotifyUpdate(this, nameof(speed), speed.ToString());
+            }
+        }
+        [SerializeField]
+        private float _speed;
         //TODO FUTURE: eventualmente avere un'evento per quando colpisce qualcosa
 
 

@@ -11,11 +11,32 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles.Subcategories
     public class SpaceVehicle : MonoBehaviour
     {
         [StateVariable("oxygen", ECARules4AllType.Float)]
-        public float oxygen;
+        public float oxygen
+        {
+            get => _oxygen;
+            set
+            {
+                _oxygen = value;
+                ECAScript.NotifyUpdate(this, nameof(oxygen), oxygen.ToString());
+            }
+        }
+        [SerializeField]
+        private float _oxygen;
 
         [StateVariable("gravity", ECARules4AllType.Float)]
-        public float gravity;
+        public float gravity
+        {
+            get => _gravity;
+            set
+            {
+                _gravity = value;
+                ECAScript.NotifyUpdate(this, nameof(gravity), gravity.ToString());
+            }
+        }
+        [SerializeField]
+        private float _gravity;
 
+        [ECARelevance(true)]
         [Action(typeof(SpaceVehicle), "takes-off", typeof(Position))]
         public void TakesOff(Position p)
         {
@@ -24,6 +45,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles.Subcategories
             StartCoroutine(MoveObject(speed, endMarker));
         }
 
+        [ECARelevance(true)]
         [Action(typeof(SpaceVehicle), "lands", typeof(Position))]
         public void Lands(Position p)
         {

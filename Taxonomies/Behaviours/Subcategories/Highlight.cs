@@ -1,4 +1,5 @@
-﻿using ECARules4All_DLL.Utils;
+﻿using ECARules4All_DLL.SmartHomeHubClients;
+using ECARules4All_DLL.Utils;
 using UnityEngine;
 
 
@@ -16,12 +17,35 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Color</b> is the color that will be used to highlight the objects.
         /// </summary>
         [StateVariable("color", ECARules4AllType.Color)]
-        public Color color;
+        [ECARelevance(false)]
+        public Color color
+        {
+            get => _color;
+            set
+            {
+                _color = value;
+                ECAScript.NotifyUpdate(this, nameof(color), color.ToString());
+            }
+        }
+        [SerializeField] 
+        private Color _color;
+        
         /// <summary>
         /// <b>On</b> is a boolean that tells if the highlight is on or off.
         /// </summary>
         [StateVariable("on", ECARules4AllType.Boolean)]
-        public ECABoolean on = new ECABoolean(ECABoolean.BoolType.OFF);
+        [ECARelevance(false)]
+        public ECABoolean on
+        {
+            get => _on;
+            set
+            {
+                _on = value;
+                ECAScript.NotifyUpdate(this, nameof(on), on.ToString());
+            }
+        }
+        [SerializeField] 
+        private ECABoolean _on = new ECABoolean(ECABoolean.BoolType.OFF);
 
         /// <summary>
         /// <b>Outline</b> is an object that is used to highlight the object.
@@ -50,6 +74,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="c"></param>
         [Action(typeof(Highlight), "changes", "color", "to", typeof(Color))]
+        [ECARelevance(false)]
         public void ChangesColor(Color c)
         {
             color = c;
@@ -61,6 +86,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="on"></param>
         [Action(typeof(Highlight), "turns", typeof(ECABoolean))]
+        [ECARelevance(false)]
         public void Turns(ECABoolean on)
         {
             this.on = on;

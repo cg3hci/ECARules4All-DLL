@@ -6,7 +6,9 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
 {
     /// <summary>
-    /// This class represents an animal that can fly.
+    /// The <b>FlyingAnimal</b> class represents a flying animal.
+    /// An FlyingAnimal can move using flying or walking animations and supports navigation to specific positions or along predefined paths.
+    /// This class extends the functionality of <see cref="Animal"/> to include flying-specific behaviors.
     /// </summary>
     [ECARules4All("flying-animal")]
     [RequireComponent(typeof(Animal))]
@@ -16,26 +18,27 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         private bool isBusyMoving = false;
         private string selected;
 
-        /// <summary>
-        /// <b>IdleAnimation</b>: is the animation that is played when the flying animal is idle.
+       /// <summary>
+        /// <b>IdleAnimation</b> specifies the name of the animation clip played when the flying animal is idle.
         /// </summary>
         public string IdleAnimation;
 
         /// <summary>
-        /// <b>FlyAnimation</b>: is the animation that is played when the flying animal is flying.
+        /// <b>FlyAnimation</b> specifies the name of the animation clip played when the flying animal is flying.
         /// </summary>
         public string FlyAnimation;
 
         /// <summary>
-        /// <b>WalkAnimation</b>: is the animation that is played when the flying animal is walking.
+        /// <b>WalkAnimation</b> specifies the name of the animation clip played when the flying animal is walking.
         /// </summary>
         public string WalkAnimation;
 
         /// <summary>
-        /// <b>Flies</b>: This method is used to move the flying animal to a specific position with a flying animation.
+        /// <b>Flies</b> (to) is a method that moves the flying animal to a specific position with a flying animation.
         /// </summary>
-        /// <param name="p">The position where to fly</param>
+        /// <param name="p">The target position to fly to.</param>
         [Action(typeof(FlyingAnimal), "flies to", typeof(Position))]
+        [ECARelevance(true)]
         public void Flies(Position p)
         {
             float speed = 5.0F;
@@ -45,10 +48,11 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Flies</b>: This method is used to move the flying animal through path with a flying animation.
+        /// <b>Flies</b> (on) is a method that moves the flying animal along a specified path while playing the flying animation.
         /// </summary>
-        /// <param name="p">The path</param>
+        /// <param name="p">The path to follow while flying.</param>
         [Action(typeof(FlyingAnimal), "flies on", typeof(Path))]
+        [ECARelevance(true)]
         public void Flies(Path p)
         {
             selected = FlyAnimation;
@@ -56,10 +60,11 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Walks</b>: This method is used to move the flying animal to a specific position with a waling animation.
+        /// <b>Walks</b> (to) is a method that moves the flying animal to a specific position with a walking animation.
         /// </summary>
-        /// <param name="p">The position where to walk</param>
+        /// <param name="p">The target position to walk to.</param>
         [Action(typeof(FlyingAnimal), "walks to", typeof(Position))]
+        [ECARelevance(true)]
         public void Walks(Position p)
         {
             float speed = 1.0F;
@@ -70,9 +75,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
         }
 
         /// <summary>
-        /// <b>Walks</b>: This method is used to move the flying animal through a path with a walking animation.
+        /// <b>Walks</b> (on) is a method that moves the flying animal along a specified path while playing the walking animation.
         /// </summary>
-        /// <param name="p">The path</param>
+        /// <param name="p">The path to follow while walking.</param>
         [Action(typeof(FlyingAnimal), "walks on", typeof(Path))]
         public void Walks(Path p)
         {
@@ -97,11 +102,13 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
                 // Set our position as a fraction of the distance between the markers.
 
                 gameObject.transform.position = Vector3.Lerp(startMarker, endMarker, fractionOfJourney);
-                GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+                // GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+                GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
                 yield return null;
             }
 
-            GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+            // GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+            GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
             isBusyMoving = false;
             Animate(IdleAnimation);
         }

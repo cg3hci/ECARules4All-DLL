@@ -16,8 +16,19 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>On</b> is a boolean that indicates if the particle system is active.
         /// </summary>
         [StateVariable("on", ECARules4AllType.Boolean)]
-        public ECABoolean on = new ECABoolean(ECABoolean.BoolType.OFF);
-
+        [ECARelevance(false)]
+        public ECABoolean on
+        {
+            get => _on;
+            set
+            {
+                _on = value;
+                ECAScript.NotifyUpdate(this, nameof(on), on.ToString());
+            }
+        }
+        [SerializeField] 
+        private ECABoolean _on = new ECABoolean(ECABoolean.BoolType.OFF);
+        
         public ParticleSystem ps;
 
         //TODO: Questa azione VA in conflitto con azioni all'interno di ECAObject (ad es. Turns di Electronic)
@@ -26,6 +37,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="on">The status of the particle system.</param>
         [Action(typeof(Particle), "turns", typeof(ECABoolean))]
+        [ECARelevance(false)]
         public void Turns(ECABoolean on)
         {
             this.@on = on;

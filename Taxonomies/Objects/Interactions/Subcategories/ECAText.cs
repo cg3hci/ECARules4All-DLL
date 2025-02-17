@@ -1,5 +1,7 @@
-
+/*
+using System;
 using ECARules4All_DLL.Utils;
+using TMPro;
 using UnityEngine;
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
@@ -10,13 +12,37 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
     [ECARules4All("text")]
     [RequireComponent(typeof(Interaction))] //gerarchia 
     [DisallowMultipleComponent]
-    public class ECAText : MonoBehaviour
+    public class ECAText : ECAScript
     {
+        private TextMeshPro textMesh;
+
+        private void Start()
+        {
+            textMesh = GetComponent<TextMeshPro>();
+         
+            if (textMesh == null)
+            {   
+                throw new Exception("The object must have a TextMeshProUGUI component. Or do we want to put it as public instance?");
+            }
+            textMesh.text = content;
+        }
+
         /// <summary>
         /// <b>Content</b> is the text content of the text element.
         /// </summary>
         [StateVariable("content", ECARules4AllType.Text)]
-        public string content;
+        public string content
+        {
+            get => _content;
+            set
+            {
+                textMesh.text = value;
+                _content = value;
+                NotifyUpdate(nameof(content), content);
+            }
+        }
+        [SerializeField]
+        private string _content;
 
         /// <summary>
         /// <b>ChangesContent</b> is the text content of the text element.
@@ -49,3 +75,4 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         }
     }
 }
+*/

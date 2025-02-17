@@ -1,5 +1,4 @@
-﻿using System;
-using ECARules4All_DLL.Utils;
+﻿using ECARules4All_DLL.Utils;
 using UnityEngine;
 
 
@@ -18,24 +17,39 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>locked</b> defines whether the lock is open or not.
         /// </summary>
         [StateVariable("locked", ECARules4AllType.Boolean)]
-        public ECABoolean locked = new ECABoolean(ECABoolean.BoolType.YES);
+        [ECARelevance(false)]
+        public ECABoolean locked
+        {
+            get => _locked;
+            set
+            {
+                _locked = value;
+                ECAScript.NotifyUpdate(this, nameof(locked), locked.ToString());
+            }
+        }
+        [SerializeField] 
+        private ECABoolean _locked = new ECABoolean(ECABoolean.BoolType.YES);
 
         /// <summary>
         /// <b>Opens</b> sets the lock to open.
         /// </summary>
         [Action(typeof(Lock), "opens")]
+        [ECARelevance(false)]
         public void Opens()
         {
-            locked.Assign(ECABoolean.BoolType.NO);
+            //locked.Assign(ECABoolean.BoolType.NO);
+            locked = new ECABoolean(ECABoolean.BoolType.NO);
         }
         
         /// <summary>
         /// <b>Closes</b> sets the lock to closed.
         /// </summary>
         [Action(typeof(Lock), "closes")]
+        [ECARelevance(false)]
         public void Closes()
         {
-            locked.Assign(ECABoolean.BoolType.YES);
+            //locked.Assign(ECABoolean.BoolType.YES);
+            locked = new ECABoolean(ECABoolean.BoolType.YES);
         }
     }
 }

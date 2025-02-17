@@ -1,36 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-using ECARules4All_DLL.Clients;
+﻿using System;
+using System.Collections;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
-using Object = UnityEngine.Object;
+// ReSharper disable InconsistentNaming
 
 
 namespace ECARules4All_DLL
 {
-    public abstract class ECAScript : MonoBehaviour
-    {
-        protected StateVariableAttribute GetStateVariableProperty(string nameProperty)
-        {
-            var property = GetType().GetProperty(nameProperty);
-            // return a StateVariableAttribute if the object contains a property named $"{nameProperty}" 
-            if (property != null)
-            {
-                return property.GetCustomAttribute<StateVariableAttribute>();
-            }
-
-            return null;
-        }
-    }
-    
     /// <summary>
-    /// <b>ECAObject</b> is the base class for all objects that can be used in the rule engine.
+    /// <b>ECAObject</b> is the base class for all virtual objects that can be used in the automations.
     /// All the other classes in this package inherit from this class or one of its subclasses.
+    /// It supports properties such as position, rotation, scale, visibility, and activity, and provides methods for moving, rotating, scaling, and controlling visibility.
     /// </summary>
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(ECATracker))]
     [ECARules4All("object")]
-    public class ECAObject : ECAScript
+    public class ECAObject : MonoBehaviour
     {
         /// <summary>
         /// <b> GameCollider </b> is the collider of the object.
@@ -45,9 +30,29 @@ namespace ECARules4All_DLL
         /// </summary>
         private bool isBusyMoving = false;
 
+        private float deltaTimeIsRendered = 0;
+        
         /// <summary>
-        /// <b>p</b> is the position of the object.
+        /// <b>description</b> describes in a few words what the object is and its role.
         /// </summary>
+        [ECARelevance(true)]
+        [StateVariable("description", ECARules4AllType.Text)]
+        public string description
+        {
+            get => _description;
+            set
+            {
+                _description = value;
+                ECAScript.NotifyUpdate(this, nameof(description), _description);
+            }
+        }
+        [SerializeField]
+        private string _description;
+        
+        /// <summary>
+        /// <b>p</b> represents the position of the virtual object in the 3D space. It's a vector with three components: x, y, and z.
+        /// </summary>
+        [ECARelevance(true)]
         [StateVariable("position", ECARules4AllType.Position)]
         public Position p
         {
@@ -55,26 +60,13 @@ namespace ECARules4All_DLL
             set
             {
                 _p = value;
-                var attribute = GetStateVariableProperty(nameof(p));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
-                        attribute.Name,
-                        new Dictionary<string, object>
-                        {
-                            { "x", p.x },
-                            { "y", p.y },
-                            { "z", p.z },
-                        }
-                    );
-                }
+                ECAScript.NotifyUpdate(this, nameof(p), _p);
             }
         }
         private Position _p;
         
         /// <summary>
-        /// <b>r</b> is the rotation of the object.
+        /// <b>r</b> represents the rotation of the object in the 3D space. It's a vector with three components: x, y, and z (euler angles).
         /// </summary>
         [StateVariable("rotation", ECARules4AllType.Rotation)]
         public Rotation r
@@ -83,28 +75,35 @@ namespace ECARules4All_DLL
             set
             {
                 _r = value;
-                var attribute = GetStateVariableProperty(nameof(r));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
-                        attribute.Name,
-                        new Dictionary<string, object>
-                        {
-                            { "x", r.x },
-                            { "y", r.y },
-                            { "z", r.z },
-                        }
-                    );
-                }
+                ECAScript.NotifyUpdate(this, nameof(r), _r);
             }
         }
         private Rotation _r;
-
+        
         /// <summary>
-        /// <b>isVisible</b> is a boolean that indicates if the object is visible.
-        /// If the object is invisible, it will not be rendered but it will still collide with other objects.
+        /// <b>r</b> represents the scale of the object in the 3D space.
         /// </summary>
+        [StateVariable("scale", ECARules4AllType.Scale)]
+        public Scale s
+        {
+            get => _s;
+            set
+            {
+                _s = value;
+                ECAScript.NotifyUpdate(this, nameof(s), _s);
+            }
+        }
+        private Scale _s;
+        
+        private Vector3 _originalPosition ;
+        private Quaternion _originalQuaternion ;
+        private Vector3 _originalScale ;
+        
+        /// <summary>
+        /// <b>visible</b> indicates whether the object is visible. The allowed values are either "yes" or "no".
+        /// If invisible, the object is not rendered but remains interactive for collisions.
+        /// </summary>
+        [ECARelevance(true)]
         [StateVariable("visible", ECARules4AllType.Boolean)]
         public ECABoolean isVisible // = new ECABoolean(ECABoolean.BoolType.YES);
         {
@@ -112,56 +111,87 @@ namespace ECARules4All_DLL
             set
             {
                 _isVisible = value;
-                var attribute = GetStateVariableProperty(nameof(isVisible));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
-                        attribute.Name,
-                        isVisible.ToString()
-                    );
-                }
+                ECAScript.NotifyUpdate(this, nameof(isVisible), isVisible.ToString());
             }
         }
+        [SerializeField]
         private ECABoolean _isVisible = new ECABoolean(ECABoolean.BoolType.YES);
         
         /// <summary>
-        /// <b>isActive</b> is a boolean that indicates if the object is active and visible.
-        /// If the object is inactive, it will not be rendered and it will not collide with other objects.
+        /// <b>active</b> indicates whether the object is active. The allowed values are either "yes" or "no".
+        /// When inactive, the object is not rendered and does not interact with other objects.
         /// </summary>
         [StateVariable("active", ECARules4AllType.Boolean)]
-        public ECABoolean isActive //= new ECABoolean(ECABoolean.BoolType.YES);
+        public ECABoolean isActive
         {
             get => _isActive;
             set
             {
                 _isActive = value;
-                var attribute = GetStateVariableProperty(nameof(isActive));
-                if(attribute != null)
-                {
-                    UpdateValueWrapper.UpdateValue(
-                        this.ToString(),
-                        attribute.Name,
-                        isActive.ToString()
-                    );
-                }
+                ECAScript.NotifyUpdate(this, nameof(isActive), isActive.ToString());
             }
         }
+        [SerializeField]
         private ECABoolean _isActive = new ECABoolean(ECABoolean.BoolType.YES);
         
+        /// <summary>
+        /// <b>isInsideCamera</b> indicates whether the object is currently within the camera's field of view. This property is automatically updated at runtime.
+        /// </summary>
+        [StateVariable("isInsideCamera", ECARules4AllType.Boolean)]
+        public ECABoolean isInsideCamera
+        {
+            get => _isInsideCamera;
+            set
+            {
+                _isInsideCamera = value;
+                ECAScript.NotifyUpdate(this, nameof(isInsideCamera), isInsideCamera.ToString());
+            }
+        }
+        private ECABoolean _isInsideCamera = new ECABoolean(ECABoolean.BoolType.NO);
+        
         private Canvas canvas;
+        private Camera xrCamera;
+
+        private void Awake()
+        {
+            gameCollider = this.gameObject.GetComponents<Collider>();
+            gameRenderer = this.gameObject.GetComponents<Renderer>();
+            canvas = this.GetComponent<Canvas>();
+
+            if (gameRenderer.Length == 0)
+                gameRenderer = this.gameObject.GetComponentsInChildren<Renderer>();
+            if (gameRenderer.Length == 0)
+            {
+                Debug.LogError($"{gameObject.name} has not renderer component. This is important for insideCamera property.");
+            }
+            
+            if (gameCollider.Length == 0)
+                gameCollider = this.gameObject.GetComponentsInChildren<Collider>();
+            
+            p = new Position(transform.position);
+            r = new Rotation(transform.localRotation);
+            s = new Scale(transform.localScale);
+
+            // I don't want to know what should be done if there are multiple cameras in the scene
+            xrCamera = Camera.main;
+            if (xrCamera == null)
+            {
+                throw new Exception("No camera found in the scene. This is important for the isInsideCamera property!!");
+            }
+        }
 
         private void Start()
         {
-            //p.Owner = this;
-            TryGetComponent<Canvas>(out canvas);
+            _originalPosition = gameObject.transform.position;
+            _originalQuaternion = gameObject.transform.localRotation;
+            _originalScale = gameObject.transform.localScale;
             UpdateVisibility();
         }
 
         /// <summary>
-        /// <b>Moves</b> (to) is a method that moves the object to a new position.
+        /// <b>Moves</b> (to) is a method that moves the object to a specified position in the 3D space.
         /// </summary>
-        /// <param name="newPos">The new position for the object </param>
+        /// <param name="newPos">The target position to move to.</param>
         [Action(typeof(ECAObject), "moves to", typeof(Position))]
         public void Moves(Position newPos)
         {
@@ -171,9 +201,9 @@ namespace ECARules4All_DLL
         }
 
         /// <summary>
-        /// <b>Moves</b> (on) is a method that moves the object to a new position, following a path.
+        /// <b>Moves</b> (on) is a method that moves the object along a specified path, following sequential points.
         /// </summary>
-        /// <param name="path">The array of positions the object will follow, one after another</param>
+        /// <param name="path">An array of positions the object will follow, one after another.</param>
         [Action(typeof(ECAObject), "moves on", typeof(Path))]
         public void Moves(Path path)
         {
@@ -194,19 +224,19 @@ namespace ECARules4All_DLL
         }
 
         /// <summary>
-        /// <b>Rotates</b> sets the rotation of the object to a new value.
+        /// <b>Rotates</b> sets the object's rotation to a specified value in the 3D space.
         /// </summary>
-        /// <param name="newRot">The new rotation value fo the object. </param>
+        /// <param name="newRot">The target rotation expressed as a vector with three components: x, y, and z.</param>
         [Action(typeof(ECAObject), "rotates around", typeof(Rotation))]
         public void Rotates(Rotation newRot)
         {
             //r.Assign(newRot);
             r = new Rotation(newRot);
-            transform.Rotate(r.x, r.y, r.z);
+            transform.Rotate(r.x, r.y, r.z); // todo verify rotation
         }
         
         /// <summary>
-        /// <b>Looks</b> sets the rotation of the object in a way that it looks at a target.
+        /// <b>Looks</b> adjusts the object's rotation to face a specified target object.
         /// </summary>
         /// <param name="o">The target GameObject to look at.</param>
         [Action(typeof(ECAObject), "looks at", typeof(GameObject))]
@@ -220,13 +250,41 @@ namespace ECARules4All_DLL
                 //r.Assign(transform.rotation);
                 r = new Rotation(transform.rotation);
             }
-            
+        }
+        
+        /// <summary>
+        /// <b>Scales</b> sets the object's scale to a specified value.
+        /// </summary>
+        /// <param name="newScale">The new scale value fo the object. The scale is a vector with three components: x, y, and z.</param>
+        [Action(typeof(ECAObject), "scales to", typeof(Scale))]
+        public void Scales(Scale newScale)
+        {
+            //r.Assign(newRot);
+            s = new Scale(newScale);
+            transform.localScale = new Vector3(s.x, s.y, s.z);
+        }
+        
+        /// <summary>
+        /// Restores the object's original position, rotation, and scale to their initial values.
+        /// </summary>
+        [Action(typeof(ECAObject), "restores original settings")]
+        public void MovesOriginalPosition()
+        {
+            // float speed = 3.0F;
+            //StartCoroutine(MoveObject(speed, _originalPosition));
+            gameObject.transform.position = _originalPosition;
+            p = new Position(_originalPosition);
+            gameObject.transform.localRotation = _originalQuaternion;
+            r = new Rotation(_originalQuaternion);
+            gameObject.transform.localScale = _originalScale;
+            s = new Scale(_originalScale);
         }
 
         /// <summary>
-        /// <b>Shows</b> makes the object visible. It makes it visible if it is not already.
+        /// <b>Shows</b> maakes the object visible if it is not already.
         /// </summary>
         [Action(typeof(ECAObject), "shows")]
+        [ECARelevance(true)]
         public void Shows()
         {
             //isVisible.Assign(ECABoolean.BoolType.YES);
@@ -235,8 +293,9 @@ namespace ECARules4All_DLL
         }
         
         /// <summary>
-        /// <b>Hides</b> makes the object invisible. It makes it invisible if it is not already.
+        /// <b>Hides</b> makes the object invisible if it is not already.
         /// </summary>
+        [ECARelevance(true)]
         [Action(typeof(ECAObject), "hides")]
         public void Hides()
         {
@@ -246,7 +305,7 @@ namespace ECARules4All_DLL
         }
         
         /// <summary>
-        /// <b>Activates</b> makes the object active. It makes it active if it is not already. 
+        /// <b>Activates</b> makes the object both interactable and visible.
         /// </summary>
         [Action(typeof(ECAObject), "activates")]
         public void Activates()
@@ -255,8 +314,9 @@ namespace ECARules4All_DLL
             isActive = new ECABoolean(ECABoolean.BoolType.YES);
             UpdateVisibility();
         }
+        
         /// <summary>
-        /// <b>Deactivates</b> makes the object inactive. It makes it inactive if it is not already.
+        /// <b>Deactivates</b> makes the object invisible and non-interactable.
         /// </summary>
         [Action(typeof(ECAObject), "deactivates")]
         public void Deactivates()
@@ -267,9 +327,10 @@ namespace ECARules4All_DLL
         }
         
         /// <summary>
-        /// <b>ShowsHides</b> sets the visibility of the object, defined by a parameter.
+        /// <b>ShowsHides</b> changes the visibility state of the object based on a parameter. The parameter can be either "yes" or "no".
         /// </summary>
-        /// <param name="yesNo">The new visibility state for the object. </param>
+        /// <param name="yesNo">The new visibility state.</param>
+        [ECARelevance(true)]
         [Action(typeof(ECAObject), "changes", "visible", "to", typeof(YesNo))]
         public void ShowsHides(ECABoolean yesNo)
         {
@@ -278,33 +339,14 @@ namespace ECARules4All_DLL
         }
 
         /// <summary>
-        /// <b>ActivatesDeactivates</b> sets the active state of the object, defined by a parameter.
+        /// <b>ActivatesDeactivates</b> changes the active state of the object based on a parameter. The parameter can be either "yes" or "no".
         /// </summary>
-        /// <param name="yesNo"></param>
+        /// <param name="yesNo">The new active state.</param>
         [Action(typeof(ECAObject), "changes", "active", "to", typeof(YesNo))]
         public void ActivatesDeactivates(ECABoolean yesNo)
         {
             isActive = yesNo;
             UpdateVisibility();
-        }
-
-        private void Awake()
-        {
-            gameCollider = this.gameObject.GetComponents<Collider>();
-            gameRenderer = this.gameObject.GetComponents<Renderer>();
-
-            if (gameRenderer.Length == 0)
-                gameRenderer = this.gameObject.GetComponentsInChildren<Renderer>();
-            
-            if (gameCollider.Length == 0)
-                gameCollider = this.gameObject.GetComponentsInChildren<Collider>();
-            
-            //p = new Position();
-            //p.Assign(transform.position);
-            p = new Position(transform.position);
-            //r = new Rotation();
-            //r.Assign(transform.rotation);
-            r = new Rotation(transform.rotation);
         }
         
         //TODO: should be private
@@ -316,13 +358,13 @@ namespace ECARules4All_DLL
                 c.enabled = isActive;
             }
 
-            foreach (Renderer r in gameRenderer)
+            foreach (Renderer rend in gameRenderer)
             {
                 if (!isActive || !isVisible)
                 {
-                    r.enabled = false;
+                    rend.enabled = false;
                 }
-                else r.enabled = true;
+                else rend.enabled = true;
             }
             
             if (canvas != null)
@@ -338,11 +380,12 @@ namespace ECARules4All_DLL
         private IEnumerator MoveObject(float speed, Vector3 endMarker)
         {
             isBusyMoving = true;
+            //Vector3 startMarker = gameObject.transform.position;
             Vector3 startMarker = gameObject.transform.position;
             float startTime = Time.time;
             float journeyLength = Vector3.Distance(startMarker, endMarker);
-            while (gameObject.transform.position != endMarker)
-            {
+            //while (gameObject.transform.position != endMarker)
+            while (gameObject.transform.position != endMarker) {
                 float distCovered = (Time.time - startTime) * speed;
 
                 // Fraction of journey completed equals current distance divided by total distance.
@@ -351,14 +394,39 @@ namespace ECARules4All_DLL
                 // Set our position as a fraction of the distance between the markers.
 
                 gameObject.transform.position = Vector3.Lerp(startMarker, endMarker, fractionOfJourney);
-                //GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+                //GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
                 GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
                 yield return null;
             }
-            //GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+            //GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
             GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
             isBusyMoving = false;
         }
 
+        private void Update()
+        {
+            // check if object is within the camera's field of view.
+            // the object must be active
+            if (xrCamera && Time.time - deltaTimeIsRendered > 0.5f)
+            {
+                Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(xrCamera);
+
+                ECABoolean res = ECABoolean.NO;
+                foreach (Renderer render in gameRenderer)
+                {
+                    if (GeometryUtility.TestPlanesAABB(frustumPlanes, render.bounds))
+                    {
+                        res = ECABoolean.YES;
+                        break;
+                    }
+                }
+                
+                if(this.isInsideCamera != res)
+                {
+                    this.isInsideCamera = res;
+                    deltaTimeIsRendered = Time.time;
+                }
+            }
+        }
     }
 }

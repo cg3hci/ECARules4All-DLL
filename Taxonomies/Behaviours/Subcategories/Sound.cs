@@ -1,104 +1,197 @@
-﻿using System.Collections;
-using ECARules4All_DLL.Utils;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
-using SystemPath = System.IO.Path;
+using ECARules4All_DLL.Taxonomies.Objects.Interactions;
+using ECARules4All_DLL.Utils;
+using Newtonsoft.Json;
+using Serilog;
 
 
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
-    /// <summary>
-    /// <b>Sound</b> is a <see cref="Behaviour"/> that works like a media player, and it is specific to audio files.
-    /// </summary>
+    /// <b>Sound</b> is a behavior that functions as a media player specifically designed for audio files.
+    /// It extends <see cref="ECABehaviour"/> to provide audio-related functionalities such as playback, volume control, and source management.
     [ECARules4All("sound")]
-    [RequireComponent(typeof(Behaviour))]
+    [RequireComponent(typeof(Interaction))]
+    [RequireComponent(typeof(AudioSource))]
+    [JsonObject(MemberSerialization.OptIn)]
     [DisallowMultipleComponent]
     public class Sound : MonoBehaviour
     {
+        private string status = "";
+
         /// <summary>
-        /// <b>Source</b> is the audio source that will be used to play the audio.
+        /// <b>Source</b> is the audio filename that serves as the source for playback.
         /// </summary>
-        [StateVariable("source", ECARules4AllType.Text)] public string source;
+        [StateVariable("source", ECARules4AllType.Text)]
+        [ECARelevance(true)]
+        public string source
+        {
+            get => _source;
+            set
+            {
+                _source = value;
+                ECAScript.NotifyUpdate(this, nameof(source), source);
+            }
+        }
+        [SerializeField] private string _source;
+
         /// <summary>
-        /// <b>Volume</b> is the volume of the audio.
+        /// <b>Volume</b> is the current volume level of the audio.
+        /// Accepts values between 0 and the maximum volume, defined by <see cref="maxVolume"/>.
         /// </summary>
-        [StateVariable("volume", ECARules4AllType.Float)] public float volume;
+        [StateVariable("volume", ECARules4AllType.Float)]
+        [ECARelevance(true)]
+        public float volume
+        {
+            get => _volume;
+            set
+            {
+                _volume = value;
+                ECAScript.NotifyUpdate(this, nameof(volume), volume.ToString());
+            }
+        }
+        [SerializeField] private float _volume;
+
         /// <summary>
-        /// <b>MaxVolume</b> is the maximum volume the audio can reach.
+        /// <b>MaxVolume</b> is the maximum volume level the audio can reach.
         /// </summary>
-        [StateVariable("maxVolume", ECARules4AllType.Float)] public float maxVolume;
+        [StateVariable("maxVolume", ECARules4AllType.Float)]
+        public float maxVolume
+        {
+            get => _maxVolume;
+            set
+            {
+                _maxVolume = value; //TODO What if the volume is greater than the maxVolume?
+                ECAScript.NotifyUpdate(this, nameof(maxVolume), maxVolume.ToString());
+            }
+        }
+        [SerializeField] private float _maxVolume;
+
         /// <summary>
-        /// <b>duration</b> is the duration of the audio.
+        /// <b>currentTime</b> is the current playback position in seconds. 
+        /// Tracks the progression of the audio clip.
         /// </summary>
-        [StateVariable("duration", ECARules4AllType.Float)] public float duration;
+        [StateVariable("currentTime", ECARules4AllType.Float)]
+        [ECARelevance(false)]
+        public float currentTime
+        {
+            get => _currentTime;
+            set
+            {
+                _currentTime = value;
+                ECAScript.NotifyUpdate(this, nameof(currentTime), currentTime.ToString());
+            }
+        }
+        [SerializeField] private float _currentTime;
+
         /// <summary>
-        /// <b>currentTime</b> is the current time of the audio.
+        /// <b>playing</b> indicates whether the audio is currently playing. The value is either "yes" or "no". If paused or stopped are "yes", playing will be "no".
         /// </summary>
-        [StateVariable("currentTime", ECARules4AllType.Float)] public float currentTime;
+        [StateVariable("playing", ECARules4AllType.Boolean)]
+        [ECARelevance(true)]
+        public ECABoolean playing
+        {
+            get => _playing;
+            set
+            {
+                _playing = value;
+                ECAScript.NotifyUpdate(this, nameof(playing), playing.ToString());
+            }
+        }
+        [SerializeField] private ECABoolean _playing = new ECABoolean(ECABoolean.BoolType.NO);
+
         /// <summary>
-        /// <b>isPlaying</b> is a boolean that indicates if the audio is playing.
+        /// <b>paused</b> indicates whether the audio playback is paused. The value is either "yes" or "no". When playing again, the audio will resume from the paused time.
         /// </summary>
-        [StateVariable("playing", ECARules4AllType.Boolean)] public ECABoolean playing = new ECABoolean(ECABoolean.BoolType.NO);
+        [StateVariable("paused", ECARules4AllType.Boolean)]
+        [ECARelevance(false)]
+        public ECABoolean paused
+        {
+            get => _paused;
+            set
+            {
+                _paused = value;
+                ECAScript.NotifyUpdate(this, nameof(paused), paused.ToString());
+            }
+        }
+        [SerializeField] private ECABoolean _paused = new ECABoolean(ECABoolean.BoolType.NO);
+
         /// <summary>
-        /// <b> Paused </b> is a boolean that indicates if the audio is paused.
+        /// <b> Stopped </b> indicates whether the audio playback is stopped. The value is either "yes" or "no". When playing again, the audio will start from the beginning.
         /// </summary>
-        [StateVariable("paused", ECARules4AllType.Boolean)] public ECABoolean paused = new ECABoolean(ECABoolean.BoolType.NO);
+        [StateVariable("stopped", ECARules4AllType.Boolean)]
+        [ECARelevance(true)]
+        public ECABoolean stopped
+        {
+            get => _stopped;
+            set
+            {
+                _stopped = value;
+                ECAScript.NotifyUpdate(this, nameof(stopped), stopped.ToString());
+            }
+        }
+        [SerializeField] private ECABoolean _stopped = new ECABoolean(ECABoolean.BoolType.YES);
+
         /// <summary>
-        /// <b> Stopped </b> is a boolean that indicates if the audio is stopped.
+        /// <b>AudioSource</b> is the audio _audioSource that will be used to play the audio.
         /// </summary>
-        [StateVariable("stopped", ECARules4AllType.Boolean)] public ECABoolean stopped = new ECABoolean(ECABoolean.BoolType.YES);
-        /// <summary>
-        /// <b>Player</b> is the audio player that will be used to play the audio.
-        /// </summary>
-        private AudioSource player;
+        private AudioSource _audioSource;
+
         /// <summary>
         /// <b> SourcePath </b> is the path of the audio file.
         /// </summary>
         private string sourcePath;
-        
+
         /// <summary>
-        /// <b>Plays</b> starts the audio.
+        /// <b>Plays</b> starts the audio playback.
+        /// Updates the state variables playing, stopped, and paused to reflect that playback is active.
         /// </summary>
         [Action(typeof(Sound), "plays")]
+        [ECARelevance(true)]
         public void Plays()
         {
-            this.playing.Assign(ECABoolean.BoolType.YES);
-            this.stopped.Assign(ECABoolean.BoolType.NO);
-            this.paused.Assign(ECABoolean.BoolType.NO);
-            player.Play();
+            this.playing= new ECABoolean(ECABoolean.BoolType.YES);
+            this.stopped = new ECABoolean(ECABoolean.BoolType.NO);
+            this.paused = new ECABoolean(ECABoolean.BoolType.NO);
+            _audioSource.Play();
         }
 
         /// <summary>
-        /// <b>Pauses</b> pauses the audio.
+        /// <b>Pauses</b> pauses the audio playback.
+        /// Maintains the current playback time (currentTime) for resuming later (by calling Plays).
         /// </summary>
         [Action(typeof(Sound), "pauses")]
+        [ECARelevance(false)]
         public void Pauses()
         {
-            this.playing.Assign(ECABoolean.BoolType.NO);
-            this.stopped.Assign(ECABoolean.BoolType.NO);
-            this.paused.Assign(ECABoolean.BoolType.YES);
-            player.Pause();
+            this.playing= new ECABoolean(ECABoolean.BoolType.NO);
+            this.stopped= new ECABoolean(ECABoolean.BoolType.NO);
+            this.paused= new ECABoolean(ECABoolean.BoolType.YES);
+            _audioSource.Pause();
         }
 
         /// <summary>
-        /// <b>Stops</b> stops the audio.
+        /// <b>Stops</b> stops the audio playback and resets the playback time (currentTime) to the beginning.
         /// </summary>
         [Action(typeof(Sound), "stops")]
+        [ECARelevance(true)]
         public void Stops()
         {
-            this.playing.Assign(ECABoolean.BoolType.NO);
-            this.stopped.Assign(ECABoolean.BoolType.YES);
-            this.paused.Assign(ECABoolean.BoolType.NO);
-            player.Stop();
+            this.playing= new ECABoolean(ECABoolean.BoolType.NO);
+            this.stopped= new ECABoolean(ECABoolean.BoolType.YES);
+            this.paused= new ECABoolean(ECABoolean.BoolType.NO);
+            _audioSource.Stop();
         }
 
         /// <summary>
-        /// <b>ChangesVolume</b> changes the volume of the audio to the given value.
-        /// <para>If the value is greater than the maximum volume, the volume will be set to the maximum volume; if
-        /// the value is less than 0, the volume will be set to 0.</para>
+        /// <b>ChangesVolume</b> changes the volume of the audio to a given value.
+        /// <para>Ensures the value remains within the range of 0 to <see cref="maxVolume"/></para>
         /// </summary>
-        /// <param name="v">The new volume setting.</param>
+        /// <param name="v">The new volume value.</param>
         [Action(typeof(Sound), "changes", "volume", "to", typeof(float))]
+        [ECARelevance(true)]
         public void ChangesVolume(float v)
         {
             if (v > maxVolume)
@@ -111,88 +204,97 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 v = 0;
             }
 
-            volume = v;
-            player.volume = volume;
+            this.volume = v;
+            _audioSource.volume = this.volume;
         }
 
         /// <summary>
-        /// <b>ChangesCurrentTime</b> changes the current time of the audio to the given value.
+        /// <b>ChangesSource</b> changes the audio filename source to the given filename.
+        /// <p>Validates the path and dynamically loads the audio for playback.</p>
         /// </summary>
-        /// <param name="c"> The new time value.</param>
-        [Action(typeof(Sound), "changes", "current-time", "to", typeof(double))]
-        public void ChangesCurrentTime(double c)
-        {
-            if (c <= duration)
-            {
-                //TODO: abbastanza esplicativo cosa ci sia da fare
-            }
-        }
-
-        /// <summary>
-        /// <b>ChangesSource</b> changes the source of the audio to the given path.
-        /// <p>The path must be relative to the project's user-accessible Inventory folder.</p>
-        /// <p>If the path is not valid, the audio will not be played.</p>
-        /// </summary>
-        /// <param name="newSource">The new audio file path.</param>
+        /// <param name="newSource">The new audio filename.</param>
         [Action(typeof(Sound), "changes", "source", "to", typeof(string))]
+        [ECARelevance(true)]
         public void ChangesSource(string newSource)
         {
-            source = newSource;
-            sourcePath = "file://" + SystemPath.Combine(Application.streamingAssetsPath, SystemPath.Combine("Inventory", SystemPath.Combine("Audios", source)));
-            StartCoroutine(ChangeAudioSource());
+            var objName = gameObject.name;
+
+            if (string.IsNullOrEmpty(newSource))
+                Log.Warning($"Hai inserito un url vuoto per l'audio in {objName}!");
+
+            StartCoroutine(this.LoadAudioFromURL(newSource, (status) =>
+            {
+                Log.Information($"PlayAudio sull'oggetto {objName} terminata con stato: {status}");
+
+                if (status != "ok")
+                    throw new Exception(
+                        $"Si è verificato un errore nel caricamento dell'audio {newSource} per l'oggetto {objName}");
+
+                // Update the list of objects in the scene
+                // instance?.GetObjectInfoByName(objName);
+            }));
         }
 
-        IEnumerator ChangeAudioSource()
+        public IEnumerator LoadAudioFromURL(string fileName, Action<string> result)
         {
-            using (UnityWebRequest uwr = UnityWebRequestMultimedia.GetAudioClip(sourcePath, AudioType.MPEG))
+            _audioSource.Stop(); // Interrompe la riproduzione dell'audio corrente
+
+            using (UnityWebRequest uwr =
+                   UnityWebRequestMultimedia.GetAudioClip(TaxonomyUtils.getFileAudioByName(fileName),
+                       AudioType.UNKNOWN))
             {
                 yield return uwr.SendWebRequest();
-                if (uwr.result == UnityWebRequest.Result.ConnectionError ||
-                    uwr.result == UnityWebRequest.Result.ProtocolError)
+                if (uwr.result != UnityWebRequest.Result.Success)
                 {
-                    //throw new Exception("File unavailable or wrong path");
+                    Log.Error(
+                        "Si è verificato un errore nel caricamento del file audio. Verifica che il file audio " +
+                        "richiesto esista e si trovi nella relativa cartella.");
+                    status = "error";
                 }
                 else
                 {
-                    if (player.clip != null)
+                    source = fileName;
+                    _audioSource.clip = DownloadHandlerAudioClip.GetContent(uwr);
+                    _audioSource.time = 0;
+                    if (!stopped && !paused && playing)
                     {
-                        Stops();
-                        AudioClip reference = player.clip;
-                        player.clip = null;
-                        reference.UnloadAudioData();
-                        DestroyImmediate(reference, false);
+                        /* TODO Questo serve perché ri-mettere in play l'eventuale clip,
+                        // essendo questa funzione (ChangeSource) invocata in maniera asincrona (IEnumerator),
+                        // non siamo certi che venga effettivamente eseguita prima della Play()
+                        // Esecuzione Ideale: ChangeSource ->  Play
+                        // Problema: ChangeSource è asincrono e potrebbe succedere questo
+                        //                    Play -> ChangeSource
+                        // Ma visto che il cambio di Clip (in ChangeSource) stoppa la riproduzione audio, la clip in sostanza non va mai in play */
+                        _audioSource.Play(); // Avvia la riproduzione del nuovo file audio
                     }
 
-                    player.clip = DownloadHandlerAudioClip.GetContent(uwr);
+                    status = "ok";
                 }
+
+                result(status);
             }
 
             yield return null;
         }
 
-        private void Update()
+        private void Start()
         {
-            if (playing)
-            {
-                currentTime = player.time;
-            }
-        }
-
-        private void Awake()
-        {
+            // _hook = GameObject.Find("Hook").GetComponent<HookManager>(); // TODO JACO AGILE: Perchè prendiamo l'hook?
             maxVolume = 1.0f;
-            player = GetComponent<AudioSource>();
+            _audioSource = GetComponent<AudioSource>();
 
-            if (source != null)
-            {
-                sourcePath = "file://" + SystemPath.Combine(Application.streamingAssetsPath, SystemPath.Combine("Inventory", SystemPath.Combine("Audios", source)));
-                StartCoroutine(ChangeAudioSource());
-                duration = player.clip.length;
-            }
+            ChangesSource(source);
 
             volume = volume > maxVolume ? maxVolume : volume;
             volume = volume < 0.0f ? 0.0f : volume;
-            player.volume = volume;
+            _audioSource.volume = volume;
+
+            _audioSource.playOnAwake = (!stopped && !paused && playing);
+
+            if (stopped || paused)
+                this.Stops();
+            else
+                this.Plays();
         }
     }
 }

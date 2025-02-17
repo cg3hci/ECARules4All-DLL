@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using ECARules4All_DLL.Clients;
+using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using JetBrains.Annotations;
 using UnityEngine;
+using Serilog;
 
 
 namespace ECARules4All_DLL
 {
-       ///<summary>
+    ///<summary>
     ///<c>RuleEngine</c> manages all the rule execution routines. 
     ///</summary>
     public class RuleEngine : ActionListener
@@ -18,15 +20,17 @@ namespace ECARules4All_DLL
         //RuleEngine()
         public static RuleEngine singleton;
         private List<Rule> rules = new List<Rule>();
+
         private EventBus eventQueue;
-        
+
+        // Smart hub clients
         public List<AbstractClientBase> clients { get; set; } = new List<AbstractClientBase>();
 
         public void AddClient(AbstractClientBase newClient)
         {
             clients.Add(newClient);
         }
-        
+
         /// <summary>
         /// <para>Returns an Instance of the RuleEngine.</para>
         /// </summary>
@@ -43,10 +47,23 @@ namespace ECARules4All_DLL
             return singleton;
         }
 
-        
+
         private RuleEngine()
         {
             eventQueue = EventBus.GetInstance();
+            // log file
+            var logFilePath = "logs/log.txt";
+            if (File.Exists(logFilePath))
+            {
+                File.Delete(logFilePath);
+            }
+
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File(
+                    logFilePath,
+                    rollingInterval: RollingInterval.Infinite
+                )
+                .CreateLogger();
         }
 
         ///<summary>
@@ -59,7 +76,18 @@ namespace ECARules4All_DLL
         ///</summary>        
         public void Add(Rule r)
         {
+            // Check for null.
+            // No need for other  checks, the Rule.TryCreateRule method will take care of them.
+            // Rule constructors are now private
+            if (r == null)
+            {
+                Log.Error("You are trying to add a Rule r equals to null");
+                return;
+            }
+
+
             rules.Add(r);
+
             //Si sottoscrive nell'Eventbus un ascoltatore per la regola in questione
             eventQueue.Subscribe(r.GetEvent(), this);
         }
@@ -126,7 +154,7 @@ namespace ECARules4All_DLL
 
             if (type != Action.ActionType.INVALID)
             {
-                List<FieldInfo> fields = new List<FieldInfo>();
+                List<FieldInfo> fields = new List<FieldInfo>(); //TODO Do we want to use GetProperties() as well?
                 List<MethodInfo> methods = new List<MethodInfo>();
                 List<Component> subjects = act.GetSubjectComponent();
                 List<Component> objects = new List<Component>();
@@ -134,7 +162,7 @@ namespace ECARules4All_DLL
 
                 if (act.AreThereAnyObjects())
                     objects = act.GetObjectComponent();
-                if (type == Action.ActionType.CHANGES || type == Action.ActionType.INCREMENTSDECREMENTS)
+                if (type == Action.ActionType.CHANGES || type == Action.ActionType.INCREMENTSDECREMENTS) //TODO Do we want to use GetProperties() as well?
                 {
                     fields = act.GetField();
                     count = fields.Count;
@@ -150,7 +178,7 @@ namespace ECARules4All_DLL
                     switch (type)
                     {
                         case Action.ActionType.CUSTOMCHANGE:
-                            methods[i].Invoke(subjects[i], new[] {act.GetModifierValue()});
+                            methods[i].Invoke(subjects[i], new[] { act.GetModifierValue() });
                             break;
                         case Action.ActionType.CHANGES:
                             fields[i].SetValue(subjects[i], act.GetModifierValue());
@@ -163,16 +191,16 @@ namespace ECARules4All_DLL
                         case Action.ActionType.OBJECT:
                             //if "Action.objct" is != null then we use a GameObject instead of a Component
                             methods[i].Invoke(subjects[i],
-                                act.AreThereAnyObjects() ? new object[] {objects[i]} : new[] {act.GetObject()});
+                                act.AreThereAnyObjects() ? new object[] { objects[i] } : new[] { act.GetObject() });
                             break;
                         case Action.ActionType.VALUE:
-                            methods[i].Invoke(subjects[i], new[] {act.GetObject()});
+                            methods[i].Invoke(subjects[i], new[] { act.GetObject() });
                             break;
                         case Action.ActionType.VERB:
                             methods[i].Invoke(subjects[i], new object[] { });
                             break;
                         case Action.ActionType.PASSIVE:
-                            methods[i].Invoke(subjects[i], new object[] {objects[i]});
+                            methods[i].Invoke(subjects[i], new object[] { objects[i] });
                             break;
                     }
 
@@ -231,15 +259,15 @@ namespace ECARules4All_DLL
             //    StateVariableAttribute state = Attribute.GetCustomAttribute(fields[i], typeof(StateVariableAttribute)) as StateVariableAttribute;
             //    if (state != null)
             //    {
-            //        Debug.Log("Fields[i].name: " + fields[i].Name);
-            //        Debug.Log("State.name: " + state.Name);
-            //        Debug.Log("State.Type: " + state.type);
-            //        Debug.Log("--------------------------");
+            //        Log.Information("Fields[i].name: " + fields[i].Name);
+            //        Log.Information("State.name: " + state.Name);
+            //        Log.Information("State.Type: " + state.type);
+            //        Log.Information("--------------------------");
             //    }
             //}
 
             List<String> variables = new List<String>();
-            foreach (FieldInfo m in c.GetFields())
+            foreach (FieldInfo m in c.GetFields()) //TODO Do we want to use GetProperties() as well?
             {
                 object[] a = m.GetCustomAttributes(typeof(StateVariableAttribute), true);
                 if (a.Length > 0)
@@ -312,67 +340,6 @@ namespace ECARules4All_DLL
             return actions;
         }
 
-
-        /*
-                public Dictionary<GameObject, ECARuleInfo> CreateDescriptors(GameObject[] objects)
-                {
-                    Dictionary<GameObject, ECARuleInfo> ecaDescriptors = new Dictionary<GameObject, ECARuleInfo>();
-
-                    foreach(GameObject obj in objects)
-                    {
-                        ECARuleInfo info = new ECARuleInfo();
-                        info.EcaRuleType = typeof(System.Object);
-                        ecaDescriptors.Add(obj, info);
-                        foreach(Component c in obj.GetComponents())
-                        {
-                            Type cType = c.GetType();
-                            if(Attribute.IsDefined(cType, typeof(ECARules4AllAttribute)))
-                            {
-                                // we found a ECARules4All managed type
-                                if (cType.IsSubclassOf(typeof(ECARules4All.Object)))
-                                {
-                                    // find the minimum type associated with the different components
-                                    if (cType.IsSubclassOf(info.EcaRuleType))
-                                    {
-                                        info.EcaRuleType = cType;
-                                    }
-
-                                }
-
-                                // add the actions to the list
-                                foreach (MethodInfo m in cType.GetMethods())
-                                {
-                                    ActionAttribute[] actions = (ActionAttribute[])m.GetCustomAttributes(typeof(ActionAttribute), true);
-                                    foreach (ActionAttribute a in actions)
-                                    {
-                                        info.Actions.Add(a);
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    return ecaDescriptors;
-                }
-
-        public List<String> BuildEventList()
-        {
-            List<String> actions = new List<String>();
-            foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (Type t in ass.GetExportedTypes())
-                {
-                    if (t.IsSubclassOf(typeof(UnityEngine.Component)) && Attribute.IsDefined(t, typeof(ECARules4AllAttribute)))
-                    {
-                        actions.AddRange(this.ListActions(t));
-                    }
-                }
-            }
-
-            return actions;
-        }
-        */
-
         ///<summary>
         ///<c>ActionPerformed</c> is an implementation of the <see cref="ActionListener"/> interface.
         ///<para/>
@@ -402,6 +369,36 @@ namespace ECARules4All_DLL
                 ExecuteAction(act);
             }
         }
+
+        // Test
+        private void Update()
+        {
+            Debug.LogError("Se premi I succedono cose. Ricordarsi di cancellarlo");
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                var components = ComponentTracker.Instance.GetAllComponents();
+                foreach (var entry in components)
+                {
+                    Log.Information("Key: " + entry.Key);
+                    Log.Information("-- Value: " + entry.Value);
+                }
+            }
+        }
+        
+        public List<Rule> GetRulesInvolvingGameObject(GameObject gO)
+        {
+            var involvedRules = new List<Rule>();
+
+            foreach (var r in Rules())
+            {
+                if (r.InvolvesGameObject(gO))
+                {
+                    involvedRules.Add(r);
+                }
+            }
+
+            return involvedRules;
+        }
     }
 
     ///<summary>
@@ -426,7 +423,7 @@ namespace ECARules4All_DLL
         ///</list>
         ///<para/>
         ///</summary>
-        public Rule(Action when, Condition ifStatements, List<Action> listOfActions)
+        private Rule(Action when, Condition ifStatements, List<Action> listOfActions)
         {
             Event = when;
             conditions = ifStatements;
@@ -444,7 +441,7 @@ namespace ECARules4All_DLL
         ///</list>
         ///<para/>
         ///</summary>
-        public Rule(Action when, List<Action> listOfActions)
+        private Rule(Action when, List<Action> listOfActions)
         {
             Event = when;
             conditions = null;
@@ -479,6 +476,107 @@ namespace ECARules4All_DLL
         public List<Action> GetActions()
         {
             return actions;
+        }
+
+        /**
+         * Tries to create a rule from the given parameters.
+         * @param lWhen The event that triggers the rule
+         * @param lIf The condition that must be true for the rule to be executed
+         * @param lThen The list of actions to be executed when the rule is triggered
+         * @return The rule, if it was successfully created, null otherwise
+         */
+        public static Rule TryCreateRule(Action lWhen, Condition lIf, List<Action> lActions)
+        {
+            bool areArgsValid = AreRuleArgsValid(lWhen, lIf, lActions, out bool atLeastOneCondition);
+            if (!areArgsValid)
+            {
+                Log.Error("Invalid rule");
+                throw new Exception("Invalid rule"); // Per ora lancio un'eccezione per accorgersi subito se qualcosa non funziona
+                return null;
+            }
+
+            Log.Information("Valid rule");
+            return atLeastOneCondition ? new Rule(lWhen, lIf, lActions) : new Rule(lWhen, lActions);
+        }
+
+        public static Rule TryCreateRule(Action lWhen, List<Action> lActions)
+        {
+            return TryCreateRule(lWhen, null, lActions);
+        }
+
+        private static bool AreRuleArgsValid(Action whenAction, Condition lIf, List<Action> lActions,
+            out bool atLeastOneCondition)
+        {
+            atLeastOneCondition = lIf != null;
+
+            ////////////////////// EVENT //////////////////////
+            Log.Information("Evaluated when");
+            if (whenAction?.IsValid() == false)
+            {
+                Log.Information("Invalid when");
+                return false; //the findAction returns null, so something is missing
+            }
+            ///////////////////////////////////////////////////////
+
+
+            ////////////////////// CONDITIONS  //////////////////////
+            if (atLeastOneCondition)
+            {
+                switch (lIf)
+                {
+                    case CompositeCondition compositeCondition:
+                    {
+                        Log.Information($"Trying to evaluate the composite condition {compositeCondition}");
+                        if (!compositeCondition.IsValid())
+                        {
+                            Log.Information($"Invalid Composite Condition {compositeCondition}");
+                            return false;
+                        }
+
+                        Log.Information("Composite condition is valid");
+                        break;
+                    }
+                    case SimpleCondition simpleCondition:
+                    {
+                        Log.Information($"Trying to evaluate the simple condition {simpleCondition}");
+                        if (!simpleCondition.IsValid())
+                        {
+                            Log.Information($"Invalid Simple Condition {simpleCondition}");
+                            return false;
+                        }
+
+                        Log.Information("Simple condition is valid");
+                        break;
+                    }
+                    default:
+                        Log.Information("Unknown condition type");
+                        return false;
+                }
+            }
+            ///////////////////////////////////////////////////////
+
+
+            ////////////////////// ACTIONS //////////////////////
+            if (!lActions.Any())
+            {
+                Log.Information("Invalid then: 0 actions in the list");
+                return false;
+            }
+
+            foreach (var thenAction in lActions.Where(thenAction => thenAction?.IsValid() == false))
+            {
+                Log.Information($"Invalid then action: {thenAction}");
+                return false;
+            }
+
+            //////////////////////////////////////////////////////////////////
+            Log.Information("All went well!");
+            return true;
+        }
+        
+        public bool InvolvesGameObject(GameObject gO)
+        {
+            return Event.InvolvesGameObject(gO) || (conditions?.InvolvesGameObject(gO) == true) || actions.Any(action => action.InvolvesGameObject(gO));
         }
     }
 
@@ -527,6 +625,63 @@ namespace ECARules4All_DLL
         public Condition GetParent()
         {
             return parent;
+        }
+
+        /// <summary>
+        /// <c>InvolvesGameObject</c> returns true if the GameObject is involved in the condition. False otherwise.
+        /// </summary>
+        /// <param name="gO">The GameObject to check</param>
+        /// <param name="efficient">If true, it will use a more efficient method to check if the GameObject is involved in the condition</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public bool InvolvesGameObject(GameObject gO, bool efficient = true)
+        {
+            if (efficient)
+            {
+                if (this is SimpleCondition sc)
+                {
+                    // Check if the subject of the condition is the GameObject before doing cache-heavy operations
+                    if (sc.GetSubject() == gO) return true;
+
+
+                    // Cache the result of GetValueToCompare() to avoid redundant calls
+                    var valueToCompare = sc.GetValueToCompare();
+
+                    return (valueToCompare is GameObject objGo && objGo == gO)
+                           || (valueToCompare is MonoBehaviour mB && mB.gameObject == gO);
+                }
+
+                if (this is CompositeCondition cc)
+                {
+                    // Use LINQ for readability and efficiency
+                    return cc.Children().Any(child => child.InvolvesGameObject(gO));
+                }
+
+                throw new Exception("Condition type not recognized");
+            }
+            else
+            {
+                if (this is SimpleCondition sc)
+                {
+                    return (sc.GetSubject() == gO)
+                           || (sc.GetValueToCompare() != null && sc.GetValueToCompare() is GameObject objGo &&
+                               objGo == gO)
+                           || (sc.GetValueToCompare() != null && sc.GetValueToCompare() is MonoBehaviour mB &&
+                               mB.gameObject == gO);
+                }
+
+                if (this is CompositeCondition cc)
+                {
+                    foreach (var cc_child in cc.Children())
+                    {
+                        if (cc_child.InvolvesGameObject(gO)) return true;
+                    }
+
+                    return false;
+                }
+
+                throw new Exception("Condition type not recognized");
+            }
         }
     }
 
@@ -618,21 +773,20 @@ namespace ECARules4All_DLL
 
         public override bool Evaluate()
         {
-            bool res;
-            bool temp = Op == ConditionType.AND ? true : false;
+            bool currEval = Op == ConditionType.AND ? true : false;
 
             foreach (Condition c in children)
             {
                 switch (Op)
                 {
                     case ConditionType.OR:
-                        temp = temp || c.Evaluate();
-                        if (temp) return temp;
+                        currEval = currEval || c.Evaluate();
+                        if (currEval == true) return true;
                         break;
 
                     case ConditionType.AND:
-                        temp = temp && c.Evaluate();
-                        if (!temp) return temp;
+                        currEval = currEval && c.Evaluate();
+                        if (currEval == false) return false;
                         break;
 
                     case ConditionType.NOT:
@@ -640,7 +794,7 @@ namespace ECARules4All_DLL
                 }
             }
 
-            return temp;
+            return currEval;
         }
 
         public override bool IsLeaf()
@@ -655,6 +809,13 @@ namespace ECARules4All_DLL
                 throw new ArgumentException("Cannot set more than one child using the not operator");
             }
         }
+
+        public bool IsValid()
+        {
+            return Children().All(c =>
+                (c is SimpleCondition sc && sc.IsValid()) || (c is CompositeCondition cc && cc.IsValid())
+            );
+        }
     }
 
 
@@ -668,7 +829,7 @@ namespace ECARules4All_DLL
         private string checkSymbol;
         private object compareWith = null;
 
-        private FieldInfo variable;
+        private MemberInfo variable;
         private Component componentToCheck;
 
         ///<summary>
@@ -728,9 +889,13 @@ namespace ECARules4All_DLL
 
         public bool IsValid()
         {
+            FieldInfo fieldInfoTemp = null;
+            PropertyInfo propertyInfoTemp = null;
+            var valueType = compareWith.GetType();
+
             if (toCheck != null && (property != null || property != ""))
             {
-                string[] mathValues = {"<", ">", "<=", ">="};
+                string[] mathValues = { "<", ">", "<=", ">=" };
                 //Si identifica il componente da controllare, tra quelli presenti nel GameObject
                 foreach (Component c in toCheck.GetComponents<Component>())
                 {
@@ -740,11 +905,15 @@ namespace ECARules4All_DLL
                     {
                         // we found a ECARules4All managed type
                         //Si va alla ricerca del campo che ci serve
-                        foreach (FieldInfo m in cType.GetFields())
+                        var x = from it in cType.GetMembers(BindingFlags.Public | BindingFlags.Instance)
+                            where it is PropertyInfo || it is FieldInfo
+                            select it;
+                        foreach (var m in x)
+                            // foreach (FieldInfo m in cType.GetFields())
                         {
                             //Per ogni variabile etichettata con l'attributo "StateVariable" si controlla se i tipi combaciano, nel caso si fa un controllo sull'uguaglianza sui valori
                             StateVariableAttribute[] variables =
-                                (StateVariableAttribute[]) m.GetCustomAttributes(typeof(StateVariableAttribute), true);
+                                (StateVariableAttribute[])m.GetCustomAttributes(typeof(StateVariableAttribute), true);
                             foreach (StateVariableAttribute a in variables)
                             {
                                 //Check if the type supports mathematical operations (such as <, >, >= and <=)
@@ -753,13 +922,34 @@ namespace ECARules4All_DLL
                                 //If the operation is supported check whether is true or not
                                 if (!res && !mathValues.Contains(checkSymbol) || res)
                                 {
-                                    if (a.Name == GetProperty() && m.FieldType == GetValueType() ||
-                                        a.Name == GetProperty() && m.FieldType == typeof(ECABoolean) &&
-                                        compareWith is bool)
+                                    if (m.MemberType.Equals(MemberTypes.Field))
                                     {
-                                        variable = m;
-                                        componentToCheck = c;
-                                        return true;
+                                        fieldInfoTemp = ((FieldInfo)m);
+                                        if (a.Name == property && fieldInfoTemp.FieldType == valueType ||
+                                            a.Name == property && fieldInfoTemp.FieldType == typeof(ECABoolean) &&
+                                            compareWith is bool)
+                                        {
+                                            variable = fieldInfoTemp;
+                                            componentToCheck = c;
+                                            return true;
+                                        }
+                                    }
+                                    else if (m.MemberType.Equals(MemberTypes.Property))
+                                    {
+                                        propertyInfoTemp = ((PropertyInfo)m);
+
+                                        if (a.Name == property && propertyInfoTemp.PropertyType == valueType ||
+                                            a.Name == property && propertyInfoTemp.PropertyType == typeof(ECABoolean) &&
+                                            compareWith is bool)
+                                        {
+                                            variable = propertyInfoTemp;
+                                            componentToCheck = c;
+                                            return true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        throw new Exception($"Type [{m.MemberType}] not managed yet");
                                     }
                                 }
                             }
@@ -775,7 +965,19 @@ namespace ECARules4All_DLL
         {
             if (IsValid())
             {
-                return CompareValues(variable.GetValue(componentToCheck), GetValueToCompare(), GetSymbol());
+                if (variable is FieldInfo f)
+                {
+                    return CompareValues(f.GetValue(componentToCheck), GetValueToCompare(), GetSymbol());
+                }
+                else if (variable is PropertyInfo p)
+                {
+                    return CompareValues(p.GetValue(componentToCheck), GetValueToCompare(), GetSymbol());
+                }
+                else
+                {
+                    throw new Exception("Type not managed yet");
+                }
+                // return CompareValues(variable.GetValue(componentToCheck), GetValueToCompare(), GetSymbol());
             }
 
             return false;
@@ -870,12 +1072,14 @@ namespace ECARules4All_DLL
         private string a_unit = null;
 
         private List<MethodInfo> method = new List<MethodInfo>();
-        private List<FieldInfo> field = new List<FieldInfo>();
+        private List<FieldInfo> field = new List<FieldInfo>(); //TODO Do we want to use GetProperties() as well?
         private List<Component> subject = new List<Component>(), objct = new List<Component>();
         private bool objects = false;
         private ActionType type;
 
-        public Action(){}
+        public Action()
+        {
+        }
 
         ///<summary>
         ///Declaration with all the elements (plus an explicit modifier)
@@ -1128,6 +1332,9 @@ namespace ECARules4All_DLL
         //TODO null action
         private bool ActionEquals(Action action)
         {
+            if (action is null)
+                return false;
+
             if (!a_subject.Equals(action.GetSubject()))
                 return false;
             if (!a_verb.Equals(action.GetActionMethod()))
@@ -1149,7 +1356,7 @@ namespace ECARules4All_DLL
             return method;
         }
 
-        public List<FieldInfo> GetField()
+        public List<FieldInfo> GetField() //TODO Do we want to use GetProperties() as well?
         {
             return field;
         }
@@ -1203,12 +1410,14 @@ namespace ECARules4All_DLL
                             foreach (MethodInfo m in cType.GetMethods())
                             {
                                 ActionAttribute[] actions =
-                                    (ActionAttribute[]) m.GetCustomAttributes(typeof(ActionAttribute), true);
+                                    (ActionAttribute[])m.GetCustomAttributes(typeof(ActionAttribute), true);
                                 foreach (ActionAttribute a in actions)
                                 {
                                     if (a.Verb == GetActionMethod() && a.SubjectType == c.GetType() &&
-                                        a.variableName == (string) GetObject() &&
-                                        (a.ValueType == GetModifierValueType() || a.ValueType.IsSubclassOf(GetModifierValueType()) || GetModifierValueType().IsSubclassOf(a.ValueType)))
+                                        a.variableName == (string)GetObject() &&
+                                        (a.ValueType == GetModifierValueType() ||
+                                         a.ValueType.IsSubclassOf(GetModifierValueType()) ||
+                                         GetModifierValueType().IsSubclassOf(a.ValueType)))
                                     {
                                         method.Add(m);
                                         subject.Add(c);
@@ -1224,14 +1433,14 @@ namespace ECARules4All_DLL
                             }
 
 
-                            foreach (FieldInfo f in cType.GetFields())
+                            foreach (FieldInfo f in cType.GetFields()) //TODO Do we want to use GetProperties() as well?
                             {
                                 StateVariableAttribute[] variables =
-                                    (StateVariableAttribute[]) f.GetCustomAttributes(typeof(StateVariableAttribute),
+                                    (StateVariableAttribute[])f.GetCustomAttributes(typeof(StateVariableAttribute),
                                         true);
                                 foreach (StateVariableAttribute a in variables)
                                 {
-                                    if (a.Name == (string) GetObject() && f.FieldType == GetModifierValueType())
+                                    if (a.Name == (string)GetObject() && f.FieldType == GetModifierValueType())
                                     {
                                         passive = false;
                                         /* It is necessary to explain how this bit of code works:
@@ -1288,7 +1497,7 @@ namespace ECARules4All_DLL
                                 foreach (MethodInfo m in cType.GetMethods())
                                 {
                                     ActionAttribute[] actions =
-                                        (ActionAttribute[]) m.GetCustomAttributes(typeof(ActionAttribute), true);
+                                        (ActionAttribute[])m.GetCustomAttributes(typeof(ActionAttribute), true);
                                     foreach (ActionAttribute a in actions)
                                     {
                                         if (a.Verb == GetActionMethod())
@@ -1298,7 +1507,7 @@ namespace ECARules4All_DLL
                                             {
                                                 if (GetObjectType() != null)
                                                 {
-                                                    if (GetObject() is GameObject && ((GameObject) GetObject())
+                                                    if (GetObject() is GameObject && ((GameObject)GetObject())
                                                         .GetComponent<ECAObject>().isActive)
                                                     {
                                                         if (a.ObjectType == GetObjectType())
@@ -1314,8 +1523,8 @@ namespace ECARules4All_DLL
                                                             break;
                                                         }
 
-                                                        foreach (Component cObj in ((GameObject) GetObject())
-                                                            .GetComponents<Component>())
+                                                        foreach (Component cObj in ((GameObject)GetObject())
+                                                                 .GetComponents<Component>())
                                                         {
                                                             if (cObj.GetType() == a.ObjectType)
                                                             {
@@ -1368,11 +1577,11 @@ namespace ECARules4All_DLL
 
                                 if (passive && GetObject() is GameObject)
                                 {
-                                    ECAObject actionObject = ((GameObject) GetObject()).GetComponent<ECAObject>();
+                                    ECAObject actionObject = ((GameObject)GetObject()).GetComponent<ECAObject>();
                                     if (actionObject != null && actionObject.isActive == true)
                                     {
-                                        foreach (Component cPass in ((GameObject) GetObject())
-                                            .GetComponents<Component>())
+                                        foreach (Component cPass in ((GameObject)GetObject())
+                                                 .GetComponents<Component>())
                                         {
                                             Type cTypePass = cPass.GetType();
                                             if (Attribute.IsDefined(cTypePass, typeof(ECARules4AllAttribute)))
@@ -1380,7 +1589,7 @@ namespace ECARules4All_DLL
                                                 foreach (MethodInfo mPass in cTypePass.GetMethods())
                                                 {
                                                     ActionAttribute[] actionsPass =
-                                                        (ActionAttribute[]) mPass.GetCustomAttributes(
+                                                        (ActionAttribute[])mPass.GetCustomAttributes(
                                                             typeof(ActionAttribute), true);
                                                     foreach (ActionAttribute aPass in actionsPass)
                                                     {
@@ -1414,6 +1623,39 @@ namespace ECARules4All_DLL
             }
 
             return type;
+        }
+
+        /// <summary>
+        /// <c>GetModifierValue</c> returns true if the action involves the GameObject passed as parameter, false otherwise
+        /// </summary>
+        /// <param name="gO">The GameObject to check</param>
+        /// <param name="efficient">If true, the function will use the most efficient way to check if the GameObject is involved in the action</param>
+        public bool InvolvesGameObject(GameObject gO, bool efficient = true)
+        {
+            if (efficient)
+            {
+                // Check the subject first
+                if (GetSubject() == gO) return true;
+
+                // Cache the results of method calls to avoid redundant calls
+                var obj = GetObject();
+                var modifierValue = GetModifierValue();
+
+                // is operator does the "null" check for us
+                return (obj is GameObject objGo && objGo == gO)
+                       || (obj is MonoBehaviour mB && mB.gameObject == gO)
+                       || (modifierValue is MonoBehaviour mB2 && mB2.gameObject == gO)
+                       || (modifierValue is GameObject objGo2 && objGo2 == gO);
+            }
+            else
+            {
+                return (GetSubject() == gO)
+                       || (GetObject() != null && GetObject() is GameObject objGo && objGo == gO)
+                       || (GetObject() != null && GetObject() is MonoBehaviour mB && mB.gameObject == gO)
+                       || (GetModifierValue() != null && GetModifierValue() is MonoBehaviour mB2 &&
+                           mB2.gameObject == gO)
+                       || (GetModifierValue() != null && GetModifierValue() is GameObject objGo2 && objGo2 == gO);
+            }
         }
     }
 

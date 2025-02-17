@@ -4,10 +4,10 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Interactions
 {
     /// <summary>
-    /// <b>Interaction</b> contains all the elements allowing some interaction with the scene and its objects.
-    /// The difference between interactions and <see cref="ECARules4All.RuleEngine.Behaviour">Behaviours </see> is that interactions
-    /// are the ones that a typical user would perceive as physical entities of their own, which would exists
-    /// independently from other objects.
+    /// <b>Interaction</b> represents entities in the scene that facilitate interaction with other objects or the environment.
+    /// Unlike <see cref="ECARules4All.RuleEngine.Behaviour">Behaviours</see>, which define object-based rules and logic, 
+    /// <b>Interaction</b> focuses on physical entities that are perceived as independent objects by the user. 
+    /// These entities exist as standalone components within the environment, enhancing user engagement and interaction.
     /// </summary>
     [ECARules4All("interaction")]
     [RequireComponent(typeof(ECAObject))]

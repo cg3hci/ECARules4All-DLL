@@ -3,6 +3,7 @@ using ECARules4All_DLL.Taxonomies.Objects.Characters;
 using ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
+using Serilog;
 
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
@@ -32,26 +33,70 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         /// <summary>
         /// <b>Brand</b>: This property is used to define the brand of the clothing.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("brand", ECARules4AllType.Text)]
-        public string brand;
+        public string brand
+        {
+            get => _brand;
+            set
+            {
+                _brand = value;
+                ECAScript.NotifyUpdate(this, nameof(brand), brand);
+            }
+        }
+        [SerializeField]
+        private string _brand;
 
         /// <summary>
         /// <b>Color</b>: This property is used to define the color of the clothing.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("color", ECARules4AllType.Color)]
-        public Color color;
+        public Color color
+        {
+            get => _color;
+            set
+            {
+                _color = value;
+                ECAScript.NotifyUpdate(this, nameof(color), color.ToString());
+            }
+        }
+        [SerializeField]
+        private Color _color;
 
         /// <summary>
         /// <b>Size/b> This property is used to define the size of the clothing.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("size", ECARules4AllType.Text)]
-        public string size;
+        public string size
+        {
+            get => _size;
+            set
+            {
+                _size = value;
+                ECAScript.NotifyUpdate(this, nameof(size), size);
+            }
+        }
+        [SerializeField]
+        private string _size;
 
         /// <summary>
         /// <b>Weared</b>: This property is used to define if the clothing is weared or not.
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("weared", ECARules4AllType.Boolean)]
-        public ECABoolean weared = new ECABoolean(ECABoolean.BoolType.NO);
+        public ECABoolean weared
+        {
+            get => _weared;
+            set
+            {
+                _weared = value;
+                ECAScript.NotifyUpdate(this, nameof(weared), weared.ToString());
+            }
+        }
+        [SerializeField]
+        private ECABoolean _weared = new ECABoolean(ECABoolean.BoolType.NO);
 
         [HideInInspector] public GameObject wearedBy;
 
@@ -73,6 +118,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         /// <b>_Wears</b>: This method is used to allow the mannequin to wear the clothing.
         /// </summary>
         /// <param name="m">The mannequin that wears the clothing</param>
+        [ECARelevance(true)]
         [Action(typeof(Mannequin), "wears", typeof(Clothing))]
         public void _Wears(Mannequin m)
         {
@@ -105,7 +151,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
                     break;
             }
 
-            weared.Assign(ECABoolean.BoolType.YES);
+            //weared.Assign(ECABoolean.BoolType.YES);
+            weared = new ECABoolean(ECABoolean.BoolType.YES);
             m.AssignDress(this);
         }
 
@@ -118,7 +165,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         {
             if (m.gameObject == wearedBy)
             {
-                weared.Assign(ECABoolean.BoolType.NO);
+                //weared.Assign(ECABoolean.BoolType.NO);
+                weared = new ECABoolean(ECABoolean.BoolType.NO);
                 m.RemoveDress(this);
                 transform.position = defaultPosition;
                 transform.rotation = defaultRotation;
@@ -142,7 +190,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
                 MapBones();
             }
 
-            weared.Assign(ECABoolean.BoolType.YES);
+            //weared.Assign(ECABoolean.BoolType.YES);
+            weared = new ECABoolean(ECABoolean.BoolType.YES);
         }
 
         /// <summary>
@@ -154,7 +203,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         {
             if (c.gameObject == wearedBy)
             {
-                weared.Assign(ECABoolean.BoolType.NO);
+                //weared.Assign(ECABoolean.BoolType.NO);
+                weared = new ECABoolean(ECABoolean.BoolType.NO);
                 wearedBy = null;
             }
         }
@@ -184,7 +234,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
 
                     if (!boneMap.TryGetValue(split[split.Length - 1], out newBones[i]))
                     {
-                        Debug.Log("The bone " + bone.name + " doesn't exist in the target skeleton.");
+                        Log.Information("The bone " + bone.name + " doesn't exist in the target skeleton.");
                         mappingIsRight = false;
                     }
                 }

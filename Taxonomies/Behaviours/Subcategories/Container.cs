@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 
@@ -17,11 +18,37 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <summary>
         /// <b>Capacity</b> is the maximum number of objects that can be held by the container.
         /// </summary>
-        [StateVariable("capacity", ECARules4AllType.Integer)] public int capacity;
+        [ECARelevance(false)]
+        [StateVariable("capacity", ECARules4AllType.Integer)]
+        public int capacity
+        {
+            get => _capacity;
+            set
+            {
+                _capacity = value;
+                ECAScript.NotifyUpdate(this, nameof(capacity), capacity.ToString());
+            }
+        }
+        [SerializeField] 
+        private int _capacity;
+        
         /// <summary>
         /// <b>objectsCount</b> is the number of objects that are currently held by the container.
         /// </summary>
-        [StateVariable("objectsCount", ECARules4AllType.Integer)] public int objectsCount;
+        [StateVariable("objectsCount", ECARules4AllType.Integer)] 
+        [ECARelevance(false)]
+        public int objectsCount
+        {
+            get => _objectsCount;
+            set
+            {
+                _objectsCount = value;
+                ECAScript.NotifyUpdate(this, nameof(objectsCount), objectsCount.ToString());
+            }
+        }
+        [SerializeField] 
+        private int _objectsCount;
+        
         /// <summary>
         /// <b>objectsList</b> is the list of objects that are currently held by the container.
         /// </summary>
@@ -40,6 +67,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="o">The gameObject to be stored inside the container</param>
         [Action(typeof(Container), "inserts", typeof(GameObject))]
+        [ECARelevance(false)]
         public void Inserts(GameObject o)
         {
             if (!objectsList.Contains(o))
@@ -59,6 +87,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="o">The gameObject to be removed from the container</param>
         [Action(typeof(Container), "removes", typeof(GameObject))]
+        [ECARelevance(false)]
         public void Removes(GameObject o)
         {
             objectsList.Remove(o);
@@ -76,6 +105,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Empties</b> empties the container.
         /// </summary>
         [Action(typeof(Container), "empties")]
+        [ECARelevance(false)]
         public void Empties()
         {
 

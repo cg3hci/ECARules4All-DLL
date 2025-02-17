@@ -5,8 +5,8 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
 {
     /// <summary>
-    /// <b>ECALight</b> is an <see cref="Interaction"/> subclass that represents a light source. It can control a light source
-    /// referenced inside this class.
+    /// <b>ECALight</b> represents a controllable light source in the environment.
+    /// The ECALight class extends <see cref="Interaction"/> to manage light properties such as intensity, color, and if it's on.
     /// </summary>
     [ECARules4All("light")]
     [RequireComponent(typeof(Interaction), typeof(Light))] //gerarchia 
@@ -14,28 +14,70 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
     public class ECALight : MonoBehaviour
     {
         /// <summary>
-        /// <b> Intensity </b> is the intensity of the light source.
+        /// <b>intensity</b> represents the brightness level of the light source. It cannot exceed the maximum intensity value.
         /// </summary>
         [StateVariable("intensity", ECARules4AllType.Float)]
-        public float intensity = 1;
+        public float intensity
+        {
+            get => _intensity;
+            set
+            {
+                _intensity = value;
+                ECAScript.NotifyUpdate(this, nameof(intensity), intensity.ToString());
+            }
+        }
+        [SerializeField]
+        private float _intensity = 1;
 
         /// <summary>
-        /// <b> MaxIntensity </b> is the maximum intensity of the light source.
+        /// <b>maxIntensity</b> specifies the upper limit for the light's brightness. It ensures that the light's intensity does not exceed a predefined threshold.
         /// </summary>
         [StateVariable("maxIntensity", ECARules4AllType.Float)]
-        public float maxIntensity = 10;
+        public float maxIntensity
+        {
+            get => _maxIntensity;
+            set
+            {
+                _maxIntensity = value;
+                ECAScript.NotifyUpdate(this, nameof(maxIntensity), maxIntensity.ToString());
+            }
+        }
+        [SerializeField]
+        private float _maxIntensity = 10;
 
         /// <summary>
-        /// <b> Color </b> is the color of the light source.
+        /// <b>color</b> represents the color of the light source. The value is a string that represents the color name (e.g., "red", "blue", "green").
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("color", ECARules4AllType.Color)]
-        public Color color = new Color(1, 0.95686271f, 0.8392157f, 1);
+        public Color color
+        {
+            get => _color;
+            set
+            {
+                _color = value;
+                ECAScript.NotifyUpdate(this, nameof(color), color.ToString());
+            }
+        }
+        [SerializeField]
+        private Color _color = new Color(1, 0.95686271f, 0.8392157f, 1);
 
         /// <summary>
-        /// <b>On</b> is a boolean that represents the state of the light source.
+        /// <b>on</b> indicates whether the light source is currently active or inactive. The accepted values are "on" or "off".
         /// </summary>
+        [ECARelevance(true)]
         [StateVariable("on", ECARules4AllType.Boolean)]
-        public ECABoolean on = new ECABoolean(ECABoolean.BoolType.OFF);
+        public ECABoolean on 
+        {
+            get => _on;
+            set
+            {
+                _on = value;
+                ECAScript.NotifyUpdate(this, nameof(on), on.ToString());
+            }
+        }
+        [SerializeField]
+        private ECABoolean _on = new ECABoolean(ECABoolean.BoolType.OFF);
 
         /// <summary>
         /// <b>ComponentLight</b> is the GameObject's light component.
@@ -43,9 +85,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         private Light componentLight;
 
         /// <summary>
-        /// <b> Turns</b> sets the light source on or off.
+        ///  <b>Turns</b> toggles the light source on or off based on the specified value ("on" or "off"), enabling or disabling illumination.
         /// </summary>
-        /// <param name="newStatus">The boolean of the new state.</param>
+        /// <param name="newStatus">The desired state of the light source (on or off).</param>
+        [ECARelevance(true)]
         [Action(typeof(ECALight), "turns", typeof(ECABoolean))]
         public void Turns(ECABoolean newStatus)
         {
@@ -54,10 +97,11 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         }
 
         /// <summary>
-        /// <b>IncreasesIntensity</b> increases the intensity of the light source by the given value.
-        /// If the intensity is greater than the maximum intensity, the intensity is set to the maximum intensity.
+        /// <b>IncreasesIntensity</b> increases the brightness of the light source by a specified non-negative amount.
+        /// If the resulting intensity exceeds the maximum allowed value, it is capped at <b>maxIntensity</b>.
         /// </summary>
-        /// <param name="amount"> The amount to add to the current intensity. </param>
+        /// <param name="amount">The value to add to the current intensity.</param>
+        [ECARelevance(true)]
         [Action(typeof(ECALight), "increases", "intensity", "by", typeof(float))]
         public void IncreasesIntensity(float amount)
         {
@@ -74,10 +118,11 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         }
 
         /// <summary>
-        /// <b> DecreasesIntensity</b> decreases the intensity of the light source by the given value.
-        /// If the intensity is less than 0, the intensity is set to 0.
+        /// <b> DecreasesIntensity</b> reduces the brightness of the light source by a specified non-negative amount.
+        /// If the resulting intensity drops below zero, it is set to zero to avoid negative values.
         /// </summary>
-        /// <param name="amount">The amount to subtract from the current intensity.</param>
+        /// <param name="amount">The value to subtract from the current intensity.</param>
+        [ECARelevance(true)]
         [Action(typeof(ECALight), "decreases", "intensity", "by", typeof(float))]
         public void DecreasesIntensity(float amount)
         {
@@ -94,9 +139,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         }
 
         /// <summary>
-        /// <b>SetsIntensity</b> sets the intensity of the light source to the given value.
+        /// <b>SetsIntensity</b> sets the brightness of the light source to a specific value.
+        /// If the specified intensity exceeds <b>maxIntensity</b>, it is limited to the maximum allowed value.
         /// </summary>
-        /// <param name="i">The new intensity value.</param>
+        /// <param name="i">The new intensity value to assign to the light source.param>
         [Action(typeof(ECALight), "sets", "intensity", "to", typeof(float))]
         public void SetsIntensity(float i)
         {
@@ -111,9 +157,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         }
 
         /// <summary>
-        /// <b>SetsColor</b> sets the color of the light source to the given value.
+        /// <b>SetsColor</b> updates the light's color to the specified value. The allowed values are predefined color names (e.g., "red", "blue", "green").
         /// </summary>
-        /// <param name="inputColor">The new color value.</param>
+        /// <param name="inputColor">The desired color to apply to the light source.</param>
         [Action(typeof(ECALight), "changes", "color", "to", typeof(ECAColor))]
         public void ChangesColor(ECAColor inputColor)
         {

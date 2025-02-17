@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Antlr4.Runtime.Misc;
 using ECARules4All_DLL.Parsers;
 using ECARules4All_DLL.UI;
-using ECARules4All_DLL;
 using JetBrains.Annotations;
-using UnityEditor;
 using UnityEngine;
-using Action = ECARules4All_DLL.Action;
-using Behaviour = ECARules4All_DLL.Behaviour;
-using Object = UnityEngine.Object;
+using Serilog;
 using SystemIOPath = System.IO.Path;
+
 
 namespace ECARules4All_DLL.Utils
 {
@@ -427,19 +422,27 @@ namespace ECARules4All_DLL.Utils
             {
                 RequireComponent[] requiredComponentsAtts = Attribute.GetCustomAttributes(type,
                     typeof(RequireComponent), true) as RequireComponent[];
-
-                if (requiredComponentsAtts.Length > 0) //e.g. interactable has two requires
+            
+                if (requiredComponentsAtts != null && requiredComponentsAtts.Length > 0) //e.g. interactable has two requires
                 {
-                    if (requiredComponentsAtts[0] != null &&
-                        requiredComponentsAtts[0].m_Type0 == typeof(Behaviour)) //behaviour children
+                    foreach (var requiredCompoent in requiredComponentsAtts)
                     {
-                        behaviours.Add(type);
+                        if (requiredCompoent != null)
+                        {
+                            if (requiredCompoent.m_Type0 == typeof(Behaviour)
+                                || requiredCompoent.m_Type1 == typeof(Behaviour)
+                                || requiredCompoent.m_Type2 == typeof(Behaviour))
+                            {
+                                behaviours.Add(type);
+                            }
+                        }
                     }
                 }
             }
-
+ 
             return behaviours;
         }
+
 
         public static string FindInnerTypeNotBehaviour(GameObject gameObject)
         {
@@ -465,7 +468,6 @@ namespace ECARules4All_DLL.Utils
                 }
             }
             return FindTheInnerOne(listOfEcaAttributes);
-            ;
         }
 
         static List<Type> RetrieveECAAttributes(GameObject gameObject)
@@ -521,8 +523,7 @@ namespace ECARules4All_DLL.Utils
 
         //we pass bool passive when we have to retrieve passive verbs
         public static Dictionary<int, VerbComposition> FindActiveVerbs(GameObject subjSelected,
-            Dictionary<int, Dictionary<GameObject, string>> subjects, [CanBeNull] string selectedType,
-            bool passive)
+            Dictionary<int, Dictionary<GameObject, string>> subjects, [CanBeNull] string selectedType, bool passive, bool filterEcaRelevant=false)
         {
             Dictionary<int, VerbComposition> result = new Dictionary<int, VerbComposition>();
             int i = 0;
@@ -538,7 +539,7 @@ namespace ECARules4All_DLL.Utils
                     if (behaviourExist)
                     {
                         //foreach component we find the verbs
-                        var componentVerbs = ListActionsItem(cType);
+                        var componentVerbs = filterEcaRelevant ? ListRelevantActionsItem(cType) : ListActionsItem(cType);
                         foreach (var el in componentVerbs)
                         {
                             result.Add(i, el);
@@ -548,7 +549,7 @@ namespace ECARules4All_DLL.Utils
                     else
                     {
                         //foreach component we find the verbs
-                        var componentVerbs = ListActionsItem(cType);
+                        var componentVerbs = filterEcaRelevant ? ListRelevantActionsItem(cType) : ListActionsItem(cType);
                         foreach (var el in componentVerbs)
                         {
                             //for example, food has the verb eats, that has as subject Character, we don't
@@ -573,17 +574,17 @@ namespace ECARules4All_DLL.Utils
                 }
             }
 
-            /*Debug.Log("Verbs: ");
+            /*Log.Information("Verbs: ");
             foreach (KeyValuePair<int, VerbComposition> kvp in result)
             {
-                Debug.Log( string.Format("Key = {0}, Value = {1}", kvp.Key, kvp.Value.Verb + kvp.Value.ActionAttribute) );
+                Log.Information( string.Format("Key = {0}, Value = {1}", kvp.Key, kvp.Value.Verb + kvp.Value.ActionAttribute) );
             }*/
             return result;
         }
 
         public static void FindPassiveVerbs(GameObject subjSelected,
             Dictionary<int, Dictionary<GameObject, string>> subjects, string selectedType,
-            ref Dictionary<int, VerbComposition> activeVerbs)
+            ref Dictionary<int, VerbComposition> activeVerbs, bool filterEcaRelevant=false)
         {
             List<string> ecaScriptOfTheGameobject = FindECAScripts(subjSelected);
             foreach (var subj in subjects)
@@ -594,7 +595,7 @@ namespace ECARules4All_DLL.Utils
                     {
                         //we pass "passive" as false in order to include in the verbs of each subject even those who don't
                         //have itself as subject. (e.g. among Food verbs there will be Eats)
-                        Dictionary<int, VerbComposition> verbs = FindActiveVerbs(var.Key, subjects, null, false);
+                        Dictionary<int, VerbComposition> verbs = FindActiveVerbs(var.Key, subjects, null, false, filterEcaRelevant);
                         //foreach verb of each subject
                         foreach (var v in verbs)
                         {
@@ -651,18 +652,29 @@ namespace ECARules4All_DLL.Utils
             return false;
         }
 
-        public static string FindTheInnerOne(List<Type> listEcaComponents)
+        public static string FindTheInnerOne(List<Type> listEcaComponents, string gameObjectName="gameobject name not passed as arg")
         {
-            Dictionary<int, string> depts = new Dictionary<int, string>();
+            Dictionary<int, string> depths = new Dictionary<int, string>(); // Dizionario <profondità, nomeComponente>
+ 
             foreach (var comp in listEcaComponents)
             {
-                int dept = GetDepth(comp, 0);
-                depts.Add(dept, comp.Name);
+                int dept =  GetDepth(comp, 0);
+                try
+                {
+                    depths.Add(dept, comp.Name);
+                }
+                catch (ArgumentException argumentException)
+                {
+                    throw new ArgumentException($"ERRORE IN RuleUtils.cs/FindTheInnerOne:\n The gameobject {gameObjectName} has ecacomponents with the same depths. This should not happen. Please check the components assigned." +
+                                                $"\n Here is the list of eca-components name: {String.Join(", ", listEcaComponents.Select(t=>t.Name))}. \n Errore:{argumentException}");
+                }
             }
-
-            var maxKey = depts.Keys.Max();
-            return depts[maxKey];
+ 
+            var maxKey = depths.Keys.Max();
+            return depths[maxKey];
+       
         }
+
 
         /// <summary>
         /// Returns the dept of a ecarules component
@@ -724,10 +736,51 @@ namespace ECARules4All_DLL.Utils
             return actions;
         }
         
-        // Returns for each state variable the name and the ECARules4AllType
-        public static Dictionary<string, (ECARules4AllType, Type)> FindStateVariables<T>(GameObject gameObject)
+        public static List<VerbComposition> ListRelevantActionsItem(Type c)
         {
-            Dictionary<string, (ECARules4AllType, Type)> variables = new Dictionary<string, (ECARules4AllType, Type)>();
+            List<VerbComposition> actions = new List<VerbComposition>();
+            foreach (MethodInfo m in c.GetMethods())
+            {
+                // Check for ActionAttribute
+                object[] actionAttributes = m.GetCustomAttributes(typeof(ActionAttribute), true);
+
+                // Check for ECARelevanceAttribute
+                object[] ecaRelevantAttributes = m.GetCustomAttributes(typeof(ECARelevanceAttribute), true);
+
+                if (actionAttributes.Length > 0 && ecaRelevantAttributes.Length > 0)
+                {
+                    foreach (var ecaAttr in ecaRelevantAttributes)
+                    {
+                        ECARelevanceAttribute ecaRelevance = (ECARelevanceAttribute)ecaAttr;
+                        if (ecaRelevance.isRelevance)
+                        {
+                            foreach (var actionAttr in actionAttributes)
+                            {
+                                ActionAttribute ac = (ActionAttribute)actionAttr;
+                                if (ac.ObjectType != null)
+                                {
+                                    VerbComposition verbComposition = new VerbComposition(ac.ObjectType.ToString(), ac);
+                                    actions.Add(verbComposition);
+                                }
+                                else
+                                {
+                                    VerbComposition verbComposition = new VerbComposition(ac.variableName, ac);
+                                    actions.Add(verbComposition);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return actions;
+        }
+
+        
+        // Returns for each state variable the name and the ECARules4AllType
+        public static Dictionary<string, (ECARules4AllType, Type)> FindStateVariables(GameObject gameObject, bool filterEcaRelevant = false)
+        {
+            var variables = new Dictionary<string, (ECARules4AllType, Type)>();
 
             foreach (Component c in gameObject.GetComponents<Component>())
             {
@@ -737,13 +790,13 @@ namespace ECARules4All_DLL.Utils
                 if (Attribute.IsDefined(cType, typeof(ECARules4AllAttribute)))
                 {
                     //foreach component we find the verbs
-                    var componentVariables = ListStateVariables(cType);
+                    var componentVariables = filterEcaRelevant ? ListRelevantStateVariables(cType) : ListStateVariables(cType);
                     foreach (var var in componentVariables)
                     {
-                        if(!variables.ContainsKey(var.Key)) variables.Add(var.Key, (var.Value, cType));
+                        if (!variables.ContainsKey(var.Key)) {
+                            variables.Add(var.Key, (var.Value, cType));
+                        }
                     }
-                    //variables = variables.Concat(componentVariables).ToDictionary(s => s.Key, s => s.Value);
-                 
                 }
             }
 
@@ -753,15 +806,49 @@ namespace ECARules4All_DLL.Utils
         public static Dictionary<string, ECARules4AllType> ListStateVariables(Type cType)
         {
             Dictionary<string, ECARules4AllType> variables = new Dictionary<string, ECARules4AllType>();
-            foreach (FieldInfo m in cType.GetFields())
+            var members = from it in cType.GetMembers( BindingFlags.Public | BindingFlags.Instance) where it is PropertyInfo || it is FieldInfo select it;
+            foreach (var m in members)
             {
                 object[] a = m.GetCustomAttributes(typeof(StateVariableAttribute), true);
                 if (a.Length > 0)
                 {
                     foreach (var item in a)
                     {
-                        StateVariableAttribute var = (StateVariableAttribute) item;
+                        StateVariableAttribute var = (StateVariableAttribute)item;
                         variables.Add(var.Name, var.type);
+                    }
+                }
+            }
+
+            return variables;
+        }
+        
+        public static Dictionary<string, ECARules4AllType> ListRelevantStateVariables(Type cType)
+        {
+            Dictionary<string, ECARules4AllType> variables = new Dictionary<string, ECARules4AllType>();
+            var members = from it in cType.GetMembers(BindingFlags.Public | BindingFlags.Instance) where it is PropertyInfo || it is FieldInfo select it;
+
+            foreach (var m in members)
+            {
+                // Check for StateVariableAttribute
+                object[] stateVarAttributes = m.GetCustomAttributes(typeof(StateVariableAttribute), true);
+
+                // Check for ECARelevanceAttribute
+                object[] ecaRelevantAttributes = m.GetCustomAttributes(typeof(ECARelevanceAttribute), true);
+
+                if (stateVarAttributes.Length > 0 && ecaRelevantAttributes.Length > 0)
+                {
+                    foreach (var ecaAttr in ecaRelevantAttributes)
+                    {
+                        ECARelevanceAttribute ecaRelevance = (ECARelevanceAttribute)ecaAttr;
+                        if (ecaRelevance.isRelevance)
+                        {
+                            foreach (var stateVarAttr in stateVarAttributes)
+                            {
+                                StateVariableAttribute stateVar = (StateVariableAttribute)stateVarAttr;
+                                variables.Add(stateVar.Name, stateVar.type);
+                            }
+                        }
                     }
                 }
             }
@@ -789,7 +876,7 @@ namespace ECARules4All_DLL.Utils
         {
             foreach (var e in list)
             {
-                Debug.Log(e);
+                Log.Information(e);
             }
         }
 
@@ -797,7 +884,7 @@ namespace ECARules4All_DLL.Utils
         {
             foreach (var e in list)
             {
-                Debug.Log(e.ToString());
+                Log.Information(e.ToString());
             }
         }
 
@@ -805,7 +892,7 @@ namespace ECARules4All_DLL.Utils
         {
             foreach (var e in list)
             {
-                Debug.Log(e.ToString());
+                Log.Information(e.ToString());
             }
         }
         
@@ -1141,16 +1228,16 @@ namespace ECARules4All_DLL.Utils
             {
                 if (compositeConditions)
                 {
-                    return new Rule(whenAction, finalCondition, listOfActions);
+                    return Rule.TryCreateRule(whenAction, finalCondition, listOfActions);
                 }
                 else
                 {
-                    return new Rule(whenAction, simpleCondition, listOfActions);
+                    return Rule.TryCreateRule(whenAction, simpleCondition, listOfActions);
                 }
             }
             else
             {
-                return new Rule(whenAction, listOfActions);
+                return Rule.TryCreateRule(whenAction, listOfActions);
             }
         }
         
@@ -1174,12 +1261,6 @@ namespace ECARules4All_DLL.Utils
         }
         
         // ----------------------------------------------------------------------
-        
-        
-        
-        
-        
-        
         // +----------------------------------------+
         // | Methods to check - maybe Unity Project |
         // +----------------------------------------+
