@@ -33,6 +33,23 @@ namespace ECARules4All_DLL
         private float deltaTimeIsRendered = 0;
         
         /// <summary>
+        /// <b>description</b> describes in a few words what the object is and its role.
+        /// </summary>
+        [ECARelevance(true)]
+        [StateVariable("description", ECARules4AllType.Text)]
+        public string description
+        {
+            get => _description;
+            set
+            {
+                _description = value;
+                ECAScript.NotifyUpdate(this, nameof(description), _description);
+            }
+        }
+        [SerializeField]
+        private string _description;
+        
+        /// <summary>
         /// <b>p</b> represents the position of the virtual object in the 3D space. It's a vector with three components: x, y, and z.
         /// </summary>
         [ECARelevance(true)]

@@ -6251,6 +6251,11 @@
             <b>isBusyMoving</b> is a boolean that indicates if the object is moving.
             </summary>
         </member>
+        <member name="P:ECARules4All_DLL.ECAObject.description">
+            <summary>
+            <b>description</b> describes in a few words what the object is and its role.
+            </summary>
+        </member>
         <member name="P:ECARules4All_DLL.ECAObject.p">
             <summary>
             <b>p</b> represents the position of the virtual object in the 3D space. It's a vector with three components: x, y, and z.
