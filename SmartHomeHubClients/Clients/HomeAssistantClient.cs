@@ -72,6 +72,8 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 	        }
 	        else
 	        {
+		        Log.Information($"LOG Received update from Home Assistant Client - action obj type: - {action.GetObject().GetType()} subj: {action.GetSubject()} type: {action.GetActionType()}");
+		        
 		        RuleEngine.GetInstance().ExecuteAction(
 			        action
 		        );
