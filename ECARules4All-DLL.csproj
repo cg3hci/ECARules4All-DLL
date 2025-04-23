@@ -169,8 +169,10 @@
         <Compile Include="Taxonomies\Objects\Interactions\Interaction.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\Bounds.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\Button.cs" />
+        <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECABottle.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECACamera.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECADoor.cs" />
+        <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECADoor_2.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECALight.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECAText.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECAVideo.cs" />
@@ -267,6 +269,8 @@
       <Content Include="bin\Debug\System.ValueTuple.xml" />
       <Content Include="bin\Debug\UnityEngine.dll" />
       <Content Include="bin\Debug\UnityEngine.xml" />
+      <Content Include="http-client.private.env.json" />
+      <Content Include="package.json" />
       <Content Include="UnityEngine.dll" />
     </ItemGroup>
     <ItemGroup>
