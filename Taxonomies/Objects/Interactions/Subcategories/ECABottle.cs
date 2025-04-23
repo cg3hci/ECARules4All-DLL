@@ -16,23 +16,23 @@ namespace ECARules4All_DLL.Taxonomies.Objects.custom
     {
         [StateVariable("fillLevel", ECARules4AllType.Integer)] 
         [ECARelevance(true)] 
-        public int FillLevel
+        public int Level
         {
-            get => _fillLevel;
+            get => _level;
             private set
             {
                 int newValue = Mathf.Clamp(value, 0, 100);
-                if (_fillLevel != newValue)
+                if (_level != newValue)
                 {
-                    _fillLevel = newValue;
-                    ECAScript.NotifyUpdate(this, nameof(FillLevel), _fillLevel.ToString());
+                    _level = newValue;
+                    ECAScript.NotifyUpdate(this, nameof(Level), _level.ToString());
                 }
 
             }
         }
         [SerializeField]
         [Range(0,100)]
-        private int _fillLevel = 100;
+        private int _level = 100;
 
         [StateVariable("IsCapped", ECARules4AllType.Boolean)]
         [ECARelevance(true)]
@@ -53,7 +53,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.custom
         
         
         [ECARelevance(true)]
-        [Action(typeof(ECABottle), "fill", typeof(int))]
+        [Action(typeof(ECABottle), "increase", "level", "by", typeof(int))]
         public void Fill(int amount)
         {
             if (amount <= 0) return;
@@ -63,11 +63,12 @@ namespace ECARules4All_DLL.Taxonomies.Objects.custom
                 Debug.Log("The ECABottle is capped");
                 return;
             }
-            FillLevel += amount;
+            Level += amount;
+            Debug.Log("Increase level of the Bottle to " + Level);
         }
         
         [ECARelevance(true)]
-        [Action(typeof (ECABottle), "empty", typeof(int))]
+        [Action(typeof (ECABottle), "decrease", "level", "by", typeof(int))]
         public void Empty(int amount)
         {
             if (IsCapped == ECABoolean.YES)
@@ -75,13 +76,15 @@ namespace ECARules4All_DLL.Taxonomies.Objects.custom
                 Debug.Log("The ECABottle is capped");
                 return;
             }
-            if (FillLevel == 0)
+            if (Level == 0)
             {
                 Debug.Log("The ECABottle is empty");
                 return;
             }
 
-            FillLevel -= amount;
+            Level -= amount;
+            Debug.Log("Decrease level of the Bottle to " + Level);
+
         }
         [ECARelevance(true)]
         [Action(typeof(ECABottle), "open cap")]
