@@ -8850,6 +8850,12 @@
             <b>Charge</b>: a float value that represents the charge of the spray.
             </summary>
         </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.ChangesSprayType(ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.SprayType)">
+            <summary>
+            <b> ChangesSprayType</b> changes the spray type.
+            </summary>
+            <param name="type">The new <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.SprayType"/> value. </param>
+        </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.Sprays">
             <summary>
             <b>Sprays</b>: The action of using the spray. It decreases the charge of the spray.

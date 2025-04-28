@@ -42,6 +42,17 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         private float _charge = 100;
         
         /// <summary>
+        /// <b> ChangesSprayType</b> changes the spray type.
+        /// </summary>
+        /// <param name="type">The new <see cref="SprayType"/> value. </param>
+        [ECARelevance(true)]
+        [Action(typeof(Spray), "changes", "SprayType", "to", typeof(SprayType))]
+        public void ChangesSprayType(SprayType type)
+        {
+            this.type = type;
+        }
+        
+        /// <summary>
         /// <b>Sprays</b>: The action of using the spray. It decreases the charge of the spray.
         /// </summary>
         [ECARelevance(true)]
