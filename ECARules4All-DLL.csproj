@@ -175,9 +175,11 @@
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECAText.cs" />
         <Compile Include="Taxonomies\Objects\Interactions\Subcategories\ECAVideo.cs" />
         <Compile Include="Taxonomies\Objects\Props\Prop.cs" />
+        <Compile Include="Taxonomies\Objects\Props\Subcategories\Broom.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Clothing.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Electronic.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Food.cs" />
+        <Compile Include="Taxonomies\Objects\Props\Subcategories\Spray.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Weapons\Subcategories\Bullet.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Weapons\Subcategories\EdgedWeapon.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Weapons\Subcategories\Firearm.cs" />

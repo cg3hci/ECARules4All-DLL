@@ -8712,6 +8712,16 @@
             <b>Price</b>: The price of the prop object.
             </summary>
         </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Broom">
+            <summary>
+            <b>Broom</b> is a class that represents a broom.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Broom.Sweeps">
+            <summary>
+            <b>Sweeps</b>: The action of sweeping with the broom.
+            </summary>
+        </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing">
             <summary>
             <b>Clothing</b>: This class is used to define the clothing properties of the objects.
@@ -8824,6 +8834,32 @@
             is not in the subject of the action, but on the object.
             </summary>
             <param name="c">The character that eats the food</param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray">
+            <summary>
+            <b>Spray</b> is a class that represents a spray.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.SprayType">
+            <summary>
+            <b>SprayType</b>: This enum is used to define the spray types: SMALL, MEDIUM and LARGE.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.charge">
+            <summary>
+            <b>Charge</b>: a float value that represents the charge of the spray.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.ChangesSprayType(ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.SprayType)">
+            <summary>
+            <b> ChangesSprayType</b> changes the spray type.
+            </summary>
+            <param name="type">The new <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.SprayType"/> value. </param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.Sprays">
+            <summary>
+            <b>Sprays</b>: The action of using the spray. It decreases the charge of the spray.
+            </summary>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Bullet">
             <summary>
