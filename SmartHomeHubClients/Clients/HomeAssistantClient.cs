@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ECARules4All_DLL.Utils;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
 
@@ -108,7 +107,6 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 		        NullValueHandling = NullValueHandling.Ignore
 	        };
 	        string jsonBody = JsonConvert.SerializeObject(new {pairs = payload}, options);
-	        
 	        using (HttpClient client = new HttpClient())
 	        {
 		        try
@@ -120,7 +118,6 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 				        new AuthenticationHeaderValue("Bearer", this.token);
 			        HttpResponseMessage response = await client.PostAsync(urlService, stringContent);
 			        response.EnsureSuccessStatusCode();
-					
 			        Log.Information($"Registered a new virtual object to Home Assistant Client at {this.url}");
 		        }
 		        catch (HttpRequestException e)
