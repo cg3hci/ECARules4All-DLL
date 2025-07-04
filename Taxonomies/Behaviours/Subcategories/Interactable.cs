@@ -22,7 +22,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             
             //PROVE
             Action action = new Action(other.gameObject, "interacts with", this.gameObject);
-            Log.Information("Interacts-with (trigger) " + other.gameObject);
+            Log.Information(other.gameObject + "Interacts-with (trigger) " + this.gameObject);
             EventBus.GetInstance().Publish(action);
             ECAScript.NotifyUpdate(this, action);
         }
@@ -34,7 +34,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             Action action = new Action(other.gameObject, "interacts with", this.gameObject);
             EventBus.GetInstance().Publish(action);
             ECAScript.NotifyUpdate(this, action);
-            Log.Information("Interacts-with (collision) " + other.gameObject);
+            Log.Information(other.gameObject + "Interacts-with (collision) " + this.gameObject);
         }
 
         private void OnTriggerExit(Collider other)
@@ -44,6 +44,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             Action action = new Action(other.gameObject, "stops-interacting with", this.gameObject);
             EventBus.GetInstance().Publish(action);
             ECAScript.NotifyUpdate(this, action);
+            Log.Information(other.gameObject + "stops-interacting with (trigger) " + this.gameObject);
         }
 
         private void OnCollisionExit(Collision other)
@@ -52,7 +53,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             Action action = new Action(other.gameObject, "stops-interacting with", this.gameObject);
             EventBus.GetInstance().Publish(action);
             ECAScript.NotifyUpdate(this, action);
-            Log.Information($"OnCollisionExit - other: {other.gameObject.name} - obj: {this.gameObject.name}");
+            Log.Information(other.gameObject + "stops-interacting with (collision) " + this.gameObject);
         }
     }
 }

@@ -431,7 +431,7 @@ namespace ECARules4All_DLL
         ///</list>
         ///<para/>
         ///</summary>
-        private Rule(Action when, Condition ifStatements, List<Action> listOfActions)
+        public Rule(Action when, Condition ifStatements, List<Action> listOfActions)
         {
             Event = when;
             conditions = ifStatements;
@@ -449,7 +449,7 @@ namespace ECARules4All_DLL
         ///</list>
         ///<para/>
         ///</summary>
-        private Rule(Action when, List<Action> listOfActions)
+        public Rule(Action when, List<Action> listOfActions)
         {
             Event = when;
             conditions = null;

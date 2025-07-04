@@ -71,10 +71,19 @@ namespace ECARules4All_DLL.Utils
             {
                 parameter = ECABoolean.FromString(receivedParameter);
             }
-            else if (typeParameter == typeof(float) || typeParameter == typeof(int))
+            if (typeParameter == typeof(float) || typeParameter == typeof(Single))
             {
                 parameter = float.Parse(receivedParameter);
             }
+            else if (typeParameter == typeof(double) || typeParameter == typeof(Double))
+            {
+                parameter = double.Parse(receivedParameter);
+            }
+            else if (typeParameter == typeof(int) || typeParameter == typeof(Int32))
+            {
+                parameter = int.Parse(receivedParameter);
+            }
+
             else if (typeParameter == typeof(string))
             {
                 parameter = receivedParameter;
@@ -118,9 +127,17 @@ namespace ECARules4All_DLL.Utils
             {
                 parameter = ECABoolean.FromString(receivedParameter.ToString());
             }
-            else if (typeParameter == typeof(float) || typeParameter == typeof(int))
+            if (typeParameter == typeof(float) || typeParameter == typeof(Single))
             {
                 parameter = float.Parse(receivedParameter.ToString());
+            }
+            else if (typeParameter == typeof(double) || typeParameter == typeof(Double))
+            {
+                parameter = double.Parse(receivedParameter.ToString());
+            }
+            else if (typeParameter == typeof(int) || typeParameter == typeof(Int32))
+            {
+                parameter = int.Parse(receivedParameter.ToString());
             }
             else if (typeParameter == typeof(string))
             {
