@@ -2,6 +2,7 @@
 using System.Collections;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
+
 // ReSharper disable InconsistentNaming
 
 
@@ -21,17 +22,19 @@ namespace ECARules4All_DLL
         /// <b> GameCollider </b> is the collider of the object.
         /// </summary>
         private Collider[] gameCollider;
+
         /// <summary>
         /// <b>GameRender</b> is the renderer of the object.
         /// </summary>
         private Renderer[] gameRenderer;
+
         /// <summary>
         /// <b>isBusyMoving</b> is a boolean that indicates if the object is moving.
         /// </summary>
         private bool isBusyMoving = false;
 
         private float deltaTimeIsRendered = 0;
-        
+
         /// <summary>
         /// <b>description</b> describes in a few words what the object is and its role.
         /// </summary>
@@ -46,9 +49,9 @@ namespace ECARules4All_DLL
                 ECAScript.NotifyUpdate(this, nameof(description), _description);
             }
         }
-        [SerializeField]
-        private string _description;
-        
+
+        [SerializeField] private string _description;
+
         /// <summary>
         /// <b>p</b> represents the position of the virtual object in the 3D space. It's a vector with three components: x, y, and z.
         /// </summary>
@@ -63,8 +66,9 @@ namespace ECARules4All_DLL
                 ECAScript.NotifyUpdate(this, nameof(p), _p);
             }
         }
+
         private Position _p;
-        
+
         /// <summary>
         /// <b>r</b> represents the rotation of the object in the 3D space. It's a vector with three components: x, y, and z (euler angles).
         /// </summary>
@@ -78,8 +82,9 @@ namespace ECARules4All_DLL
                 ECAScript.NotifyUpdate(this, nameof(r), _r);
             }
         }
+
         private Rotation _r;
-        
+
         /// <summary>
         /// <b>r</b> represents the scale of the object in the 3D space.
         /// </summary>
@@ -93,12 +98,13 @@ namespace ECARules4All_DLL
                 ECAScript.NotifyUpdate(this, nameof(s), _s);
             }
         }
+
         private Scale _s;
-        
-        private Vector3 _originalPosition ;
-        private Quaternion _originalQuaternion ;
-        private Vector3 _originalScale ;
-        
+
+        private Vector3 _originalPosition;
+        private Quaternion _originalQuaternion;
+        private Vector3 _originalScale;
+
         /// <summary>
         /// <b>visible</b> indicates whether the object is visible. The allowed values are either "yes" or "no".
         /// If invisible, the object is not rendered but remains interactive for collisions.
@@ -114,9 +120,9 @@ namespace ECARules4All_DLL
                 ECAScript.NotifyUpdate(this, nameof(isVisible), isVisible.ToString());
             }
         }
-        [SerializeField]
-        private ECABoolean _isVisible = new ECABoolean(ECABoolean.BoolType.YES);
-        
+
+        [SerializeField] private ECABoolean _isVisible = new ECABoolean(ECABoolean.BoolType.YES);
+
         /// <summary>
         /// <b>active</b> indicates whether the object is active. The allowed values are either "yes" or "no".
         /// When inactive, the object is not rendered and does not interact with other objects.
@@ -131,9 +137,9 @@ namespace ECARules4All_DLL
                 ECAScript.NotifyUpdate(this, nameof(isActive), isActive.ToString());
             }
         }
-        [SerializeField]
-        private ECABoolean _isActive = new ECABoolean(ECABoolean.BoolType.YES);
-        
+
+        [SerializeField] private ECABoolean _isActive = new ECABoolean(ECABoolean.BoolType.YES);
+
         /// <summary>
         /// <b>isInsideCamera</b> indicates whether the object is currently within the camera's field of view. This property is automatically updated at runtime.
         /// </summary>
@@ -147,8 +153,9 @@ namespace ECARules4All_DLL
                 ECAScript.NotifyUpdate(this, nameof(isInsideCamera), isInsideCamera.ToString());
             }
         }
+
         private ECABoolean _isInsideCamera = new ECABoolean(ECABoolean.BoolType.NO);
-        
+
         private Canvas canvas;
         private Camera xrCamera;
 
@@ -162,12 +169,13 @@ namespace ECARules4All_DLL
                 gameRenderer = this.gameObject.GetComponentsInChildren<Renderer>();
             if (gameRenderer.Length == 0)
             {
-                Debug.LogError($"{gameObject.name} has not renderer component. This is important for insideCamera property.");
+                Debug.LogError(
+                    $"{gameObject.name} has not renderer component. This is important for insideCamera property.");
             }
-            
+
             if (gameCollider.Length == 0)
                 gameCollider = this.gameObject.GetComponentsInChildren<Collider>();
-            
+
             p = new Position(transform.position);
             r = new Rotation(transform.localRotation);
             s = new Scale(transform.localScale);
@@ -176,7 +184,8 @@ namespace ECARules4All_DLL
             xrCamera = Camera.main;
             if (xrCamera == null)
             {
-                throw new Exception("No camera found in the scene. This is important for the isInsideCamera property!!");
+                throw new Exception(
+                    "No camera found in the scene. This is important for the isInsideCamera property!!");
             }
         }
 
@@ -234,7 +243,7 @@ namespace ECARules4All_DLL
             r = new Rotation(newRot);
             transform.Rotate(r.x, r.y, r.z); // todo verify rotation
         }
-        
+
         /// <summary>
         /// <b>Looks</b> adjusts the object's rotation to face a specified target object.
         /// </summary>
@@ -243,7 +252,7 @@ namespace ECARules4All_DLL
         public void Looks(GameObject o)
         {
             ECAObject looked = o.GetComponent<ECAObject>();
-            Physics.Linecast (transform.position, o.transform.position, out var hit);
+            Physics.Linecast(transform.position, o.transform.position, out var hit);
             if (o.name == hit.collider.gameObject.name && looked.isActive)
             {
                 transform.LookAt(looked.gameObject.transform);
@@ -251,7 +260,7 @@ namespace ECARules4All_DLL
                 r = new Rotation(transform.rotation);
             }
         }
-        
+
         /// <summary>
         /// <b>Scales</b> sets the object's scale to a specified value.
         /// </summary>
@@ -263,7 +272,7 @@ namespace ECARules4All_DLL
             s = new Scale(newScale);
             transform.localScale = new Vector3(s.x, s.y, s.z);
         }
-        
+
         /// <summary>
         /// Restores the object's original position, rotation, and scale to their initial values.
         /// </summary>
@@ -291,7 +300,7 @@ namespace ECARules4All_DLL
             isVisible = new ECABoolean(ECABoolean.BoolType.YES);
             UpdateVisibility();
         }
-        
+
         /// <summary>
         /// <b>Hides</b> makes the object invisible if it is not already.
         /// </summary>
@@ -303,7 +312,7 @@ namespace ECARules4All_DLL
             isVisible = new ECABoolean(ECABoolean.BoolType.NO);
             UpdateVisibility();
         }
-        
+
         /// <summary>
         /// <b>Activates</b> makes the object both interactable and visible.
         /// </summary>
@@ -314,7 +323,7 @@ namespace ECARules4All_DLL
             isActive = new ECABoolean(ECABoolean.BoolType.YES);
             UpdateVisibility();
         }
-        
+
         /// <summary>
         /// <b>Deactivates</b> makes the object invisible and non-interactable.
         /// </summary>
@@ -325,7 +334,7 @@ namespace ECARules4All_DLL
             isActive = new ECABoolean(ECABoolean.BoolType.NO);
             UpdateVisibility();
         }
-        
+
         /// <summary>
         /// <b>ShowsHides</b> changes the visibility state of the object based on a parameter. The parameter can be either "yes" or "no".
         /// </summary>
@@ -348,11 +357,10 @@ namespace ECARules4All_DLL
             isActive = yesNo;
             UpdateVisibility();
         }
-        
+
         //TODO: should be private
         public void UpdateVisibility()
         {
-
             foreach (Collider c in gameCollider)
             {
                 c.enabled = isActive;
@@ -366,17 +374,17 @@ namespace ECARules4All_DLL
                 }
                 else rend.enabled = true;
             }
-            
+
             if (canvas != null)
             {
                 if (!isActive || !isVisible)
                 {
                     canvas.enabled = false;
                 }
-                else canvas.enabled = true;            
+                else canvas.enabled = true;
             }
         }
-        
+
         private IEnumerator MoveObject(float speed, Vector3 endMarker)
         {
             isBusyMoving = true;
@@ -385,7 +393,8 @@ namespace ECARules4All_DLL
             float startTime = Time.time;
             float journeyLength = Vector3.Distance(startMarker, endMarker);
             //while (gameObject.transform.position != endMarker)
-            while (gameObject.transform.position != endMarker) {
+            while (gameObject.transform.position != endMarker)
+            {
                 float distCovered = (Time.time - startTime) * speed;
 
                 // Fraction of journey completed equals current distance divided by total distance.
@@ -398,6 +407,7 @@ namespace ECARules4All_DLL
                 GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
                 yield return null;
             }
+
             //GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
             GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
             isBusyMoving = false;
@@ -420,8 +430,8 @@ namespace ECARules4All_DLL
                         break;
                     }
                 }
-                
-                if(this.isInsideCamera != res)
+
+                if (this.isInsideCamera != res)
                 {
                     this.isInsideCamera = res;
                     deltaTimeIsRendered = Time.time;

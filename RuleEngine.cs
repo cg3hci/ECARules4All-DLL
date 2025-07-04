@@ -133,6 +133,7 @@ namespace ECARules4All_DLL
         ///</summary>
         private object IncrementDecrement(dynamic one, dynamic two, string op)
         {
+            //TODO J 4th July '25: We should refactor somehow because dynamic is not type-safe and can lead to runtime errors. Right now we are not using Increment/Decrement methods, so who cares?
             var res = one;
             if (op == "increases") res += two;
             else res -= two;
@@ -150,10 +151,13 @@ namespace ECARules4All_DLL
         ///</summary>
         public void ExecuteAction(Action act)
         {
+            Debug.Log("YUYUYUYU  Log before type.getactiontype");
             var type = act.GetActionType();
-
+            Debug.Log("YUYUYUYU  Log after type.getactiontype");
             if (type != Action.ActionType.INVALID)
             {
+                Debug.Log($"YUYUYUYU Action {act} is valid :), let's execute it");
+
                 List<FieldInfo> fields = new List<FieldInfo>(); //TODO Do we want to use GetProperties() as well?
                 List<MethodInfo> methods = new List<MethodInfo>();
                 List<Component> subjects = act.GetSubjectComponent();
@@ -185,8 +189,7 @@ namespace ECARules4All_DLL
                             break;
                         case Action.ActionType.INCREMENTSDECREMENTS:
                             fields[i].SetValue(subjects[i],
-                                IncrementDecrement(fields[i].GetValue(subjects[i]), act.GetModifierValue(),
-                                    act.GetActionMethod()));
+                                IncrementDecrement(fields[i].GetValue(subjects[i]), act.GetModifierValue(),act.GetActionMethod()));
                             break;
                         case Action.ActionType.OBJECT:
                             //if "Action.objct" is != null then we use a GameObject instead of a Component
@@ -206,6 +209,11 @@ namespace ECARules4All_DLL
 
                     eventQueue.Publish(act);
                 }
+                Debug.Log($"YUYUYUYU  Action {act} has been executed correctly. Be happy!");
+            }
+            else
+            {
+                Debug.Log($"YUYUYUYU Action {act} is invalid, cannot execute it");
             }
         }
 
@@ -865,28 +873,74 @@ namespace ECARules4All_DLL
         ///<strong>Returns:</strong> A boolean with the answer from the check
         ///</summary>
         //Funzione di appoggio che controlla se si soddisfano controlli logici data una stringa
-        private bool CompareValues(dynamic one, dynamic two, string op)
+        // private bool CompareValues(dynamic one, dynamic two, string op)
+        // {
+        //     switch (op)
+        //     {
+        //         case "is":
+        //         case "=":
+        //             return one == two;
+        //         case "is not":
+        //         case "!=":
+        //             return one != two;
+        //         case ">":
+        //             return one > two;
+        //         case "<":
+        //             return one < two;
+        //         case ">=":
+        //             return one >= two;
+        //         case "<=":
+        //             return one <= two;
+        //         default: return false;
+        //     }
+        // }
+        private bool CompareValues(object one, object two, string op)
         {
+            if (one == null || two == null)
+                return op == "is" || op == "=" ? one == two : one != two;
+
+            if (one.GetType() != two.GetType())
+                return false;
+
             switch (op)
             {
                 case "is":
                 case "=":
-                    return one == two;
+                    return one.Equals(two);
+
                 case "is not":
                 case "!=":
-                    return one != two;
+                    return !one.Equals(two);
+
                 case ">":
-                    return one > two;
                 case "<":
-                    return one < two;
                 case ">=":
-                    return one >= two;
                 case "<=":
-                    return one <= two;
-                default: return false;
+                    if (one is IComparable compOne)
+                    {
+                        int comparison = compOne.CompareTo(two);
+
+                        switch (op)
+                        {
+                            case ">":
+                                return comparison > 0;
+                            case "<":
+                                return comparison < 0;
+                            case ">=":
+                                return comparison >= 0;
+                            case "<=":
+                                return comparison <= 0;
+                            default:
+                                return false;
+                        }
+                    }
+                    return false;
+
+                default:
+                    return false;
             }
         }
-
+        
         public bool IsValid()
         {
             FieldInfo fieldInfoTemp = null;

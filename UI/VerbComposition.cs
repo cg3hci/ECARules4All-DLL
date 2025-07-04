@@ -1,8 +1,9 @@
-﻿using ECARules4All_DLL.Utils;
+﻿using System;
+using ECARules4All_DLL.Utils;
 
 namespace ECARules4All_DLL.UI
 {
-    public class VerbComposition
+    public class VerbComposition : IComparable<VerbComposition>
     {
         private string verb;
         private ActionAttribute _actionAttribute;
@@ -47,5 +48,14 @@ namespace ECARules4All_DLL.UI
                 return false;
             return true;
         }
+        
+        ///////////// TODO 4th July 25 - J NEW ///////////
+        public int CompareTo(VerbComposition other)
+        {
+            if (other == null) return 1;
+
+            return this.ActionEquals(other) ? 0 : 1;
+        }
+        ///////////////////////////////////////////////
     }
 }

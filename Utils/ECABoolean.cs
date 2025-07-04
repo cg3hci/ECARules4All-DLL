@@ -5,7 +5,7 @@ using System;
 namespace ECARules4All_DLL.Utils
 {
     [System.Serializable]
-    public class ECABoolean
+    public class ECABoolean : IComparable<ECABoolean>
     {
         public static readonly ECABoolean YES = new ECABoolean(BoolType.YES);
         public static readonly ECABoolean ON = new ECABoolean(BoolType.ON);
@@ -13,7 +13,7 @@ namespace ECARules4All_DLL.Utils
         public static readonly ECABoolean NO = new ECABoolean(BoolType.NO);
         public static readonly ECABoolean OFF = new ECABoolean(BoolType.OFF);
         public static readonly ECABoolean FALSE = new ECABoolean(BoolType.FALSE);
-        
+
         public enum BoolType
         {
             YES,
@@ -103,11 +103,11 @@ namespace ECARules4All_DLL.Utils
                 default: throw new ArgumentException($"[{value}] is not a valid string for ECABoolean");
             }
         }
-        
+
         public override bool Equals(object obj)
         {
             if (!(obj is ECABoolean)) return false;
-            return this.choice == ((ECABoolean) obj).choice;
+            return this.choice == ((ECABoolean)obj).choice;
         }
 
         public static ECABoolean Invert(ECABoolean b)
@@ -120,6 +120,28 @@ namespace ECARules4All_DLL.Utils
             if (b == ECABoolean.FALSE) return ECABoolean.TRUE;
             throw new ArgumentException("Invalid ECABoolean");
         }
+
+        ///////////// TODO 4th July 25 - J NEW ///////////
+        public int CompareTo(ECABoolean other)
+        {
+            if (other == null) return 1;
+            return this.Equals(other) ? 1 : 0;
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+            if (obj is ECABoolean other)
+                return CompareTo(other);
+            throw new ArgumentException($"Object must be of type {nameof(ECABoolean)}");
+        }
+
+        // Don't forget to override GetHashCode when you override Equals
+        public override int GetHashCode()
+        {
+            return choice.GetHashCode();
+        }
+        ///////////////////////////////
     }
 
     [System.Serializable]
