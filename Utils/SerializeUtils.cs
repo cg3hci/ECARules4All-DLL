@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories;
+using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories;
 using Newtonsoft.Json;
 using Serilog;
 using Scenes_Scene = ECARules4All_DLL.Taxonomies.Objects.Scenes.Scene;
@@ -33,6 +34,7 @@ namespace ECARules4All_DLL.Utils
                 case Scenes_Scene scene_sceneValue: processedValue = scene_sceneValue; break;
                 case DateTime dateTimeValue: processedValue = dateTimeValue.ToString(); break;
                 case ECACamera.POV povValue: processedValue = povValue.ToString(); break;
+                case Spray.SprayType sprayTypeValue: processedValue = sprayTypeValue.ToString(); break;
                         
                 default:
                     Log.Warning($"Type {value.GetType().ToString()} does not recognized");
@@ -78,6 +80,10 @@ namespace ECARules4All_DLL.Utils
             else if (typeParameter == typeof(string))
             {
                 parameter = receivedParameter;
+            }
+            else if (typeParameter == typeof(Spray.SprayType))
+            {
+                parameter = Enum.Parse(typeof(Spray.SprayType), receivedParameter, ignoreCase: true);
             }
             else
             {
@@ -125,6 +131,10 @@ namespace ECARules4All_DLL.Utils
             else if (typeParameter == typeof(string))
             {
                 parameter = receivedParameter;
+            }
+            else if (typeParameter == typeof(Spray.SprayType))
+            {
+                parameter = Enum.Parse(typeof(Spray.SprayType), receivedParameter.ToString(), ignoreCase: true);
             }
             else
             {
