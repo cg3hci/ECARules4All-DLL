@@ -5,7 +5,8 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories
 {
     /// <summary>
-    /// TODO ADD
+    /// <b>ECACleaningRag</b> is a virtual object that simulates a cleaning rag used for washing surfaces.
+    /// It interacts with <see cref="ECASurface"/> objects and triggers the washing action when it comes into contact with them.
     /// </summary>
     [ECARules4All("cleaningRag")]
     [RequireComponent(typeof(ECASoakableCleaningItem))]
@@ -14,8 +15,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
     {
 
         /// <summary>
-        /// TODO.
+        /// <b>Washes</b> is a method that simulates the action of cleaning a surface using the rag.
+        /// It is triggered when the rag interacts with a surface, typically via collision detection.
         /// </summary>
+        /// <param name="surface">The <see cref="ECASurface"/> to be washed.</param>
         [ECARelevance(true)]
         [Action(typeof(ECACleaningRag), "washes", typeof(ECASurface))]
         public void Washes(ECASurface surface)
@@ -26,6 +29,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
 
         private void OnTriggerEnter(Collider other)
         {
+            // If the object is a ECASurface, it triggers the "Washes" method and publishes the action to the event system.
             Debug.Log("STO TRIGGERANDO CON " + other.gameObject.name);
 
             ECASurface surface = other.gameObject.GetComponent<ECASurface>();

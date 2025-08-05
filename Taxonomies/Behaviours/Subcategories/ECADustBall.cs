@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories;
 using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
@@ -7,7 +8,9 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// <b>dustBall</b> is a <see cref="ECABehaviour">Behaviour</see> that represents dust on surfaces.
+    /// <b>ECADustBall</b> is a <see cref="ECABehaviour">Behaviour</see> that attaches dust balls to a virtual object, ideally a  <see cref="ECASurface">Surface</see>.
+    /// It can be "swept" using other objects such as brooms or scottex, and define the number of sweeps needed until all dust is removed.
+    /// Once fully swept, the object updates its state and optionally plays audio feedback.
     /// </summary>
     [ECARules4All("dustBall")]
     [RequireComponent(typeof(ECABehaviour))]
@@ -21,7 +24,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         private int _sweepsNeeded = 0;
         
         /// <summary>
-        /// <b>waterDrops</b> TODO.
+        /// <b>sweepsCounter</b> defines how many times the dust ball needs to be swept before it's considered clean.
+        /// Each sweep reduces this counter until it reaches zero, triggering a "fully swept" state.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("sweepsCounter", ECARules4AllType.Integer)]
@@ -39,7 +43,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [SerializeField] private int _sweepsCounter = 1;
 
         /// <summary>
-        /// <b>allSwept</b> TODO.
+        /// <b>allSwept</b> indicates whether all the dust has been successfully removed from the object.
+        /// It becomes true once the sweeps counter reaches zero.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("allSwept", ECARules4AllType.Boolean)]
@@ -56,7 +61,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [SerializeField] private ECABoolean _allSwept = new ECABoolean(ECABoolean.BoolType.NO);
 
         /// <summary>
-        /// TODO
+        /// <b>Changes</b> the value of the sweeps counter to a specified integer.
+        /// This method ensures the new value is not negative and updates the internal sweep logic accordingly.
         /// </summary>
         /// <param name="v">The new counter value.</param>
         [Action(typeof(ECADustBall), "changes", "sweepsCounter", "to", typeof(int))]
@@ -73,8 +79,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// TODO.
+        /// <b>increasingly-removes-dust</b> simulates a sweeping action by a <see cref="ECAScottex"/>, decreasing by one the number of sweeps needed.
+        /// When enough sweeps are performed, the dust ball is considered clean.
         /// </summary>
+        /// <param name="scottex">The scottex object performing the sweep.</param>
         [ECARelevance(true)]
         [Action(typeof(ECAScottex), "increasingly-removes-dust", typeof(ECADustBall))]
         public void _IncreasinglySweeps(ECAScottex scottex)
@@ -84,8 +92,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// TODO.
+        /// <b>increasingly-removes-dust</b> simulates a sweeping action by a <see cref="ECABroom"/>, decreasing by one the number of sweeps needed.
+        /// When enough sweeps are performed, the dust ball is considered clean.
         /// </summary>
+        /// <param name="broom">The broom object performing the sweep.</param>
         [ECARelevance(true)]
         [Action(typeof(ECABroom), "increasingly-removes-dust", typeof(ECADustBall))]
         public void _IncreasinglySweeps(ECABroom broom)

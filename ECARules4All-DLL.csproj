@@ -165,7 +165,7 @@
         <Compile Include="Taxonomies\Objects\Props\Subcategories\LiquidDispenser\ECALiquidDispenser.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\LiquidDispenser\Subcategories\ECABottle.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\LiquidDispenser\Subcategories\ECAWaterMixerTap.cs" />
-        <Compile Include="Taxonomies\Objects\Scenes\ECASystem.cs" />
+        <Compile Include="Taxonomies\Objects\Systems\ECASystem.cs" />
         <Compile Include="Taxonomies\Utils\LiquidDrop.cs" />
         <Compile Include="Taxonomies\Utils\LiquidSpawner.cs" />
         <Compile Include="UI\ECAUI_Utils.cs" />

@@ -6,7 +6,8 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories
 {
     /// <summary>
-    /// TODO ADD
+    /// <b>ECADustPan</b> is a virtual object that simulates the behavior of a dustpan used in cleaning tasks.
+    /// It has a method for collecting dust balls (<see cref="ECADustBall"/>).
     /// </summary>
     [ECARules4All("dustPan")]
     [RequireComponent(typeof(ECACleaningItem))]
@@ -15,8 +16,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
     {
 
         /// <summary>
-        /// TODO.
+        /// <b>CollectsDust</b> is a method that simulates the action of the dustpan collecting a dust ball.
         /// </summary>
+        /// <param name="dustBall">The <see cref="ECADustBall"/> object being collected.</param>
         [ECARelevance(true)]
         [Action(typeof(ECADustPan), "collects-dust", typeof(ECADustBall))]
         public void CollectsDust(ECADustBall dustBall)
@@ -25,22 +27,21 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
             LogicShowNextDustBall();
         }
 
-
-        // [SerializeField] private GameObject dustBallPrefab;        // Assign in Inspector
-        [SerializeField] private Transform dustSpawnPoint; // Assign the spawn point above the pan
-
-        [SerializeField] private List<GameObject> dustBallPool;
+        [SerializeField] private Transform dustSpawnPoint; // The spawn point above the pan (assign in Inspector)
+        [SerializeField] private List<GameObject> dustBallPool; // Pool of dust balls to activate one by one
         private int currentIndex = 0;
 
         void Awake()
         {
-            // Create and disable all dust balls
+            // Ensures that no dust balls are visible until collection actions occur.
             foreach (var dustBall in dustBallPool)
                 dustBall.SetActive(false);
         }
 
         private void LogicShowNextDustBall()
         {
+            // Reveals the next inactive dust ball in the pool by activating it.
+            // This method simulates dust being visually collected into the dustpan.
             if (currentIndex < dustBallPool.Count)
             {
                 var nextDust = dustBallPool[currentIndex];
@@ -53,6 +54,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
             }
         }
 
+        // Testing purposes
         private void OnGUI()
         {
             // make the button top right

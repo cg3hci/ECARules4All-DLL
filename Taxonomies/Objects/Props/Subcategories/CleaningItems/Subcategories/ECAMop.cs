@@ -5,7 +5,8 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories
 {
     /// <summary>
-    /// TODO ADD
+    /// <b>ECAMop</b> represents a virtual mop used to clean surfaces within the simulation.
+    /// It is designed to interact with surfaces by "washing" them, typically triggered when coming into contact with a surface.
     /// </summary>
     [ECARules4All("mop")]
     [RequireComponent(typeof(ECASoakableCleaningItem))]
@@ -13,18 +14,21 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
     public class ECAMop : MonoBehaviour
     {
         /// <summary>
-        /// TODO.
+        /// <b>Washes</b> is a method that simulates the action of the mop cleaning a surface.
+        /// This action is triggered when the mop collides with a surface object, and notifies the automation system accordingly.
         /// </summary>
+        /// <param name="surface">The surface being cleaned by the mop.</param>
         [ECARelevance(true)]
         [Action(typeof(ECAMop), "washes", typeof(ECASurface))]
         public void Washes(ECASurface surface)
         {
-            //TODO Make the logic. I think no logic is needed here, just the notification.
             Debug.Log(this.gameObject + " washes (mop) with " + surface.gameObject.name);
         }
 
         private void OnTriggerEnter(Collider other)
         {
+            // If the collided object contains an ECASurface component, the mop performs a wash action.
+            // This action is then published to the event bus and optionally triggers an ECA system update.
             Debug.Log("STO TRIGGERANDO CON " + other.gameObject.name);
 
             ECASurface surface = other.gameObject.GetComponent<ECASurface>();

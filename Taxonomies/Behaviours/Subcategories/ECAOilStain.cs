@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories;
 using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
@@ -6,7 +7,9 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// blabla
+    /// <b>ECAOilStain</b> is a <see cref="ECABehaviour">Behaviour</see> that attaches oil stains to a virtual object, ideally a  <see cref="ECASurface">Surface</see>.
+    /// It can be "washed" using other objects such as mops or cleaning rags, and define the number of washes needed until all stains are removed.
+    /// Once fully washed, the object updates its state and optionally plays audio feedback.
     /// </summary>
     [ECARules4All("oilStain")]
     [RequireComponent(typeof(ECABehaviour))]
@@ -22,7 +25,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         private int _washesNeeded = 0;
 
         /// <summary>
-        /// <b>washesCounter</b> TODO.
+        /// <b>washesCounter</b> defines how many times the oil stains needs to be washed before it's considered clean.
+        /// Each wash reduces this counter until it reaches zero, triggering a "fully washed" state.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("washesCounter", ECARules4AllType.Integer)]
@@ -40,7 +44,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [SerializeField] private int _washesCounter = 1;
 
         /// <summary>
-        /// <b>allWashed</b> TODO.
+        /// <b>allWashed</b> indicates whether all the stains have been successfully removed from the object.
+        /// It becomes true once the washes counter reaches zero.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("allWashed", ECARules4AllType.Boolean)]
@@ -58,7 +63,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
 
         /// <summary>
-        /// TODO
+        /// <b>Changes</b> the value of the washes counter to a specified integer.
+        /// This method ensures the new value is not negative and updates the internal wash logic accordingly.
         /// </summary>
         /// <param name="v">The new counter value.</param>
         [Action(typeof(ECAOilStain), "changes", "washesCounter", "to", typeof(int))]
@@ -76,8 +82,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
 
         /// <summary>
-        /// TODO.
+        /// <b>increasingly-removes-stain</b> simulates a washing action by a <see cref="ECACleaningRag"/>, decreasing by one the number of washes needed.
+        /// When enough washes are performed, the oil stains are considered clean.
         /// </summary>
+        /// <param name="cleaningRag">The cleaning rag object performing the wash.</param>
         [ECARelevance(true)]
         [Action(typeof(ECACleaningRag), "increasingly-removes-stain", typeof(ECAOilStain))]
         public void _IncreasinglyWashes(ECACleaningRag cleaningRag)
@@ -87,8 +95,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// TODO.
+        /// <b>increasingly-removes-stain</b> simulates a washing action by a <see cref="ECAMop"/>, decreasing by one the number of washes needed.
+        /// When enough washes are performed, the oil stains are considered clean.
         /// </summary>
+        /// <param name="mop">The mop object performing the wash.</param>
         [ECARelevance(true)]
         [Action(typeof(ECAMop), "increasingly-removes-stain", typeof(ECAOilStain))]
         public void _IncreasinglyWashes(ECAMop mop)
@@ -131,29 +141,29 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                 // 1. Search for the first oil stain active
                 if (_oilStains.Count == 0)
                 {
-                    Debug.LogWarning("There are no dusty balls.");
+                    Debug.LogWarning("There are no oil stains.");
                 }
                 else
                 {
-                    bool foundDustyBall = false;
+                    bool foundOilStain = false;
                     foreach (var t in _oilStains)
                     {
                         if (t != null && t.activeInHierarchy)
                         {
-                            Debug.Log("Found a dusty ball to sweep: " + t.name);
+                            Debug.Log("Found an oil stain to wash: " + t.name);
 
                             // 2. Update the material/remove the dirty part: e.g.
                             //      other.gameObject.GetComponent<Renderer>().material = CleanedCellMaterial;
-                            t.SetActive(false); // Example of cleaning the ball
+                            t.SetActive(false); // Example of cleaning the oil stain
 
-                            foundDustyBall = true;
-                            break; // Exit after cleaning one dusty ball
+                            foundOilStain = true;
+                            break; // Exit after cleaning one oil stain
                         }
                     }
 
-                    if (!foundDustyBall)
+                    if (!foundOilStain)
                     {
-                        Debug.LogWarning("No active dusty balls found to sweep.");
+                        Debug.LogWarning("No active oil stains found to wash.");
                     }
                 }
             }

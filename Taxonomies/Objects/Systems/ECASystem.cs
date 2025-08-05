@@ -3,7 +3,7 @@ using System.Collections;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 
-namespace ECARules4All_DLL.Taxonomies.Objects.Scenes
+namespace ECARules4All_DLL.Taxonomies.Objects.Systems
 {
     /// <summary>
     /// <b>ECASystem</b> represents the virtual system within the automation system.

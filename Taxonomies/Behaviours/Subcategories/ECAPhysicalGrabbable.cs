@@ -6,7 +6,8 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// <b>dustBall</b> is a <see cref="ECABehaviour">Behaviour</see> that represents dust on surfaces.
+    /// <b>ECAPhysicalGrabbable</b> represents a physical object in the scene that can be grabbed by the player using one or both hands.
+    /// It tracks the grabbing state, handles interaction logic based on trigger collisions with hand colliders, and communicates grabbing events through the automation system.
     /// </summary>
     [ECARules4All("physicalGrabbable")]
     [RequireComponent(typeof(ECABehaviour))]
@@ -39,7 +40,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// <b>grabbed</b> TODO.
+        /// <b>grabbed</b> indicates whether the object is currently being held by the player.
+        /// This state is updated based on collision triggers with hand colliders and is used to drive interactive behaviors.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("grabbed", ECARules4AllType.Boolean)]
@@ -63,8 +65,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         private bool rightHandGrabbed = false;
 
         /// <summary>
-        /// TODO.
+        /// <b>starts-grabbing</b> is triggered when the player begins to grab the object with either hand.
+        /// Updates the <see cref="grabbed"/> state and notifies the system about the interaction.
         /// </summary>
+        /// <param name="c">The character initiating the grab.</param>
         [ECARelevance(true)]
         [Action(typeof(ECACharacter), "starts-grabbing")]
         public void _StartsGrabbing(ECACharacter c)
@@ -74,8 +78,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// TODO.
+        /// <b>stops-grabbing</b> is triggered when the player releases the object with both hands.
+        /// Resets the <see cref="grabbed"/> state and notifies the system of the interaction ending.
         /// </summary>
+        /// <param name="c">The character releasing the object.</param>
         [ECARelevance(true)]
         [Action(typeof(ECACharacter), "stops-grabbing")]
         public void _StopsGrabbing(ECACharacter c)
@@ -86,6 +92,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
         private void OnTriggerEnter(Collider other)
         {
+            // Handles detection of grabbing initiation by checking if either hand's collider enters this object's collider.
+            // Initiates grab logic when the first hand touches the object.
             Debug.Log("OnTriggerEnter: " + other.gameObject.name);
             if (other.CompareTag("NonEcaInteractable")) return;
 
@@ -110,6 +118,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
         private void OnTriggerExit(Collider other)
         {
+            // Handles detection of grabbing termination when both hands are no longer in contact with the object.
+            // Triggers ungrab logic only when both hand colliders have exited.
             Debug.Log("OnTriggerExit: " + other.gameObject.name);
             if (other.CompareTag("NonEcaInteractable")) return;
 
@@ -131,6 +141,9 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
         private void LogicStartsGrabbing()
         {
+            // Internal logic for handling the start of a grab interaction.
+            // Publishes an ECA action and updates the system state accordingly.
+            
             // Character c = GameObject.FindWithTag("Player").GetComponent<Character>();
             Debug.Log("ECAPhysicalGrabbable LogicStartsGrabbing called for " + player_character.name + " on " +
                       this.gameObject.name + " that is son of " + this.transform.parent.name);
@@ -145,6 +158,9 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
         private void LogicStopsGrabbing()
         {
+            // Internal logic for handling the end of a grab interaction.
+            // Publishes an ECA action and updates the system state accordingly.
+            
             Debug.Log("ECAPhysicalGrabbable LogicStopsGrabbing called for " + player_character.name + " on " +
                       this.gameObject.name + " that is son of " + this.transform.parent.name);
             _StopsGrabbing(player_character.GetComponent<ECACharacter>());

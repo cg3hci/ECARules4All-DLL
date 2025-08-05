@@ -4,7 +4,8 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems
 {
     /// <summary>
-    /// TODO ADD
+    /// <b>ECACleaningItem</b> represents a generic cleaning item within the automation framework.
+    /// It serves as a base component for all cleaning tools and supports integration with ECA objects.
     /// </summary>
     [ECARules4All("cleaningItem")]
     [RequireComponent(typeof(ECAProp))]

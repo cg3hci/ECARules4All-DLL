@@ -9,7 +9,9 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories
 {
     /// <summary>
-    /// TODO ADD
+    /// <b>ECASoakableCleaningItem</b> is a virtual object that represents a reusable cleaning item
+    /// capable of absorbing and releasing different types of liquids (e.g., water, degreaser, battery killer, disinfectant).
+    /// It supports being wetted and dried, and tracks its current state using dedicated ECA boolean variables.
     /// </summary>
     [ECARules4All("soakableCleaningItem")]
     [RequireComponent(typeof(ECACleaningItem))]
@@ -22,12 +24,14 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
 
         void Awake()
         {
+            // Initializes the component by checking that required materials are assigned.
             if (dryMaterial == null) throw new Exception("Material Dry not assigned");
             if (wetMaterial == null) throw new Exception("Material Wet not assigned");
         }
 
         private void OnCollisionEnter(Collision other)
         {
+            // If the object is a LiquidDrop, it is considered an attempt to wet the item.
             var ldrop = other.gameObject.GetComponent<LiquidDrop>();
             if (ldrop != null)
             {
@@ -42,6 +46,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
 
         private void OnTriggerEnter(Collider other)
         {
+            // If it belongs to a LiquidDrop, it initiates the wetting process.
             var ldrop = other.gameObject.GetComponent<LiquidDrop>();
             if (ldrop != null)
             {
@@ -56,7 +61,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
 
 
         /// <summary>
-        /// <b>variableName</b> blabla 
+        /// <b>hasWater</b> indicates whether the item currently contains water.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("hasWater", ECARules4AllType.Boolean)]
@@ -74,7 +79,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
 
 
         /// <summary>
-        /// <b>variableName</b> blabla 
+        /// <b>hasDegreaser</b> indicates whether the item currently contains degreaser.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("hasDegreaser", ECARules4AllType.Boolean)]
@@ -92,7 +97,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
 
 
         /// <summary>
-        /// <b>variableName</b> blabla 
+        /// <b>hasBatteryKiller</b> indicates whether the item currently contains battery killer solution.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("hasBatteryKiller", ECARules4AllType.Boolean)]
@@ -110,7 +115,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
 
 
         /// <summary>
-        /// <b>variableName</b> blabla 
+        /// <b>hasAmuchina</b> indicates whether the item currently contains Amuchina (a disinfectant).
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("hasAmuchina", ECARules4AllType.Boolean)]
@@ -127,8 +132,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         [SerializeField] private ECABoolean _hasAmuchina = new ECABoolean(ECABoolean.BoolType.NO);
 
         /// <summary>
-        /// TODO
+        /// <b>Wets</b> is an action method that updates the item’s internal state to reflect it has absorbed a specific liquid.
+        /// It changes the item's material to a "wet" visual and starts a timer for automatic drying.
         /// </summary>
+        /// <param name="ld">The liquid dispenser responsible for wetting this item.</param>
         [Action(typeof(ECALiquidDispenser), "wets", typeof(ECASoakableCleaningItem))]
         [ECARelevance(true)]
         public void _Wets(ECALiquidDispenser ld)
@@ -160,6 +167,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
             StartCoroutine(CoroutineDries(30f)); //TODO Pensare se vogliamo rimetterlo
         }
 
+        // Waits for a specified delay before drying the item automatically.
         IEnumerator CoroutineDries(float delay)
         {
             yield return new WaitForSeconds(delay);
@@ -171,7 +179,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         }
 
         /// <summary>
-        /// TODO
+        /// <b>Dries</b> is an action method that resets the item to a dry state,
+        /// both visually and logically by clearing the water state variable.
         /// </summary>
         [Action(typeof(ECASoakableCleaningItem), "dries")]
         [ECARelevance(true)]
