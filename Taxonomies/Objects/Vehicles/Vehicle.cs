@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Vehicles
 {
+    /// <summary>
+    /// </summary>
     [ECARules4All("vehicle")]
     [RequireComponent(typeof(ECAObject))]
     [DisallowMultipleComponent]
