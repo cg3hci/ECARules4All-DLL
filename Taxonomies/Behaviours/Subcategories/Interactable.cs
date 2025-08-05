@@ -12,7 +12,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     [ECARules4All("interactable")]
     [RequireComponent(typeof(Behaviour))]
     [RequireComponent(typeof(Collider))]
-    [RequireComponent(typeof(Rigidbody))] // Confermo che serve
+    [RequireComponent(typeof(Rigidbody))]
     [DisallowMultipleComponent]
     public class Interactable : MonoBehaviour
     {

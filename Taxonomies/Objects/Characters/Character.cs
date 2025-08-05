@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using ECARules4All_DLL.Taxonomies.Behaviours.Subcategories;
+using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
-using ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories;
 
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Characters
@@ -69,9 +69,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         [Action(typeof(Character), "interacts with", typeof(Interactable))]
         public void Interacts(Interactable o)
         {
-            Debug.LogWarning("[CHARACTER] Interacts with " + o.gameObject.name);
             var door = o.GetComponent<ECADoor>();
-            Debug.LogWarning("[CHARACTER] Door: " + door);
             if(door != null)
                 door.SwitchState();
         }

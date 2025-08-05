@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using ECARules4All_DLL;
 using ECARules4All_DLL.Taxonomies.Behaviours.Subcategories;
 using ECARules4All_DLL.Taxonomies.Objects.Interactions;
 using ECARules4All_DLL.Utils;
 
-namespace ECARules4All_DLL.Taxonomies.Objects.custom
+namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
 {
     /// <summary>
     /// Custom door component controllable via ECA actions.
@@ -16,7 +14,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.custom
     [RequireComponent(typeof(Interaction))]
     [RequireComponent(typeof(Interactable))]
     [DisallowMultipleComponent]
-    public class ECADoor_Custom : MonoBehaviour
+    public class ECADoorV2 : MonoBehaviour
     {
         [Header("Door Settings")]
 
@@ -83,7 +81,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.custom
         /// ECA action to open the door, if it's not locked or already open.
         /// </summary>
         [ECARelevance(true)]
-        [Action(typeof(ECADoor_Custom), "open")]
+        [Action(typeof(ECADoorV2), "open")]
         public void OpenDoorAction()
         {
             if (isRotating || isOpen) return;
@@ -104,7 +102,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.custom
         /// ECA action to close the door, if it's currently open.
         /// </summary>
         [ECARelevance(true)]
-        [Action(typeof(ECADoor_Custom), "close")]
+        [Action(typeof(ECADoorV2), "close")]
         public void CloseDoorAction()
         {
             if (isRotating || !isOpen) return;
@@ -117,7 +115,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.custom
         /// ECA action to unlock the door.
         /// </summary>
         [ECARelevance(true)]
-        [Action(typeof(ECADoor_Custom), "unlock")]
+        [Action(typeof(ECADoorV2), "unlock")]
         public void UnlockDoor()
         {
             if (isLocked)
@@ -135,7 +133,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.custom
         /// ECA action to lock the door.
         /// </summary>
         [ECARelevance(true)]
-        [Action(typeof(ECADoor_Custom), "lock")]
+        [Action(typeof(ECADoorV2), "lock")]
         public void LockDoor()
         {
             if (!isLocked)

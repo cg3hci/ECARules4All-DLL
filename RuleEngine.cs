@@ -133,7 +133,6 @@ namespace ECARules4All_DLL
         ///</summary>
         private object IncrementDecrement(dynamic one, dynamic two, string op)
         {
-            //TODO J 4th July '25: We should refactor somehow because dynamic is not type-safe and can lead to runtime errors. Right now we are not using Increment/Decrement methods, so who cares?
             var res = one;
             if (op == "increases") res += two;
             else res -= two;
@@ -151,13 +150,10 @@ namespace ECARules4All_DLL
         ///</summary>
         public void ExecuteAction(Action act)
         {
-            Debug.Log("YUYUYUYU  Log before type.getactiontype");
             var type = act.GetActionType();
-            Debug.Log("YUYUYUYU  Log after type.getactiontype");
+            
             if (type != Action.ActionType.INVALID)
             {
-                Debug.Log($"YUYUYUYU Action {act} is valid :), let's execute it");
-
                 List<FieldInfo> fields = new List<FieldInfo>(); //TODO Do we want to use GetProperties() as well?
                 List<MethodInfo> methods = new List<MethodInfo>();
                 List<Component> subjects = act.GetSubjectComponent();
@@ -209,11 +205,6 @@ namespace ECARules4All_DLL
 
                     eventQueue.Publish(act);
                 }
-                Debug.Log($"YUYUYUYU  Action {act} has been executed correctly. Be happy!");
-            }
-            else
-            {
-                Debug.Log($"YUYUYUYU Action {act} is invalid, cannot execute it");
             }
         }
 

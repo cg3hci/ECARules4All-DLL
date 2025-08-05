@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using ECARules4All_DLL.Taxonomies.Behaviours.Subcategories;
 using ECARules4All_DLL.Taxonomies.Objects.Characters;
+using ECARules4All_DLL.Taxonomies.Objects.Interactions;
 using ECARules4All_DLL.Utils;
-using Newtonsoft.Json;
 using UnityEngine;
 
-namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
+namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
 {
     /// <summary>
     /// <b>ECADoor</b>: This class is used to define a door beviour.
