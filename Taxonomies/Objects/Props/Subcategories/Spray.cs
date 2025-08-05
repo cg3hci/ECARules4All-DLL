@@ -22,7 +22,21 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
             LARGE
         }
 
-        public SprayType type;
+        /// <summary>
+        /// <b>Type</b> is the spray type.
+        /// </summary>
+        [StateVariable("type", ECARules4AllType.Identifier)]
+        public SprayType type
+        {
+            get => _type;
+            set
+            {
+                _type = value;
+                ECAScript.NotifyUpdate(this, nameof(type), type.ToString());
+            }
+        }
+        [SerializeField]
+        private SprayType _type;
 
         /// <summary>
         /// <b>Charge</b>: a float value that represents the charge of the spray.
@@ -46,7 +60,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         /// </summary>
         /// <param name="type">The new <see cref="SprayType"/> value. </param>
         [ECARelevance(true)]
-        [Action(typeof(Spray), "changes", "SprayType", "to", typeof(SprayType))]
+        [Action(typeof(Spray), "changes", "type", "to", typeof(SprayType))]
         public void ChangesSprayType(SprayType type)
         {
             this.type = type;

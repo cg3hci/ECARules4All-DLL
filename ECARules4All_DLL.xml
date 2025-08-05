@@ -8845,6 +8845,11 @@
             <b>SprayType</b>: This enum is used to define the spray types: SMALL, MEDIUM and LARGE.
             </summary>
         </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.type">
+            <summary>
+            <b>Type</b> is the spray type.
+            </summary>
+        </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.charge">
             <summary>
             <b>Charge</b>: a float value that represents the charge of the spray.
