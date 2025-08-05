@@ -9,7 +9,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
     /// TODO ADD
     /// </summary>
     [ECARules4All("dustPan")]
-    [RequireComponent(typeof(CleaningItem))]
+    [RequireComponent(typeof(ECACleaningItem))]
     [DisallowMultipleComponent]
     public class ECADustPan : MonoBehaviour
     {

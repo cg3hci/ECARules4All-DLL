@@ -12,7 +12,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
     /// TODO ADD
     /// </summary>
     [ECARules4All("soakableCleaningItem")]
-    [RequireComponent(typeof(CleaningItem))]
+    [RequireComponent(typeof(ECACleaningItem))]
     [DisallowMultipleComponent]
     public class ECASoakableCleaningItem : MonoBehaviour
     {

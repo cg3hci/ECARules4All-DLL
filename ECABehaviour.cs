@@ -13,7 +13,7 @@ namespace ECARules4All_DLL
     [ECARules4All("behaviour")]
     [DisallowMultipleComponent]
     [RequireComponent(typeof(ECAObject))]
-    public class Behaviour : MonoBehaviour
+    public class ECABehaviour : MonoBehaviour
     {
         
     }

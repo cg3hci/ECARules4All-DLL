@@ -9,8 +9,12 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories
 {
     /// <summary>
-    /// Defines a custom ECA object representing a TODO
-    /// TODO: Add more properties and actions as needed.
+    /// <b>ECAWaterMixerTap</b> is a virtual object representing a water mixer tap that can be turned left, idle (middle), or right.
+    /// Some rules are added automatically at the start:
+    /// - Turning left flows warm water.
+    /// - Turning right flows cold water
+    /// - Turning idle (middle) stops the flow.
+    /// The class includes properties and methods for controlling and responding to user interactions.
     /// </summary>
     [ECARules4All("waterMixerTap")]
     [RequireComponent(typeof(ECALiquidDispenser))]
@@ -25,7 +29,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         private TapState _lastTapState = TapState.IDLE;
 
         private GameObject player_character =>
-            GameObject.FindObjectOfType<Character>()
+            GameObject.FindObjectOfType<ECACharacter>()
                 .gameObject; //TODO J 2nd July '25: Salvare la reference al personaggio del giocatore in un campo privato, per evitare di cercarlo ogni volta.
 
         private void Awake()
@@ -95,7 +99,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
                 }
                 else if (_lastTapState == TapState.LEFT)
                 {
-                    // [Action(typeof(Character), "turns-left", typeof(ECAWaterMixerTap))]
+                    // [Action(typeof(ECACharacter), "turns-left", typeof(ECAWaterMixerTap))]
                     Action action = new Action(player_character, "turns-left", this.gameObject);
                     EventBus.GetInstance().Publish(action);
                     ECAScript.NotifyUpdate(this,
@@ -136,21 +140,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
             // }
         }
 
-        // private void OnGUI()
-        // {
-        // if (GUI.Button(new Rect(10, 10, 150, 30), "Turn Left"))
-        // {
-        //     // [Action(typeof(Character), "turns-left", typeof(ECAWaterMixerTap))]
-        //     Action action = new Action(player_character, "turns-left", this.gameObject);
-        //     Debug.Log("Action getType " + action.GetActionType());
-        //     EventBus.GetInstance().Publish(action);
-        //     ECAScript.NotifyUpdate(this,
-        //         action); //TODO J 2nd July '25: Is it necessary to notify the update here? Isn't automatic inside the EventBus?
-        // }
-        // }
-
         /// <summary>
-        /// TODO
+        /// <b>FlowsWarmWater</b> causes the tap to emit warm water.
         /// </summary>
         [Action(typeof(ECAWaterMixerTap), "flows-warm-water")]
         [ECARelevance(true)]
@@ -168,7 +159,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         }
 
         /// <summary>
-        /// TODO
+        /// <b>FlowsColdWater</b> causes the tap to emit cold water.
         /// </summary>
         [Action(typeof(ECAWaterMixerTap), "flows-cold-water")]
         [ECARelevance(true)]
@@ -180,7 +171,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         }
 
         /// <summary>
-        /// TODO
+        /// <b>StopFlowingWater</b> stops any water from flowing.
         /// </summary>
         [Action(typeof(ECAWaterMixerTap), "stops-flowing-water")]
         [ECARelevance(true)]
@@ -192,35 +183,32 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         }
 
         /// <summary>
-        /// <b>Nome metodo</b> TODO
-        /// This is a passive action, so the Food type is not in the subject of the action, but on the object.
+        /// <b>TurnsLeft</b> is an action where a character turns the tap handle to the left.
         /// </summary>
-        /// <param name="c">TODO</param>
+        /// <param name="c">The character performing the action.</param>
         [ECARelevance(true)]
-        [Action(typeof(Character), "turns-left", typeof(ECAWaterMixerTap))]
-        public void _TurnsLeft(Character c)
+        [Action(typeof(ECACharacter), "turns-left", typeof(ECAWaterMixerTap))]
+        public void _TurnsLeft(ECACharacter c)
         {
         }
 
         /// <summary>
-        /// <b>Nome metodo</b> TODO
-        /// This is a passive action, so the Food type is not in the subject of the action, but on the object.
+        /// <b>TurnsIdle</b> is an action where a character returns the tap handle to the center (idle) position.
         /// </summary>
-        /// <param name="c">TODO</param>
+        /// <param name="c">The character performing the action.</param>
         [ECARelevance(true)]
-        [Action(typeof(Character), "turns-idle", typeof(ECAWaterMixerTap))]
-        public void _TurnsIdle(Character c)
+        [Action(typeof(ECACharacter), "turns-idle", typeof(ECAWaterMixerTap))]
+        public void _TurnsIdle(ECACharacter c)
         {
         }
 
         /// <summary>
-        /// <b>Nome metodo</b> TODO
-        /// This is a passive action, so the Food type is not in the subject of the action, but on the object.
+        /// <b>TurnsRight</b> is an action where a character turns the tap handle to the right.
         /// </summary>
-        /// <param name="c">TODO</param>
+        /// <param name="c">The character performing the action.</param>
         [ECARelevance(true)]
-        [Action(typeof(Character), "turns-right", typeof(ECAWaterMixerTap))]
-        public void _TurnsRight(Character c)
+        [Action(typeof(ECACharacter), "turns-right", typeof(ECAWaterMixerTap))]
+        public void _TurnsRight(ECACharacter c)
         {
         }
 

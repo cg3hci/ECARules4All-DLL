@@ -9,7 +9,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     /// blabla
     /// </summary>
     [ECARules4All("oilStain")]
-    [RequireComponent(typeof(Behaviour))]
+    [RequireComponent(typeof(ECABehaviour))]
     [DisallowMultipleComponent]
     public class ECAOilStain : MonoBehaviour
     {

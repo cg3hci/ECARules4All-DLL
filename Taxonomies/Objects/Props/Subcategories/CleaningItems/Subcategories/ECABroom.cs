@@ -8,7 +8,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
     /// TODO ADD
     /// </summary>
     [ECARules4All("broom")]
-    [RequireComponent(typeof(CleaningItem))]
+    [RequireComponent(typeof(ECACleaningItem))]
     [DisallowMultipleComponent]
     public class ECABroom : MonoBehaviour
     {
@@ -17,8 +17,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         /// TODO.
         /// </summary>
         [ECARelevance(true)]
-        [Action(typeof(ECABroom), "sweeps", typeof(Surface))]
-        public void Sweeps(Surface surface)
+        [Action(typeof(ECABroom), "sweeps", typeof(ECASurface))]
+        public void Sweeps(ECASurface surface)
         {
             //TODO Make the logic. I think no logic is needed here, just the notification.
             Debug.Log(this.gameObject + " sweeps (broom) with " + surface.gameObject.name);
@@ -28,7 +28,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         {
             Debug.Log("STO TRIGGERANDO CON " + other.gameObject.name);
 
-            Surface surface = other.gameObject.GetComponent<Surface>();
+            ECASurface surface = other.gameObject.GetComponent<ECASurface>();
             if (surface != null)
             {
                 Debug.Log("AAA The broom is sweeping the surface: " + surface.gameObject.name);

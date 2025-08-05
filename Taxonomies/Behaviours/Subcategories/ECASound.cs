@@ -2,7 +2,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
-using ECARules4All_DLL.Taxonomies.Objects.Interactions;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
 using Serilog;
@@ -13,11 +12,11 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
     /// <b>Sound</b> is a behavior that functions as a media player specifically designed for audio files.
     /// It extends <see cref="ECABehaviour"/> to provide audio-related functionalities such as playback, volume control, and source management.
     [ECARules4All("sound")]
-    [RequireComponent(typeof(Interaction))]
+    [RequireComponent(typeof(ECABehaviour))]
     [RequireComponent(typeof(AudioSource))]
     [JsonObject(MemberSerialization.OptIn)]
     [DisallowMultipleComponent]
-    public class Sound : MonoBehaviour
+    public class ECASound : MonoBehaviour
     {
         private string status = "";
 
@@ -148,7 +147,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Plays</b> starts the audio playback.
         /// Updates the state variables playing, stopped, and paused to reflect that playback is active.
         /// </summary>
-        [Action(typeof(Sound), "plays")]
+        [Action(typeof(ECASound), "plays")]
         [ECARelevance(true)]
         public void Plays()
         {
@@ -162,7 +161,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>Pauses</b> pauses the audio playback.
         /// Maintains the current playback time (currentTime) for resuming later (by calling Plays).
         /// </summary>
-        [Action(typeof(Sound), "pauses")]
+        [Action(typeof(ECASound), "pauses")]
         [ECARelevance(false)]
         public void Pauses()
         {
@@ -175,7 +174,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <summary>
         /// <b>Stops</b> stops the audio playback and resets the playback time (currentTime) to the beginning.
         /// </summary>
-        [Action(typeof(Sound), "stops")]
+        [Action(typeof(ECASound), "stops")]
         [ECARelevance(true)]
         public void Stops()
         {
@@ -190,7 +189,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <para>Ensures the value remains within the range of 0 to <see cref="maxVolume"/></para>
         /// </summary>
         /// <param name="v">The new volume value.</param>
-        [Action(typeof(Sound), "changes", "volume", "to", typeof(float))]
+        [Action(typeof(ECASound), "changes", "volume", "to", typeof(float))]
         [ECARelevance(true)]
         public void ChangesVolume(float v)
         {
@@ -213,7 +212,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <p>Validates the path and dynamically loads the audio for playback.</p>
         /// </summary>
         /// <param name="newSource">The new audio filename.</param>
-        [Action(typeof(Sound), "changes", "source", "to", typeof(string))]
+        [Action(typeof(ECASound), "changes", "source", "to", typeof(string))]
         [ECARelevance(true)]
         public void ChangesSource(string newSource)
         {

@@ -6,7 +6,7 @@ using ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories;
 using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories;
 using Newtonsoft.Json;
 using Serilog;
-using Scenes_Scene = ECARules4All_DLL.Taxonomies.Objects.Scenes.Scene;
+// using Scenes_Scene = ECARules4All_DLL.Taxonomies.Objects.Scenes.Scene;
 using UnityEngine;
 
 
@@ -31,9 +31,9 @@ namespace ECARules4All_DLL.Utils
                 case Scale scaleValue: processedValue = scaleValue; break;
                 case Color colorValue: processedValue = colorValue.ToString(); break;
                 case Mesh meshValue: processedValue = meshValue.ToString(); break; 
-                case Scenes_Scene scene_sceneValue: processedValue = scene_sceneValue; break;
+                // case Scenes_Scene scene_sceneValue: processedValue = scene_sceneValue; break;
                 case DateTime dateTimeValue: processedValue = dateTimeValue.ToString(); break;
-                case ECACamera.POV povValue: processedValue = povValue.ToString(); break;
+                // case ECACamera.POV povValue: processedValue = povValue.ToString(); break;
                         
                 default:
                     Log.Warning($"Type {value.GetType().ToString()} does not recognized");

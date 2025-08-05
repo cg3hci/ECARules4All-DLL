@@ -5,17 +5,19 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser
 {
     /// <summary>
-    /// TODO ADD
+    /// <b>ECALiquidDispenser</b> is a virtual dispenser capable of filling containers with specific types of liquid.
+    /// Supports defining the type of liquid it dispenses (e.g., water, degreaser, amuchina, battery killer).
     /// </summary>
     [ECARules4All("liquidDispenser")]
-    [RequireComponent(typeof(Prop))]
+    [RequireComponent(typeof(ECAProp))]
     [DisallowMultipleComponent]
     public class ECALiquidDispenser : MonoBehaviour
     {
         public LiquidSpawner liquidSpawner;
 
         /// <summary>
-        /// <b>liquidType</b> specifies 
+        /// <b>liquidType</b> specifies the type of liquid dispensed by this object.
+        /// Possible values include <c>"water"</c>, <c>"degreaser"</c>, <c>"amuchina"</c>, and <c>"battery killer"</c>.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("liquidType", ECARules4AllType.Text)]

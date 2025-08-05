@@ -7,9 +7,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
     /// Defines a  TODO.
     /// </summary>
     [ECARules4All("surface")]
-    [RequireComponent(typeof(Environment))]
+    [RequireComponent(typeof(ECAEnvironment))]
     [DisallowMultipleComponent]
-    public class Surface : MonoBehaviour
+    public class ECASurface : MonoBehaviour
     {
         /// <summary>
         /// <b>type</b> specifies 

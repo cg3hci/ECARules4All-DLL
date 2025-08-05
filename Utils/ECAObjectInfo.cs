@@ -1322,7 +1322,7 @@ namespace ECARules4All_DLL.Utils
                             }
                             else if (objSelectedString == "source")
                             {
-                                if (ac.SubjectType.ToString() == nameof(Sound))
+                                if (ac.SubjectType.ToString() == nameof(ECASound))
                                 {
                                     outputDic.Add(ECAUI_Utils.FETCH_MEDIA, new List<string>() { "audios" });
                                 }

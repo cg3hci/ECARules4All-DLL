@@ -23,8 +23,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         /// TODO.
         /// </summary>
         [ECARelevance(true)]
-        [Action(typeof(ECAScottex), "sweeps", typeof(Surface))]
-        public void Sweeps(Surface surface)
+        [Action(typeof(ECAScottex), "sweeps", typeof(ECASurface))]
+        public void Sweeps(ECASurface surface)
         {
             //TODO Make the logic. Update. I think no logic is needed here, just the notification.
             Debug.Log(this.gameObject + " sweeps (scottex) with " + surface.gameObject.name);
@@ -35,7 +35,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         {
             Debug.Log("STO TRIGGERANDO CON " + other.gameObject.name);
 
-            Surface surface = other.gameObject.GetComponent<Surface>();
+            ECASurface surface = other.gameObject.GetComponent<ECASurface>();
             if (surface != null)
             {
                 Debug.Log("AAA The scottex is sweeping the surface: " + surface.gameObject.name);

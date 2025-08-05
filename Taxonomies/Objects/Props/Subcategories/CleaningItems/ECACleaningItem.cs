@@ -7,9 +7,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems
     /// TODO ADD
     /// </summary>
     [ECARules4All("cleaningItem")]
-    [RequireComponent(typeof(Prop))]
+    [RequireComponent(typeof(ECAProp))]
     [DisallowMultipleComponent]
-    public class CleaningItem : MonoBehaviour
+    public class ECACleaningItem : MonoBehaviour
     {
 
     }

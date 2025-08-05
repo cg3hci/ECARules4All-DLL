@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using ECARules4All_DLL.Taxonomies.Behaviours.Subcategories;
 using ECARules4All_DLL.Taxonomies.Objects.Characters;
-using ECARules4All_DLL.Taxonomies.Objects.Interactions;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 
@@ -11,8 +10,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
     /// <b>ECADoor</b>: This class is used to define a door beviour.
     /// </summary>
     [ECARules4All("door")]
-    [RequireComponent(typeof(Interaction))]
-    [RequireComponent(typeof(Interactable))]
+    [RequireComponent(typeof(ECAProp))]
+    [RequireComponent(typeof(ECAInteractable))]
     [DisallowMultipleComponent]
     public class ECADoor : MonoBehaviour
     {
@@ -88,7 +87,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         {
             Debug.LogWarning("[ECADOOR] ON TRIGGER ENTER " + other.gameObject.name);
             if (!openOnTrigger) return;
-            if (other.GetComponent<Character>() == null) return;
+            if (other.GetComponent<ECACharacter>() == null) return;
             Debug.LogWarning("[ECADOOR] CHARACTER TROVATO");
 
             if (!status)
@@ -103,7 +102,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
             Debug.LogWarning("[ECADOOR] ON TRIGGER EXIT " + other.gameObject.name);
             if (!openOnTrigger) return;
 
-            if (other.GetComponent<Character>() == null) return;
+            if (other.GetComponent<ECACharacter>() == null) return;
             Debug.LogWarning("[ECADOOR] CHARACTER TROVATO");
             if (status)
             {
@@ -118,8 +117,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
     /// Handles open/close with rotation around a hinge, and lock/unlock logic.
     /// </summary>
     [ECARules4All("door_custom")]
-    [RequireComponent(typeof(Interaction))]
-    [RequireComponent(typeof(Interactable))]
+    [RequireComponent(typeof(ECAInteraction))]
+    [RequireComponent(typeof(ECAInteractable))]
     [DisallowMultipleComponent]
     public class ECADoorV2 : MonoBehaviour
     {

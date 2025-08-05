@@ -6,15 +6,15 @@ using Serilog;
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// <b>Interactable</b> is a <see cref="Behaviour">Behaviour</see> that can be attached to an object in order to make it
-    /// interactable with the player collison. If the action is not player initiated, then refer to <see cref="Trigger"/>
+    /// <b>Interactable</b> is a <see cref="ECABehaviour">Behaviour</see> that can be attached to an object in order to make it
+    /// interactable with the player collison.
     /// </summary>
     [ECARules4All("interactable")]
-    [RequireComponent(typeof(Behaviour))]
+    [RequireComponent(typeof(ECABehaviour))]
     [RequireComponent(typeof(Collider))]
     [RequireComponent(typeof(Rigidbody))]
     [DisallowMultipleComponent]
-    public class Interactable : MonoBehaviour
+    public class ECAInteractable : MonoBehaviour
     {
         private void OnTriggerEnter(Collider other)
         {

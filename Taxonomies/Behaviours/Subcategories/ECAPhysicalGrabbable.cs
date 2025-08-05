@@ -6,10 +6,10 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// <b>dustBall</b> is a <see cref="Behaviour">Behaviour</see> that represents dust on surfaces.
+    /// <b>dustBall</b> is a <see cref="ECABehaviour">Behaviour</see> that represents dust on surfaces.
     /// </summary>
     [ECARules4All("physicalGrabbable")]
-    [RequireComponent(typeof(Behaviour))]
+    [RequireComponent(typeof(ECABehaviour))]
     [RequireComponent(typeof(Collider))]
     [DisallowMultipleComponent]
     public class ECAPhysicalGrabbable : MonoBehaviour
@@ -18,7 +18,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [SerializeField] private Collider leftHandCollider;
 
         private GameObject player_character =>
-            GameObject.FindObjectOfType<Character>()
+            GameObject.FindObjectOfType<ECACharacter>()
                 .gameObject; //TODO J 2nd July '25: Salvare la reference al personaggio del giocatore in un campo privato, per evitare di cercarlo ogni volta.
         
         private void Awake()
@@ -66,8 +66,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// TODO.
         /// </summary>
         [ECARelevance(true)]
-        [Action(typeof(Character), "starts-grabbing")]
-        public void _StartsGrabbing(Character c)
+        [Action(typeof(ECACharacter), "starts-grabbing")]
+        public void _StartsGrabbing(ECACharacter c)
         {
             Debug.Log("Starting grabbing with " + c.gameObject.name + " on " + this.gameObject.name);
             grabbed = new ECABoolean(ECABoolean.BoolType.YES);
@@ -77,8 +77,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// TODO.
         /// </summary>
         [ECARelevance(true)]
-        [Action(typeof(Character), "stops-grabbing")]
-        public void _StopsGrabbing(Character c)
+        [Action(typeof(ECACharacter), "stops-grabbing")]
+        public void _StopsGrabbing(ECACharacter c)
         {
             Debug.Log("Stops grabbing with " + c.gameObject.name + " on " + this.gameObject.name);
             grabbed = new ECABoolean(ECABoolean.BoolType.NO);
@@ -134,7 +134,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             // Character c = GameObject.FindWithTag("Player").GetComponent<Character>();
             Debug.Log("ECAPhysicalGrabbable LogicStartsGrabbing called for " + player_character.name + " on " +
                       this.gameObject.name + " that is son of " + this.transform.parent.name);
-            _StartsGrabbing(player_character.GetComponent<Character>());
+            _StartsGrabbing(player_character.GetComponent<ECACharacter>());
             Action action = new Action(player_character, "starts-grabbing", this.gameObject);
             EventBus.GetInstance().Publish(action);
             ECAScript.NotifyUpdate(this,
@@ -147,7 +147,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         {
             Debug.Log("ECAPhysicalGrabbable LogicStopsGrabbing called for " + player_character.name + " on " +
                       this.gameObject.name + " that is son of " + this.transform.parent.name);
-            _StopsGrabbing(player_character.GetComponent<Character>());
+            _StopsGrabbing(player_character.GetComponent<ECACharacter>());
             Action action = new Action(player_character, "stops-grabbing", this.gameObject);
             EventBus.GetInstance().Publish(action);
             ECAScript.NotifyUpdate(this,

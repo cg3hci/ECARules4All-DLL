@@ -6,10 +6,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
 {
     /// <summary>
     /// <b>ECALight</b> represents a controllable light source in the environment.
-    /// The ECALight class extends <see cref="Interaction"/> to manage light properties such as intensity, color, and if it's on.
+    /// The ECALight class extends <see cref="ECAInteraction"/> to manage light properties such as intensity, color, and if it's on.
     /// </summary>
     [ECARules4All("light")]
-    [RequireComponent(typeof(Interaction), typeof(Light))] //gerarchia 
+    [RequireComponent(typeof(ECAInteraction), typeof(Light))] //gerarchia 
     [DisallowMultipleComponent]
     public class ECALight : MonoBehaviour
     {

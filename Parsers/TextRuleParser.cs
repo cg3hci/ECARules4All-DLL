@@ -753,14 +753,14 @@ namespace ECARules4All_DLL.Parsers
             if (context.color() != null) _value = _color;
             if (context.POV_LITERAL() != null)
             {
-                if (context.POV_LITERAL().GetText().Contains("1st"))
-                {
-                    _value = ECACamera.POV.First;
-                }
-                if (context.POV_LITERAL().GetText().Contains("3rd"))
-                {
-                    _value = ECACamera.POV.Third;
-                }
+                // if (context.POV_LITERAL().GetText().Contains("1st"))
+                // {
+                //     _value = ECACamera.POV.First;
+                // }
+                // if (context.POV_LITERAL().GetText().Contains("3rd"))
+                // {
+                //     _value = ECACamera.POV.Third;
+                // }
             }
             
             if (context.BOOL_LITERAL() != null) _value = new ECABoolean(_boolLiteral.choice);

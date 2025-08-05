@@ -16,7 +16,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
     [ECARules4All("character")]
     [RequireComponent(typeof(ECAObject), typeof(Animator))]
     [DisallowMultipleComponent]
-    public class Character : MonoBehaviour
+    public class ECACharacter : MonoBehaviour
     {
         /// <summary>
         /// <b>life</b> is the current life of the character, represented as a float number.
@@ -62,12 +62,12 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
 
         /// <summary>
         /// <b>Interacts</b> enables the character to interact with a specified interactable object.
-        /// The implementation details are managed by the <see cref="Interactable"/> class logic.
+        /// The implementation details are managed by the <see cref="ECAInteractable"/> class logic.
         /// </summary>
         /// <param name="o">The target interactable object</param>
         [ECARelevance(true)]
-        [Action(typeof(Character), "interacts with", typeof(Interactable))]
-        public void Interacts(Interactable o)
+        [Action(typeof(ECACharacter), "interacts with", typeof(ECAInteractable))]
+        public void Interacts(ECAInteractable o)
         {
             var door = o.GetComponent<ECADoor>();
             if(door != null)
@@ -76,33 +76,33 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
 
         /// <summary>
         /// <b>Stops interaction</b> allows the character to stop its interaction with a specified interactable object.
-        /// The implementation details are managed by the <see cref="Interactable"/> class logic.
+        /// The implementation details are managed by the <see cref="ECAInteractable"/> class logic.
         /// </summary>
         /// <param name="o">The target interactable object</param>
         [ECARelevance(true)]
-        [Action(typeof(Character), "stops-interacting with", typeof(Interactable))]
-        public void StopsInteracting(Interactable o)
+        [Action(typeof(ECACharacter), "stops-interacting with", typeof(ECAInteractable))]
+        public void StopsInteracting(ECAInteractable o)
         {
         }
         
-        //TODO Cambiare typeof(ECAObject) in typeof(Interactable) o typeof(XRInteractable) o cosa?
+        //TODO Cambiare typeof(ECAObject) in typeof(ECAInteractable) o typeof(ECAXRInteractable) o cosa?
         /// <summary>
         /// <b>Points</b> the character to point at a specified object, emphasizing its focus or attention on the target.
         /// </summary>
         /// <param name="o">The target object to point at.</param>
-        [Action(typeof(Character), "points to", typeof(ECAObject))]
+        [Action(typeof(ECACharacter), "points to", typeof(ECAObject))]
         public void Points(ECAObject o)
         {
             // TODO is an extension? 
         }
 
 
-        //TODO Cambiare typeof(ECAObject) in typeof(Interactable) o typeof(XRInteractable) o cosa?
+        //TODO Cambiare typeof(ECAObject) in typeof(ECAInteractable) o typeof(ECAXRInteractable) o cosa?
         /// <summary>
         /// <b>StopsPointing</b> commands the character to stop pointing at a specified object, ceasing its focus or attention on the target.
         /// </summary>
         /// <param name="o">The target object to stop pointing at.</param>
-        [Action(typeof(Character), "stops-pointing to", typeof(ECAObject))]
+        [Action(typeof(ECACharacter), "stops-pointing to", typeof(ECAObject))]
         public void StopsPointing(ECAObject o)
         {
             // TODO is an extension?
@@ -113,7 +113,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         /// <b>Jumps</b> commands the character to jump to a specific position in the 3D world.
         /// </summary>
         /// <param name="p">The destination position where the character will jump.</param>
-        [Action(typeof(Character), "jumps to", typeof(Position))]
+        [Action(typeof(ECACharacter), "jumps to", typeof(Position))]
         public void Jumps(Position p)
         {
             float speed = 5.0F;
@@ -152,7 +152,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         /// <b>Jumps</b> directs the character to follow a predefined path, jumping between each position in the path.
         /// </summary>
         /// <param name="p">The path consisting of multiple positions to follow. Each position is a vector in the 3D world with x, y, and z coordinates.</param>
-        [Action(typeof(Character), "jumps on", typeof(Path))]
+        [Action(typeof(ECACharacter), "jumps on", typeof(Path))]
         public void Jumps(Path p)
         {
             StartCoroutine(WaitForOrderedMovement(p));
@@ -177,7 +177,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         /// </summary>
         /// <param name="s">The string of the animation clip to play</param>
         [ECARelevance(false)]
-        [Action(typeof(Character), "starts-animation", typeof(string))]
+        [Action(typeof(ECACharacter), "starts-animation", typeof(string))]
         public void StartsAnimation(string s)
         {
             //In order to make it works the template builder must specify a trigger that is directly connected to

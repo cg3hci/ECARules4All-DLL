@@ -9,25 +9,26 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContainer
 {
     /// <summary>
-    /// Defines a  TODO.
+    /// <b>ECALiquidContainer</b> represents a virtual container that can hold various virtual liquids and tracks their fill levels.
+    /// It manages the fill steps between start and end positions, tracks different types of liquid drops,
+    /// updates the visual liquid level, and handles temperature changes as liquids are added.
     /// </summary>
     [ECARules4All("liquidContainer")]
-    [RequireComponent(typeof(Prop))]
+    [RequireComponent(typeof(ECAProp))]
     [DisallowMultipleComponent]
     public class ECALiquidContainer : MonoBehaviour
     {
-        public FillStep startStep;
-        public FillStep endStep;
+        public FillStep startStep; // represents the initial fill step and position of the container.
+        public FillStep endStep;  // represents the final fill step and position of the container.
 
-        public GameObject
-            fillstepListParent; // Parent GameObject for the fill steps, if needed for organization in the hierarchy
+        public GameObject fillstepListParent; // Parent GameObject for the fill steps, if needed for organization in the hierarchy
 
-        [SerializeField] public int numberOfFillSteps = 5; // Including start and end
-        private List<FillStep> fillSteps = new List<FillStep>();
+        [SerializeField] public int numberOfFillSteps = 5; // how many discrete fill levels exist between start and end, including them.
+        private List<FillStep> fillSteps = new List<FillStep>();  // Internal list to store generated fill steps
         // public bool renderSteps = true; // If true, render the fill steps in the inspector
 
-        public GameObject waterCircleInstance; // The 2D blue circle that shows the water fill
-        public float liquidPerLevel = 0.04f; // Time (in seconds) to reach next water level
+        public GameObject waterCircleInstance; // A 2D visual indicator (blue circle) representing the current water fill level.
+        public float liquidPerLevel = 0.04f; // Amount of liquid required to move from one fill level to the next.
 
         private void Start()
         {
@@ -241,8 +242,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
                 action); //TODO J 1st July '25: Is it necessary to notify the update here? Isn't automatic inside the EventBus?
         }
 
+        // Properties tracking the count of different liquid drops added to the container
+	
         /// <summary>
-        /// <b>waterDrops</b> TODO.
+        /// <b>waterDrops</b> counts how many water drops have been added to the container.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("waterDrops", ECARules4AllType.Integer)]
@@ -260,7 +263,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
 
 
         /// <summary>
-        /// <b>degreaserDrops</b> TODO.
+        /// <b>degreaserDrops</b> counts how many degreaser drops have been added to the container.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("degreaserDrops", ECARules4AllType.Integer)]
@@ -278,7 +281,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
 
 
         /// <summary>
-        /// <b>batteryKillerDrops</b> TODO.
+        /// <b>batteryKillerDrops</b> counts how many battery killer drops have been added to the container.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("batteryKillerDrops", ECARules4AllType.Integer)]
@@ -295,7 +298,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
         [SerializeField] private int _batteryKillerDrops = 0;
 
         /// <summary>
-        /// <b>amuchinaDrops</b> TODO.
+        /// <b>amuchinaDrops</b> counts how many amuchina drops have been added to the container.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("amuchinaDrops", ECARules4AllType.Integer)]
@@ -313,7 +316,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
 
 
         /// <summary>
-        /// <b>temperature</b> TODO.
+        /// <b>temperature</b> represents the current temperature of the liquid mixture inside the container.
+        /// It is updated dynamically as new liquid drops with different temperatures are added.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("temperature", ECARules4AllType.Float)]
@@ -330,8 +334,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
         [SerializeField] private float _temperature = 0;
 
         /// <summary>
-        /// TODO.
+        /// <b>_FillsIn</b> is an action method invoked when the container is filled by a liquid dispenser.
         /// </summary>
+        /// <param name="dispenser">The liquid dispenser that fills the container.</param>
         [ECARelevance(true)]
         [Action(typeof(ECALiquidDispenser), "fills-in", typeof(ECALiquidContainer))]
         public void _FillsIn(ECALiquidDispenser dispenser)
@@ -359,6 +364,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
     }
 }
 
+/// <summary>
+/// <b>FillStep</b> represents a discrete fill level within the container,
+/// including the fill level integer and the transform marking the position in 3D space.
+/// </summary>
 [System.Serializable]
 public class FillStep
 {

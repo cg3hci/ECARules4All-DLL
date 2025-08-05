@@ -7,10 +7,10 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// <b>dustBall</b> is a <see cref="Behaviour">Behaviour</see> that represents dust on surfaces.
+    /// <b>dustBall</b> is a <see cref="ECABehaviour">Behaviour</see> that represents dust on surfaces.
     /// </summary>
     [ECARules4All("dustBall")]
-    [RequireComponent(typeof(Behaviour))]
+    [RequireComponent(typeof(ECABehaviour))]
     [DisallowMultipleComponent]
     public class ECADustBall : MonoBehaviour
     {

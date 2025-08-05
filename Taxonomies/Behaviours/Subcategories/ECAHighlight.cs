@@ -6,12 +6,12 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// <b>Highlight</b> is a <see cref="Behaviour">Behaviour</see> that is used to highlight the objects that are in the scene.
+    /// <b>Highlight</b> is a <see cref="ECABehaviour">Behaviour</see> that is used to highlight the objects that are in the scene.
     /// </summary>
     [ECARules4All("highlight")]
-    [RequireComponent(typeof(Behaviour))]
+    [RequireComponent(typeof(ECABehaviour))]
     [DisallowMultipleComponent]
-    public class Highlight : MonoBehaviour
+    public class ECAHighlight : MonoBehaviour
     {
         /// <summary>
         /// <b>Color</b> is the color that will be used to highlight the objects.
@@ -73,7 +73,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>ChangesColor</b> changes the color of the outline.
         /// </summary>
         /// <param name="c"></param>
-        [Action(typeof(Highlight), "changes", "color", "to", typeof(Color))]
+        [Action(typeof(ECAHighlight), "changes", "color", "to", typeof(Color))]
         [ECARelevance(false)]
         public void ChangesColor(Color c)
         {
@@ -85,7 +85,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// <b>TurnsOn</b> turns the highlight on or off.
         /// </summary>
         /// <param name="on"></param>
-        [Action(typeof(Highlight), "turns", typeof(ECABoolean))]
+        [Action(typeof(ECAHighlight), "turns", typeof(ECABoolean))]
         [ECARelevance(false)]
         public void Turns(ECABoolean on)
         {

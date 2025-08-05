@@ -394,13 +394,12 @@ namespace ECARules4All_DLL.Parsers
                 writer.Write("#");
                 writer.Write(UnityEngine.ColorUtility.ToHtmlStringRGB((UnityEngine.Color)val).ToLowerInvariant());
             }
-            else if (val is ECACamera.POV)
-            {
-                ECACamera.POV pov = (ECACamera.POV) val;
-                if (pov == ECACamera.POV.First) writer.Write("1st person ");
-                if (pov == ECACamera.POV.Third) writer.Write("3rd person");
-
-            }
+            // else if (val is ECACamera.POV)
+            // {
+            //     ECACamera.POV pov = (ECACamera.POV) val;
+            //     if (pov == ECACamera.POV.First) writer.Write("1st person ");
+            //     if (pov == ECACamera.POV.Third) writer.Write("3rd person");
+            // }
             else if (val is float)
             {
                 writer.Write(((float)val).ToString("F", CultureInfo.InvariantCulture));

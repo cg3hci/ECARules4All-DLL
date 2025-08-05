@@ -12,7 +12,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props
     [ECARules4All("prop")]
     [RequireComponent(typeof(ECAObject))]
     [DisallowMultipleComponent]
-    public class Prop : MonoBehaviour
+    public class ECAProp : MonoBehaviour
     {
         /// <summary>
         /// <b>Price</b>: The price of the prop object.

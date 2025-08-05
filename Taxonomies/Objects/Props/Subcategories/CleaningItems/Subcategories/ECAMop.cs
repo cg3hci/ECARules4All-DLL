@@ -16,8 +16,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         /// TODO.
         /// </summary>
         [ECARelevance(true)]
-        [Action(typeof(ECAMop), "washes", typeof(Surface))]
-        public void Washes(Surface surface)
+        [Action(typeof(ECAMop), "washes", typeof(ECASurface))]
+        public void Washes(ECASurface surface)
         {
             //TODO Make the logic. I think no logic is needed here, just the notification.
             Debug.Log(this.gameObject + " washes (mop) with " + surface.gameObject.name);
@@ -27,7 +27,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         {
             Debug.Log("STO TRIGGERANDO CON " + other.gameObject.name);
 
-            Surface surface = other.gameObject.GetComponent<Surface>();
+            ECASurface surface = other.gameObject.GetComponent<ECASurface>();
             if (surface != null)
             {
                 Debug.Log("AAA The rag is washing the surface: " + surface.gameObject.name);

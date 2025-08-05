@@ -8,10 +8,10 @@ using UnityEngine.Video;
 namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
 {
     /// <summary>
-    /// <b>ECAVideo</b> is an <see cref="Interaction"/> that represents a video player.
+    /// <b>ECAVideo</b> is an <see cref="ECAInteraction"/> that represents a video player.
     /// </summary>
     [ECARules4All("video")]
-    [RequireComponent(typeof(Interaction))]
+    [RequireComponent(typeof(ECAInteraction))]
     [DisallowMultipleComponent]
     public class ECAVideo : MonoBehaviour
     {
