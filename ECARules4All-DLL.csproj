@@ -186,9 +186,7 @@
         <Compile Include="Taxonomies\Objects\Props\Subcategories\CleaningItems\Subcategories\ECAScottex.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\CleaningItems\Subcategories\ECASoakableCleaningItem.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Clothing.cs" />
-        <Compile Include="Taxonomies\Objects\Props\Subcategories\ECABottle.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\ECADoor.cs" />
-        <Compile Include="Taxonomies\Objects\Props\Subcategories\ECADoorV2.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Electronic.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Food.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\LiquidContainer\ECALiquidContainer.cs" />
@@ -196,7 +194,6 @@
         <Compile Include="Taxonomies\Objects\Props\Subcategories\LiquidDispenser\ECALiquidDispenser.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\LiquidDispenser\Subcategories\ECABottle.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\LiquidDispenser\Subcategories\ECAWaterMixerTap.cs" />
-        <Compile Include="Taxonomies\Objects\Props\Subcategories\Spray.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Weapons\Subcategories\Bullet.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Weapons\Subcategories\EdgedWeapon.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Weapons\Subcategories\Firearm.cs" />
