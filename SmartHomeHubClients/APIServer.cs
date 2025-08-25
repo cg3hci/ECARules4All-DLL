@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
 using Serilog;
-using UnityEngine;
 using Object = UnityEngine.Object;
 
 
@@ -34,6 +33,21 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiTest}");
             this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiForceRestart}");
             this.Start();
+        }
+        
+        public APIServer(int port = 8080): this($"http://{GetLocalIPAddress()}", port)
+        {
+        }
+        
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    return ip.ToString();
+            }
+            return "No IPv4 address found";
         }
 
         public void Start()
