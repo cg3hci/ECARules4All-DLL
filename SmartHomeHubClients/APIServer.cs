@@ -20,11 +20,18 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         private string apiExternalUpdates = $"/api/external_updates/";
         private string apiAutomations = $"/api/automations/";
-        private string apiTest = $"/test/";
+        private string apiTest = $"/api/test/";
         private string apiForceRestart = $"/api/force_restart/";
 
-        public APIServer(string url = "http://localhost",  int port = 8080)
+
+        public APIServer(string url, int port)
         {
+            // if urls doesn't start with http:// or https://, add http://
+            if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+            {
+                url = "http://" + url;
+            }
+
             _url = url;
             _port = port;
             _listener = new HttpListener();
@@ -35,8 +42,9 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             this.Start();
         }
         
-        public APIServer(int port = 8080): this($"http://{GetLocalIPAddress()}", port)
+        public APIServer() : this(GetLocalIPAddress(), 8080)
         {
+            // Default constructor that initializes with localhost and port 8080
         }
         
         public static string GetLocalIPAddress()
