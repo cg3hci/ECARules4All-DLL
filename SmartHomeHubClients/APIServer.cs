@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
 using Serilog;
@@ -21,11 +21,20 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         private string apiExternalUpdates = $"/api/external_updates/";
         private string apiAutomations = $"/api/automations/";
-        private string apiTest = $"/test/";
+        private string apiTest = $"/api/test/";
         private string apiForceRestart = $"/api/force_restart/";
 
-        public APIServer(string url = "http://localhost",  int port = 8080)
+
+        public APIServer(string url, int port)
         {
+            // if urls doesn't start with http:// or https://, add http://
+            if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+            {
+                url = "http://" + url;
+            }
+            Debug.Log($"BBB Initializing Carca_APIServer with URL: {url} and Port: {port}");
+            
+            
             _url = url;
             _port = port;
             _listener = new HttpListener();
@@ -34,6 +43,22 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiTest}");
             this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiForceRestart}");
             this.Start();
+        }
+        
+        public APIServer() : this(GetLocalIPAddress(), 8080)
+        {
+            // Default constructor that initializes with localhost and port 8080
+        }
+        
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    return ip.ToString();
+            }
+            return "No IPv4 address found";
         }
 
         public void Start()
@@ -67,6 +92,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         private void HandleRequest(HttpListenerContext context)
         {
             string path = context.Request.Url.AbsolutePath;
+            Debug.Log("BBB Handling request for path: " + path);
 
             if (context.Request.HttpMethod == "POST")
             {
@@ -88,6 +114,18 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 }
                 else
                 {
+                    // if path doesn't end with a '/', return error and message is "you may need to add a trailing slash"
+                    if (!path.EndsWith("/"))
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                        context.Response.ContentType = "text/plain";
+                        byte[] buffer = System.Text.Encoding.UTF8.GetBytes("You may need to add a trailing slash to the URL.");
+                        context.Response.ContentLength64 = buffer.Length;
+                        context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                        context.Response.Close();
+                        return;
+                    }
+                    // else it's a generic error
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     context.Response.Close();
                 }
@@ -101,8 +139,10 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         
         private void HandleTest(HttpListenerContext context)
         {
+            Debug.Log("BBB Handling test request");
             using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
             {
+                Debug.Log("BBB Using System.IO.StreamReader");
                 // Notify message
                 var responseObject = new
                 {
@@ -110,7 +150,9 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                     timestamp = DateTime.Now,
                 };
                 string jsonResponse = JsonConvert.SerializeObject(responseObject);
+                Debug.Log("BBB jsonResponse Serialized: " + jsonResponse);
                 byte[] buffer = System.Text.Encoding.UTF8.GetBytes(jsonResponse);
+                Debug.Log("BBB Buffer " + jsonResponse);
 
                 // Set status code before writing to the stream
                 context.Response.StatusCode = (int)HttpStatusCode.OK;
@@ -119,6 +161,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
                 // Write to the output stream
                 context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+                Debug.Log("BBB Sending Response");
                 context.Response.Close();
             }
         }
