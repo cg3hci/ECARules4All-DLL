@@ -6,7 +6,7 @@ using Serilog;
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// <b>Interactable</b> is a <see cref="ECABehaviour">Behaviour</see> that can be attached to an object in order to make it
+    /// <b>Interactable</b> is a <see cref="ECABehaviour">ECABehaviour</see> that can be attached to an object in order to make it
     /// interactable with the player collison.
     /// </summary>
     [ECARules4All("interactable")]

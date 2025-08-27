@@ -460,7 +460,7 @@ namespace ECARules4All_DLL.Parsers
                             foreach (RequireComponent require in c.GetType().GetCustomAttributes(
                             typeof(RequireComponent), true))
                             {
-                                if(require.m_Type0 == typeof(Behaviour))
+                                if(require.m_Type0 == typeof(ECABehaviour))
                                 {
                                     found = true;
                                     break;
@@ -471,7 +471,7 @@ namespace ECARules4All_DLL.Parsers
                             if (!found)
                             {
                                 throw new ArgumentException(
-                                    String.Format("The {0} type must be a Behaviour"),
+                                    String.Format("The {0} type must be an ECABehaviour"),
                                     behaviour);
                             }
                             break;   
