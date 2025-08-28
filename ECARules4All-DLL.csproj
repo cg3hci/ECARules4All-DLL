@@ -40,22 +40,53 @@
         <Reference Include="Antlr4.Runtime.Standard">
           <HintPath>..\ecarules4all-library\ECARules4All-NetCore\bin\Debug\Antlr4.Runtime.Standard.dll</HintPath>
         </Reference>
+        <Reference Include="DnsClient, Version=1.6.1.0, Culture=neutral, PublicKeyToken=4574bb5573c51424, processorArchitecture=MSIL">
+          <HintPath>packages\DnsClient.1.6.1\lib\net471\DnsClient.dll</HintPath>
+        </Reference>
         <Reference Include="Microsoft.CSharp" />
+        <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+          <HintPath>packages\Microsoft.Extensions.Logging.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
+        </Reference>
+        <Reference Include="MongoDB.Bson, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94992a530f44e321, processorArchitecture=MSIL">
+          <HintPath>packages\MongoDB.Bson.3.0.0\lib\net472\MongoDB.Bson.dll</HintPath>
+        </Reference>
+        <Reference Include="MongoDB.Driver, Version=3.0.0.0, Culture=neutral, PublicKeyToken=94992a530f44e321, processorArchitecture=MSIL">
+          <HintPath>packages\MongoDB.Driver.3.0.0\lib\net472\MongoDB.Driver.dll</HintPath>
+        </Reference>
         <Reference Include="mscorlib" />
         <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
           <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
         </Reference>
         <Reference Include="Serilog, Version=4.2.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-          <HintPath>packages\Serilog.4.2.0-dev-02328\lib\net471\Serilog.dll</HintPath>
+          <HintPath>packages\Serilog.4.2.0\lib\net471\Serilog.dll</HintPath>
+        </Reference>
+        <Reference Include="Serilog.Formatting.Compact, Version=1.1.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+          <HintPath>packages\Serilog.Formatting.Compact.1.1.0\lib\net452\Serilog.Formatting.Compact.dll</HintPath>
         </Reference>
         <Reference Include="Serilog.Sinks.File, Version=6.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
           <HintPath>packages\Serilog.Sinks.File.6.0.0\lib\net471\Serilog.Sinks.File.dll</HintPath>
+        </Reference>
+        <Reference Include="Serilog.Sinks.MongoDB, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <HintPath>packages\Serilog.Sinks.MongoDB.7.0.0\lib\net472\Serilog.Sinks.MongoDB.dll</HintPath>
+        </Reference>
+        <Reference Include="Serilog.Sinks.PeriodicBatching, Version=3.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+          <HintPath>packages\Serilog.Sinks.PeriodicBatching.3.1.0\lib\net45\Serilog.Sinks.PeriodicBatching.dll</HintPath>
+        </Reference>
+        <Reference Include="SharpCompress, Version=0.30.1.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+          <HintPath>packages\SharpCompress.0.30.1\lib\net461\SharpCompress.dll</HintPath>
+        </Reference>
+        <Reference Include="Snappier, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a1b25124e6e13a3a, processorArchitecture=MSIL">
+          <HintPath>packages\Snappier.1.0.0\lib\netstandard2.0\Snappier.dll</HintPath>
         </Reference>
         <Reference Include="System"/>
         <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
           <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
         </Reference>
         <Reference Include="System.ComponentModel.Composition" />
+        <Reference Include="System.Configuration" />
         <Reference Include="System.Core"/>
         <Reference Include="System.Data"/>
         <Reference Include="System.Diagnostics.DiagnosticSource, Version=8.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -83,6 +114,12 @@
         <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
           <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
         </Reference>
+        <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Security.AccessControl, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Security.AccessControl.5.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+        </Reference>
         <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
           <HintPath>packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
         </Reference>
@@ -94,6 +131,12 @@
         </Reference>
         <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
           <HintPath>packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Text.Encoding.CodePages, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <HintPath>packages\System.Text.Encoding.CodePages.5.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
         </Reference>
         <Reference Include="System.Text.Encodings.Web, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
           <HintPath>packages\System.Text.Encodings.Web.9.0.0-preview.7.24405.7\lib\net462\System.Text.Encodings.Web.dll</HintPath>
@@ -111,6 +154,9 @@
         <Reference Include="UnityEngine">
             <HintPath>./Dlls/UnityEngine.dll</HintPath>
         </Reference>
+        <Reference Include="ZstdSharp, Version=0.7.3.0, Culture=neutral, PublicKeyToken=8d151af33a4ad5cf, processorArchitecture=MSIL">
+          <HintPath>packages\ZstdSharp.Port.0.7.3\lib\net461\ZstdSharp.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="AntLR\ECARulesLexer.cs" />
@@ -119,6 +165,8 @@
         <Compile Include="AntLR\ECARulesParserListener.cs" />
         <Compile Include="ECABehaviour.cs" />
         <Compile Include="ECAScript.cs" />
+        <Compile Include="Logger\LoggerFactory.cs" />
+        <Compile Include="Logger\LoggingOptions.cs" />
         <Compile Include="SmartHomeHubClients\AbstractClient.cs" />
         <Compile Include="SmartHomeHubClients\APIServer.cs" />
         <Compile Include="SmartHomeHubClients\Automation.cs" />
@@ -246,7 +294,6 @@
       <Content Include="bin\Debug\System.ValueTuple.xml" />
       <Content Include="bin\Debug\UnityEngine.dll" />
       <Content Include="bin\Debug\UnityEngine.xml" />
-      <Content Include="http-client.private.env.json" />
       <Content Include="package.json" />
       <Content Include="UnityEngine.dll" />
     </ItemGroup>

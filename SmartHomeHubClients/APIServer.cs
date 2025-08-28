@@ -42,20 +42,31 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             this.Start();
         }
         
-        public APIServer() : this(GetLocalIPAddress(), 8080)
+        public APIServer(bool fromDevice = false) : this(GetLocalIPAddress(fromDevice), 8080)
         {
-            // Default constructor that initializes with localhost and port 8080
+            // Default constructor that initializes with localhost or device's ip and port 8080
         }
         
-        public static string GetLocalIPAddress()
+        public static string GetLocalIPAddress(bool fromDevice)
         {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
+            string ipLocal = null;
+            
+            if (fromDevice)
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                    return ip.ToString();
+                
+                var host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (var ip in host.AddressList)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                        ipLocal = ip.ToString();
+                }
             }
-            return "No IPv4 address found";
+            else
+            {
+                ipLocal = "http://localhost"; 
+            }
+            
+            return ipLocal;
         }
 
         public void Start()

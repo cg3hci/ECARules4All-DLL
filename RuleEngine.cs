@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
+using Serilog;
+using UnityEngine;
+using ECARules4All_DLL.Logger;
 using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using JetBrains.Annotations;
-using UnityEngine;
-using Serilog;
-
+using Serilog.Debugging;
 
 namespace ECARules4All_DLL
 {
@@ -17,10 +17,11 @@ namespace ECARules4All_DLL
     ///</summary>
     public class RuleEngine : ActionListener
     {
+        private static LoggingOptions _loggingOptions = new LoggingOptions();
+        
         //RuleEngine()
         public static RuleEngine singleton;
         private List<Rule> rules = new List<Rule>();
-
         private EventBus eventQueue;
 
         // Smart hub clients
@@ -51,19 +52,26 @@ namespace ECARules4All_DLL
         private RuleEngine()
         {
             eventQueue = EventBus.GetInstance();
-            // log file
-            var logFilePath = "logs/log.txt";
+            //Log.Logger = LoggerFactory.Build(_loggingOptions);
+            // init Serilog
+            /*var logFilePath = "logs/log.txt";
             if (File.Exists(logFilePath))
             {
                 File.Delete(logFilePath);
             }
-
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.File(
                     logFilePath,
                     rollingInterval: RollingInterval.Infinite
                 )
-                .CreateLogger();
+                .CreateLogger();*/
+        }
+        
+        public static void ApplyLoggingOptions(LoggingOptions opt)
+        {
+            _loggingOptions = opt;
+            Log.Logger = LoggerFactory.Build(_loggingOptions);
+            SelfLog.Enable(Console.Error);
         }
 
         ///<summary>
