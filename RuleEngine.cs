@@ -1501,7 +1501,7 @@ namespace ECARules4All_DLL
                                          this verb is stored into the "ECARules4AllOperations" file, inside this file there's
                                          a Dictionary of supported verbs and what they want to instruct to the RuleEngine.
                                          We try to get a translation for the verb, if it exists then we check if the variable's type
-                                         inside an ECAObject/Behaviour supports that kind of operation, and if so we proceed to modify
+                                         inside an ECAObject/ECABehaviour supports that kind of operation, and if so we proceed to modify
                                          it according to the verb written in the rule
                                          */
                                         string verb;

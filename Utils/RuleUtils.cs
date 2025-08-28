@@ -429,9 +429,9 @@ namespace ECARules4All_DLL.Utils
                     {
                         if (requiredCompoent != null)
                         {
-                            if (requiredCompoent.m_Type0 == typeof(Behaviour)
-                                || requiredCompoent.m_Type1 == typeof(Behaviour)
-                                || requiredCompoent.m_Type2 == typeof(Behaviour))
+                            if (requiredCompoent.m_Type0 == typeof(ECABehaviour)
+                                || requiredCompoent.m_Type1 == typeof(ECABehaviour)
+                                || requiredCompoent.m_Type2 == typeof(ECABehaviour))
                             {
                                 behaviours.Add(type);
                             }
@@ -493,7 +493,7 @@ namespace ECARules4All_DLL.Utils
         {
             foreach (var type in listOfEcaAttributes)
             {
-                if (type.Name.Equals("Behaviour"))
+                if (type.Name.ToLower().Equals(nameof(ECABehaviour).ToLower()))
                 {
                     return type;
                 }

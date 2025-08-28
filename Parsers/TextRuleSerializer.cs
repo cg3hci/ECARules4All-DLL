@@ -60,7 +60,7 @@ namespace ECARules4All_DLL.Parsers
                         foreach (RequireComponent require in c.GetType().GetCustomAttributes(
                             typeof(RequireComponent), true))
                         {
-                            if (c.GetType() != typeof(Behaviour) && require.m_Type0 == maxType)
+                            if (c.GetType() != typeof(ECABehaviour) && require.m_Type0 == maxType)
                             {
                                 maxType = c.GetType();
                                 changed = true;
@@ -192,7 +192,7 @@ namespace ECARules4All_DLL.Parsers
                     foreach (RequireComponent require in c.GetType().GetCustomAttributes(
                             typeof(RequireComponent), true))
                     {
-                        if(require.m_Type0 == typeof(Behaviour))
+                        if(require.m_Type0 == typeof(ECABehaviour))
                         {
                             var attrs = c.GetType().GetCustomAttributes(typeof(ECARules4AllAttribute), false);
                             if (attrs != null && attrs.Length > 0)

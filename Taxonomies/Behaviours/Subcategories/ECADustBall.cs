@@ -8,7 +8,7 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// <b>ECADustBall</b> is a <see cref="ECABehaviour">Behaviour</see> that attaches dust balls to a virtual object, ideally a  <see cref="ECASurface">Surface</see>.
+    /// <b>ECADustBall</b> is a <see cref="ECABehaviour">ECABehaviour</see> that attaches dust balls to a virtual object, ideally a  <see cref="ECASurface">Surface</see>.
     /// It can be "swept" using other objects such as brooms or scottex, and define the number of sweeps needed until all dust is removed.
     /// Once fully swept, the object updates its state and optionally plays audio feedback.
     /// </summary>

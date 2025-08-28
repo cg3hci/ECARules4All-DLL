@@ -7,7 +7,7 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// <b>ECAOilStain</b> is a <see cref="ECABehaviour">Behaviour</see> that attaches oil stains to a virtual object, ideally a  <see cref="ECASurface">Surface</see>.
+    /// <b>ECAOilStain</b> is a <see cref="ECABehaviour">ECABehaviour</see> that attaches oil stains to a virtual object, ideally a  <see cref="ECASurface">Surface</see>.
     /// It can be "washed" using other objects such as mops or cleaning rags, and define the number of washes needed until all stains are removed.
     /// Once fully washed, the object updates its state and optionally plays audio feedback.
     /// </summary>
