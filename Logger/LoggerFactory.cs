@@ -18,22 +18,22 @@ namespace ECARules4All_DLL.Logger
                     shared: true);
 
             // seq
-            /*if (opt.SeqUrlToken != null && !string.IsNullOrWhiteSpace(opt.SeqUrlToken.seqUrl))
+            if (opt.SeqUrlToken != null && !string.IsNullOrWhiteSpace(opt.SeqUrlToken.seqUrl))
             {
                 cfg = cfg.WriteTo.Seq(
                     serverUrl: opt.SeqUrlToken.seqUrl,
                     apiKey: opt.SeqUrlToken.seqApiKey
                 );
-            }*/
+            }
             
             // mongodb
-            if (opt.MongoInfo != null)
+            /*if (opt.MongoInfo != null)
             {
                 cfg = cfg.WriteTo.MongoDBBson(
                     opt.MongoInfo.MongoDbConnectionString,
                     collectionName: opt.MongoInfo.MongoDbCollection
                 );
-            }
+            }*/
 
             return cfg.CreateLogger();
         }

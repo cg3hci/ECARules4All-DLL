@@ -30,8 +30,8 @@ namespace ECARules4All_DLL.Logger
     public class LoggingOptions
     {
         public LogEventLevel MinimumLevel { get; set; } = LogEventLevel.Debug;
-        //public SeqUrlToken SeqUrlToken { get; set; } = null;
-        public MongodbLogOptions MongoInfo { get; set; } = null;
+        public SeqUrlToken SeqUrlToken { get; set; } = null;
+        //public MongodbLogOptions MongoInfo { get; set; } = null;
         public string LogFilePath { get; set; } = "logs/log.txt";
     }
 }

@@ -8,7 +8,6 @@ using ECARules4All_DLL.Logger;
 using ECARules4All_DLL.SmartHomeHubClients;
 using ECARules4All_DLL.Utils;
 using JetBrains.Annotations;
-using Serilog.Debugging;
 
 namespace ECARules4All_DLL
 {
@@ -71,7 +70,6 @@ namespace ECARules4All_DLL
         {
             _loggingOptions = opt;
             Log.Logger = LoggerFactory.Build(_loggingOptions);
-            SelfLog.Enable(Console.Error);
         }
 
         ///<summary>
@@ -92,7 +90,6 @@ namespace ECARules4All_DLL
                 Log.Error("You are trying to add a Rule r equals to null");
                 return;
             }
-
 
             rules.Add(r);
 
