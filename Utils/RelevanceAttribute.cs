@@ -16,4 +16,14 @@ namespace ECARules4All_DLL.Utils
             this.relevanceLevel = relevanceLevel;
         }
     }
+    
+    public class ECADequeAttribute : System.Attribute
+    {
+        public string dequeName = null;
+
+        public ECADequeAttribute(string dequeName)
+        {
+            this.dequeName = dequeName;
+        }
+    }
 }

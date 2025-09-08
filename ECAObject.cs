@@ -143,6 +143,7 @@ namespace ECARules4All_DLL
         /// <summary>
         /// <b>isInsideCamera</b> indicates whether the object is currently within the camera's field of view. This property is automatically updated at runtime.
         /// </summary>
+        [ECADeque("DEQUE_FRAMED_OBJECTS")]
         [StateVariable("isInsideCamera", ECARules4AllType.Boolean)]
         public ECABoolean isInsideCamera
         {
