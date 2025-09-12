@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ECARules4All_DLL.Utils;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Serilog;
 using UnityEngine;
 
@@ -11,22 +13,33 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 {
     public class AutomationDTO
     {
-	    public List<ActionDTO> trigger { get; set; } = null;
+	    /*public List<ActionDTO> trigger { get; set; } = null;
 	    public ConditionDTO conditions { get; set; } = null;
-	    public List<ActionDTO> actions { get; set; } = null;
+	    public List<ActionDTO> actions { get; set; } = null;*/
+	    [JsonConverter(typeof(ObjectToDtoConverter<ActionDTO>))]
+	    public List<object> trigger { get; set; } = new List<object>();
+	    
+	    [JsonConverter(typeof(ObjectToDtoConverter<ConditionDTO>))]
+	    public object conditions { get; set; } = null;
+	    
+	    [JsonConverter(typeof(ObjectToDtoConverter<ActionDTO>))]
+	    public List<object> actions { get; set; } = new List<object>();
         public string id { get; set; } = null;
         public string alias { get; set; } = null;
         public string description { get; set; } = null;
         
-        public Rule ConvertToRule()
+        public object ConvertToRule()
         {
+	        /*// trigger
+	        Rule rule; 
 	        Action trigger = this.trigger[0].ConvertToAction();
+	        // actions
 	        List<Action> actions = new List<Action>();
 	        foreach (var action in this.actions)
 	        {
 		        actions.Add(action.ConvertToAction());
 	        }
-
+	        // conditions
 	        Rule rule;
 	        if (this.conditions != null)
 	        {
@@ -35,6 +48,90 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	        else
 	        {
 		        rule = Rule.TryCreateRule(trigger, actions);
+	        }
+	        return rule; */
+	        
+	        object rule = null;
+	        // trigger
+	        object objTrigger;
+	        if (this.trigger[0] is ActionDTO)
+	        {
+		        objTrigger = ((ActionDTO)this.trigger[0]).ConvertToAction() ;
+	        }
+	        else
+	        {
+		        objTrigger = this.trigger[0];
+	        }
+	        
+	        // actions
+	        List<object> objActions = new List<object>();
+	        foreach (var action in this.actions)
+	        {
+		        if(action is ActionDTO)
+		        {
+			        objActions.Add(((ActionDTO)action).ConvertToAction());
+		        }
+		        else
+		        {
+			        objActions.Add(action);
+		        }
+	        }
+			
+	        // conditions
+	        object objConditions = this.conditions;
+	        if (this.conditions != null && this.conditions is ConditionDTO)
+	        {
+		        objConditions = ((ConditionDTO)this.conditions).ConvertToCondition();
+	        }
+	        
+	        if (objTrigger is Action ecaTrigger &&
+	            objConditions is Condition ecaCondition && 
+	            objActions.All(x => x is Action))
+	        {
+		        List<Action> ecaActions = objActions.Select(x => x as Action).ToList();    
+		        if (conditions != null)
+		        {
+			        rule = Rule.TryCreateRule(
+				        ecaTrigger,
+				        ecaCondition,
+				        ecaActions
+				    );
+		        }
+		        else
+		        {
+			        rule = Rule.TryCreateRule((Action)objTrigger, objActions.Select(x => x as Action).ToList());
+		        }
+	        }
+	        else
+	        {
+		        if (objTrigger is Action)
+		        {
+			        rule += objTrigger.ToString();
+		        }
+		        else
+		        {
+			        rule += jsonToDictionary((JObject)objTrigger);
+		        }
+		        
+		        if (objConditions is Condition)
+		        {
+			        rule += objConditions.ToString();
+		        }
+		        else
+		        {
+			        rule += jsonToDictionary((JObject)objConditions);
+		        }
+
+		        foreach (var action in objActions)
+		        {
+			        if(action is Action){
+				        rule += action.ToString();
+			        }
+			        else
+			        {
+				        rule += jsonToDictionary((JObject)action);
+			        }
+		        }
 	        }
 
 	        return rule;
@@ -97,108 +194,13 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
 	        return null;
         }
+        
+        public static string jsonToDictionary(JObject jObj)
+        {
+	        return string.Join(" ", 
+		        jObj.Properties().Select(p => $"{p.Name}: {p.Value}"));		    
+        }
     }
-    
-    /*public class ActionDTO
-    {
-        public string subject { get; set; } = null;
-        public string verb { get; set; } = null;
-        
-        public string variable_name { get; set; } = null;
-        
-        public string modifier_string { get; set; } = null;
-        
-        public string value { get; set; } = null;
-
-        public Dictionary<string, object> parameters { get; set; } = null;
-
-        public ActionDTO(string subject, string verb, string variable_name = null, string modifier_string = null, 
-            Dictionary<string, object> parameters = null)
-        {
-            this.subject = subject;
-            this.verb = verb;
-            this.variable_name = variable_name;
-            this.modifier_string = modifier_string;
-            this.parameters = parameters;
-        }
-
-        public string ToString()
-        {
-	        return
-		        $"Action: subject: {this.subject} - verb: {this.verb} - variable_name: {this.variable_name} - modifier: {this.modifier_string} - parameters: {this.parameters}";
-        }
-        
-        public Action ConvertToAction()
-	    {
-		    Action action = null;
-		    
-		    if (ComponentTracker.Instance.GetAllComponents().ContainsKey(this.subject))
-		    {
-			    // GameObject.Tag@ECAScript.Name example => T_Shirt_1@ECAObject
-			    string[] names = this.subject.Split('@');
-			    Type ecaScript = AutomationDTO.FindTypeByName(names[1]);
-			    if (ecaScript != null)
-			    {
-				    var gameObject = GameObject.Find(names[0]);
-				    MethodInfo methodInfo = AutomationDTO.FindMethodWithVerb(targetType: ecaScript, verb: this.verb,
-					    variable: this.variable_name);
-				    
-				    // passive action
-				    if (methodInfo == null)
-				    {
-					    if (ComponentTracker.Instance.GetAllComponents().ContainsKey(this.variable_name))
-					    {
-						    string[] otherNames = this.variable_name.Split('@');
-						    var otherGameObject = GameObject.Find(otherNames[0]);
-						    action = new Action(gameObject, this.verb, otherGameObject);
-					    }
-					    else
-					    {
-						    throw new Exception("error method is null and value isnot an object");
-					    }
-				    }
-				    // otherwise
-				    else
-				    {
-					    if (methodInfo.GetParameters().Length == 0)
-					    {
-						    action = new Action(gameObject, this.verb);
-						    //RuleEngine.GetInstance().ExecuteAction(new Action(gameObject, this.verb));
-						    Log.Information($"Action {this.verb} with no parameter runned");
-					    }
-					    else
-					    {
-						    // retrieve parameter
-						    ParameterInfo methodParameter = methodInfo.GetParameters()[0];
-						    string parameterName = methodParameter.Name;
-						    string receivedParameter = this.parameters[parameterName].ToString();
-						    object parameter =
-							    SerializeUtils.ConvertStringToParameter(methodParameter.ParameterType, receivedParameter);
-
-						    // run action
-						    if (String.IsNullOrEmpty(this.variable_name))
-						    {
-							    action = new Action(gameObject, this.verb, parameter);
-							    //var action = new Action(gameObject, this.verb, parameter);
-							    //RuleEngine.GetInstance().ExecuteAction(action);
-							    Log.Information($"Action {this.verb} with no variable runned");
-						    }
-						    else
-						    {
-							    action = new Action(gameObject, this.verb, this.variable_name,
-								    this.modifier_string, parameter);
-							    //var action = new Action(gameObject, this.verb, this.variable_name,this.modifier, parameter);
-							    //RuleEngine.GetInstance().ExecuteAction(action);
-							    Log.Information($"Action {this.verb} with variable runned");
-						    }
-					    }
-				    }
-			    }
-		    }
-		    
-		    return action;
-	    }
-    }*/
 	
     public class ActionDTO
     {
@@ -378,6 +380,35 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 		    }
 
 		    return condition;
+	    }
+    }
+    
+    public class ObjectToDtoConverter<T> : JsonConverter
+    {
+	    public override bool CanConvert(Type objectType)
+	    {
+		    return objectType == typeof(object);
+	    }
+
+	    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+	    {
+		    if (reader.TokenType == JsonToken.Null)
+			    return null;
+
+		    try
+		    {
+			    var jToken = JToken.Load(reader);
+			    return jToken.ToObject<T>(serializer);
+		    }
+		    catch
+		    {
+			    return JToken.Load(reader);
+		    }
+	    }
+
+	    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+	    {
+		    JToken.FromObject(value, serializer).WriteTo(writer);
 	    }
     }
 }

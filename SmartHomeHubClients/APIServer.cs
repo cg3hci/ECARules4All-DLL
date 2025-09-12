@@ -1,9 +1,11 @@
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Serilog;
 using Object = UnityEngine.Object;
 
@@ -16,13 +18,15 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         private int _port;
         private HttpListener _listener;
         public event EventHandler<ActionDTO> ActionUpdate;
+        //public event EventHandler<List<AutomationDTO>> RegisteredAutomations;
         public event EventHandler<List<AutomationDTO>> RegisteredAutomations;
+        public event EventHandler<List<Expression>> RegisteredExpressions;
 
         private string apiExternalUpdates = $"/api/external_updates/";
         private string apiAutomations = $"/api/automations/";
+        private string apiExpressions = $"/api/expressions/";
         private string apiTest = $"/api/test/";
         private string apiForceRestart = $"/api/force_restart/";
-
 
         public APIServer(string url, int port)
         {
@@ -189,8 +193,33 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 
                 try
                 {
-                    List<AutomationDTO> data = JsonConvert.DeserializeObject<List<AutomationDTO>>(requestBody);
-                    RegisteredAutomations?.Invoke(this, data);
+                    List<AutomationDTO> parsedObjects = JsonConvert.DeserializeObject<List<AutomationDTO>>(requestBody);
+                    RegisteredAutomations?.Invoke(this, parsedObjects);
+
+                    context.Response.StatusCode = (int)HttpStatusCode.OK;
+                    context.Response.Close();
+                }
+                catch (Exception ex)
+                {
+                    Log.Information($"Error processing POST data: {ex.Message}");
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    context.Response.Close();
+                }
+            }
+        }
+        
+        private void HandleExpressions(HttpListenerContext context)
+        {
+            using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
+            {
+                string requestBody = reader.ReadToEnd();
+                Log.Information($"Received POST data on {this.apiExpressions}: {requestBody}");
+                
+                try
+                {
+                    JObject jsonObject = JObject.Parse(requestBody);
+                    List<Expression> expressions = ExpressionUtils.ParseExpressions(jsonObject);
+                    RegisteredExpressions?.Invoke(this, expressions);
 
                     context.Response.StatusCode = (int)HttpStatusCode.OK;
                     context.Response.Close();

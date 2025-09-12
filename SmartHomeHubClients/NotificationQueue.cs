@@ -61,30 +61,6 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                     data["obj"] = objString;
                 }
                 
-                /// 31/12
-                /*if (obj is string)
-                {
-                    data["variable_name"] = (string)obj;
-                    data["modifier_string"] = action.GetModifier();
-                    data["value"] = action.GetModifierValue().ToString();
-                }
-                else
-                {
-                    string objString;
-                    
-                    if (obj is GameObject)
-                    {
-                        objString = ((GameObject)obj).name;
-                    }
-                    else
-                    {
-                        objString = obj.ToString();
-                    }
-                    
-                    data["variable_name"] = objString;
-                }*/
-                ///
-                
             }
 
             this.jsonContent = data;

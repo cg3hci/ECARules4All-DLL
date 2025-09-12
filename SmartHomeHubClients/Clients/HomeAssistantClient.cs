@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Antlr4.Runtime.Misc;
 using Newtonsoft.Json;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json.Linq;
@@ -20,6 +21,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 		    public static readonly string SEND_NOTIFICATION = "/api/services/eud4xr/receive_update_from_unity";
 		    public static readonly string REGISTER_VIRTUAL_OBJECT = "/api/services/eud4xr/add_virtual_object";
 		    public static readonly string AUTOMATIONS = "/api/eud4xr/automations";
+		    public static readonly string EXPRESSIONS = "/api/eud4xr/expressions";
 	    }
 	    
 	    protected override async void SendNotification(object sender, ContentNotification newItem)
@@ -132,9 +134,9 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 	        registeredAutomations = this.ConvertAutomationsToRules(automations);
         }
         
-        public override async Task<List<Rule>> GetListAutomations()
+        public override async Task<List<object>> GetListAutomations()
         {
-	        List<Rule> rules = new List<Rule>();
+	        List<object> rules = new ArrayList<object>();
 	        
 	        using (HttpClient client = new HttpClient())
 	        {
@@ -164,10 +166,43 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 
 	        return rules;
         }
-
-        private List<Rule> ConvertAutomationsToRules(List<AutomationDTO> automations)
+        
+        public override async Task<List<Expression>> GetListExpressions()
         {
-	        var rules = new List<Rule>();
+	        List<Expression> expressions = new ArrayList<Expression>();
+	        
+	        using (HttpClient client = new HttpClient())
+	        {
+		        try
+		        {
+			        string urlService = $"{this.url}{URLS.EXPRESSIONS}";
+			        client.DefaultRequestHeaders.Authorization =
+				        new AuthenticationHeaderValue("Bearer", this.token);
+			        HttpResponseMessage response = await client.GetAsync(urlService);
+			        response.EnsureSuccessStatusCode();
+			        
+			        // get expressions
+			        string jsonResponse = await response.Content.ReadAsStringAsync();
+			        JObject jsonObject = JObject.Parse(jsonResponse);
+			        var a = jsonObject["expressions"]?.ToString() ;
+			        Log.Information($"Received Expressions: {a}");
+			        expressions = ExpressionUtils.ParseExpressions(jsonObject);
+			        
+			        Log.Information($"Receive automations list by contacting {this.url}");
+		        }
+		        catch (HttpRequestException e)
+		        {
+			        Log.Error($"An error occured while receiving the list of registered expressions on home assistant - {e.Message}");
+		        }
+	        }
+
+	        return expressions;
+        }
+
+        private List<object> ConvertAutomationsToRules(List<AutomationDTO> automations)
+        {
+	        var rules = new List<object>();
+	        
 	        foreach (var a in automations)
 	        {
 		        rules.Add(a.ConvertToRule());
