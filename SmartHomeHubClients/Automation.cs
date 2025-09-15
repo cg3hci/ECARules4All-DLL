@@ -384,50 +384,75 @@ namespace ECARules4All_DLL.SmartHomeHubClients
     }
     
     public class ObjectToDtoConverter<T> : JsonConverter
-    {
+	{
+	    private static readonly HashSet<string> _dtoPropNames =
+	        new HashSet<string>(
+	            typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+	                     .Select(p => p.Name),
+	            StringComparer.OrdinalIgnoreCase
+	        );
+
 	    public override bool CanConvert(Type objectType)
 	    {
-		    return objectType == typeof(object) || objectType == typeof(List<object>);
+	        return objectType == typeof(object) || objectType == typeof(List<object>);
 	    }
 
 	    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 	    {
-		    var token = JToken.Load(reader);
-		    
-		    if (objectType == typeof(List<object>))
-		    {
-			    var result = new List<object>();
+	        var token = JToken.Load(reader);
 
-			    if (token.Type == JTokenType.Array)
-			    {
-				    foreach (var item in (JArray)token)
-				    {
-					    result.Add(TryTo<T>(item, serializer) ?? (object)item.ToObject<JObject>(serializer));
-				    }
-			    }
-			    else
-			    {
-				    result.Add(TryTo<T>(token, serializer) ?? (object)token.ToObject<JObject>(serializer));
-			    }
+	        if (objectType == typeof(List<object>))
+	        {
+	            var result = new List<object>();
+	            if (token.Type == JTokenType.Array)
+	            {
+	                foreach (var item in (JArray)token)
+	                    result.Add(ConvertItem(item, serializer));
+	            }
+	            else
+	            {
+	                result.Add(ConvertItem(token, serializer));
+	            }
+	            return result;
+	        }
 
-			    return result;
-		    }
-		    
-		    var asT = TryTo<T>(token, serializer);
-		    if (asT != null) return asT;
-
-		    return token.ToObject<JObject>(serializer);
+	        return ConvertItem(token, serializer);
 	    }
 
-	    private static object TryTo<TT>(JToken token, JsonSerializer serializer)
+	    private object ConvertItem(JToken item, JsonSerializer serializer)
 	    {
-		    try { return token.ToObject<TT>(serializer); }
-		    catch { return null; }
+	        switch (item.Type)
+	        {
+	            case JTokenType.Object:
+	            {
+	                var obj = (JObject)item;
+	                var jsonKeys = new HashSet<string>(obj.Properties().Select(p => p.Name), StringComparer.OrdinalIgnoreCase);
+	                bool looksLikeDto = jsonKeys.Overlaps(_dtoPropNames);
+	                if (!looksLikeDto)
+	                    return obj;
+	                try { return obj.ToObject<T>(serializer); }
+	                catch { return obj; }
+	            }
+
+	            case JTokenType.Array:
+	            {
+	                var list = new List<object>();
+	                foreach (var child in (JArray)item)
+	                    list.Add(ConvertItem(child, serializer));
+	                return list;
+	            }
+
+	            case JTokenType.Null:
+	                return null;
+
+	            default:
+	                return ((JValue)item).Value;
+	        }
 	    }
 
 	    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 	    {
-		    JToken.FromObject(value, serializer).WriteTo(writer);
+	        JToken.FromObject(value, serializer).WriteTo(writer);
 	    }
-    }
+	}
 }
