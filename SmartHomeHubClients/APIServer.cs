@@ -7,6 +7,7 @@ using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 
@@ -41,6 +42,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             _listener = new HttpListener();
             this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiExternalUpdates}");
             this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiAutomations}");
+            this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiExpressions}");
             this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiTest}");
             this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiForceRestart}");
             this.Start();
@@ -82,7 +84,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         public void Stop()
         {
             _listener.Stop();
-            Log.Information($"Server stopped.");
+            Debug.Log($"Server stopped.");
         }
 
         private async void Receive()
@@ -104,6 +106,8 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         private void HandleRequest(HttpListenerContext context)
         {
             string path = context.Request.Url.AbsolutePath;
+            
+            Debug.Log($"Received a request at: {path}");
 
             if (context.Request.HttpMethod == "POST")
             {
@@ -114,6 +118,10 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 else if(path.Contains(this.apiAutomations))
                 {
                     this.HandleAutomations(context);
+                }
+                else if(path.Contains(this.apiExpressions))
+                {
+                    this.HandleExpressions(context);
                 }
                 else if(path.Contains(this.apiForceRestart))
                 {
@@ -165,7 +173,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
             {
                 string requestBody = reader.ReadToEnd();
-                Log.Information($"Received POST data on {this.apiExternalUpdates}: {requestBody}");
+                Debug.Log($"Received POST data on {this.apiExternalUpdates}: {requestBody}");
 
                 try
                 {
@@ -177,7 +185,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 }
                 catch (Exception ex)
                 {
-                    Log.Information($"Error processing POST data: {ex.Message}");
+                    Debug.Log($"Error processing POST data: {ex.Message}");
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     context.Response.Close();
                 }
@@ -189,7 +197,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
             {
                 string requestBody = reader.ReadToEnd();
-                Log.Information($"Received POST data on {this.apiAutomations}: {requestBody}");
+                Debug.Log($"Received POST data on {this.apiAutomations}: {requestBody}");
                 
                 try
                 {
@@ -201,7 +209,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 }
                 catch (Exception ex)
                 {
-                    Log.Information($"Error processing POST data: {ex.Message}");
+                    Debug.Log($"Error processing POST data: {ex.Message}");
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     context.Response.Close();
                 }
@@ -213,7 +221,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
             {
                 string requestBody = reader.ReadToEnd();
-                Log.Information($"Received POST data on {this.apiExpressions}: {requestBody}");
+                Debug.Log($"Received POST data on {this.apiExpressions}: {requestBody}");
                 
                 try
                 {
@@ -226,7 +234,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 }
                 catch (Exception ex)
                 {
-                    Log.Information($"Error processing POST data: {ex.Message}");
+                    Debug.Log($"Error processing POST data: {ex.Message}");
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     context.Response.Close();
                 }

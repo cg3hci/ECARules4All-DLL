@@ -137,7 +137,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
         
         public override async Task<List<object>> GetListAutomations()
         {
-	        List<object> rules = new ArrayList<object>();
+	        List<object> rules = new List<object>();
 	        
 	        using (HttpClient client = new HttpClient())
 	        {
@@ -201,7 +201,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 				        .ToList();
 			        expressions = JArray.FromObject(allList);
 			        
-			        Log.Information($"Receive automations list by contacting {this.url}");
+			        Log.Information($"Receive expressions list by contacting {this.url}");
 		        }
 		        catch (HttpRequestException e)
 		        {
