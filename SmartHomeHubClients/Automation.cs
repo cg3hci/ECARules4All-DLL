@@ -387,23 +387,42 @@ namespace ECARules4All_DLL.SmartHomeHubClients
     {
 	    public override bool CanConvert(Type objectType)
 	    {
-		    return objectType == typeof(object);
+		    return objectType == typeof(object) || objectType == typeof(List<object>);
 	    }
 
 	    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 	    {
-		    if (reader.TokenType == JsonToken.Null)
-			    return null;
+		    var token = JToken.Load(reader);
+		    
+		    if (objectType == typeof(List<object>))
+		    {
+			    var result = new List<object>();
 
-		    try
-		    {
-			    var jToken = JToken.Load(reader);
-			    return jToken.ToObject<T>(serializer);
+			    if (token.Type == JTokenType.Array)
+			    {
+				    foreach (var item in (JArray)token)
+				    {
+					    result.Add(TryTo<T>(item, serializer) ?? (object)item.ToObject<JObject>(serializer));
+				    }
+			    }
+			    else
+			    {
+				    result.Add(TryTo<T>(token, serializer) ?? (object)token.ToObject<JObject>(serializer));
+			    }
+
+			    return result;
 		    }
-		    catch
-		    {
-			    return JToken.Load(reader);
-		    }
+		    
+		    var asT = TryTo<T>(token, serializer);
+		    if (asT != null) return asT;
+
+		    return token.ToObject<JObject>(serializer);
+	    }
+
+	    private static object TryTo<TT>(JToken token, JsonSerializer serializer)
+	    {
+		    try { return token.ToObject<TT>(serializer); }
+		    catch { return null; }
 	    }
 
 	    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
