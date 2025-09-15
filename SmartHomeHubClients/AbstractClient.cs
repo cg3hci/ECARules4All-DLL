@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using ECARules4All_DLL.Utils;
+using Newtonsoft.Json.Linq;
 using Serilog;
 
 
@@ -46,7 +47,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         public abstract Task<List<object>> GetListAutomations();
         
-        public abstract Task<List<Expression>> GetListExpressions();
+        public abstract Task<JArray> GetListExpressions();
 
         
         public static void NotifyAttribute<T>(string ownerName, string propertyName, T newValue)

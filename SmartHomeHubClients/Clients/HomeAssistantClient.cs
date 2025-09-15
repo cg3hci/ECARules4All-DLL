@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -167,9 +168,10 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 	        return rules;
         }
         
-        public override async Task<List<Expression>> GetListExpressions()
+        public override async Task<JArray> GetListExpressions()
         {
-	        List<Expression> expressions = new ArrayList<Expression>();
+	        //List<Expression> expressions = new ArrayList<Expression>();
+	        JArray expressions = null;
 	        
 	        using (HttpClient client = new HttpClient())
 	        {
@@ -183,10 +185,21 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 			        
 			        // get expressions
 			        string jsonResponse = await response.Content.ReadAsStringAsync();
-			        JObject jsonObject = JObject.Parse(jsonResponse);
+			        
+			        /*JObject jsonObject = JObject.Parse(jsonResponse);
 			        var a = jsonObject["expressions"]?.ToString() ;
 			        Log.Information($"Received Expressions: {a}");
-			        expressions = ExpressionUtils.ParseExpressions(jsonObject);
+			        //expressions = ExpressionUtils.ParseExpressions(jsonObject);
+			        expressions = jsonObject;*/
+			        
+			        var root = JObject.Parse(jsonResponse);
+			        var exprs = root["expressions"] as JObject;
+			        var allList = exprs.Properties()
+				        .Where(p => p.Value is JArray)
+				        .SelectMany(p => p.Value)
+				        .OfType<JObject>()
+				        .ToList();
+			        expressions = JArray.FromObject(allList);
 			        
 			        Log.Information($"Receive automations list by contacting {this.url}");
 		        }

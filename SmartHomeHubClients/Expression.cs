@@ -58,7 +58,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             if (obj["choice"] is JArray ch)
                 return new Choice { Name = name, Contents = ToAutomations(ch) };
 
-            throw new FormatException("Tipo di espressione non supportato: " + obj);
+            throw new FormatException("Expression type not supported: " + obj);
         }
 
         public static List<Expression> ParseExpressions(JObject root)
