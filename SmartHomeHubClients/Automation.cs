@@ -85,7 +85,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	        }
 	        
 	        if (objTrigger is Action ecaTrigger &&
-	            objConditions is Condition ecaCondition && 
+	            objConditions is ECARules4All_DLL.Condition ecaCondition && 
 	            objActions.All(x => x is Action))
 	        {
 		        List<Action> ecaActions = objActions.Select(x => x as Action).ToList();    
@@ -113,13 +113,16 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 			        rule += jsonToDictionary((JObject)objTrigger);
 		        }
 		        
-		        if (objConditions is Condition)
+		        if (objConditions != null)
 		        {
-			        rule += objConditions.ToString();
-		        }
-		        else
-		        {
-			        rule += jsonToDictionary((JObject)objConditions);
+			        if (objConditions is ECARules4All_DLL.Condition)
+			        {
+				        rule += objConditions.ToString();
+			        }
+			        else
+			        {
+				        rule += jsonToDictionary((JObject)objConditions);
+			        }
 		        }
 
 		        foreach (var action in objActions)
@@ -198,7 +201,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         public static string jsonToDictionary(JObject jObj)
         {
 	        return string.Join(" ", 
-		        jObj.Properties().Select(p => $"{p.Name}: {p.Value}"));		    
+		        jObj.Properties().Select(p => $"{p.Name}: {p.Value}; "));		    
         }
     }
 	
@@ -314,9 +317,9 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	    
 	    public List<ConditionDTO> conditions { get; set; } = null;
 	    
-	    public Condition ConvertToCondition()
+	    public ECARules4All_DLL.Condition ConvertToCondition()
 	    {
-		    Condition condition = null;
+		    ECARules4All_DLL.Condition condition = null;
 		    if (!string.IsNullOrEmpty(this.component))
 		    {	
 			    Log.Information(ToString());
@@ -356,7 +359,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 		    }
 		    else
 		    {
-			    List<Condition> children = new List<Condition>();
+			    List<ECARules4All_DLL.Condition> children = new List<ECARules4All_DLL.Condition>();
 			    foreach (var child in this.conditions)
 			    {
 				    children.Add(child.ConvertToCondition());
@@ -382,77 +385,86 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 		    return condition;
 	    }
     }
-    
+
     public class ObjectToDtoConverter<T> : JsonConverter
-	{
+    {
 	    private static readonly HashSet<string> _dtoPropNames =
-	        new HashSet<string>(
-	            typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-	                     .Select(p => p.Name),
-	            StringComparer.OrdinalIgnoreCase
-	        );
+		    new HashSet<string>(
+			    typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+				    .Select(p => p.Name),
+			    StringComparer.OrdinalIgnoreCase
+		    );
 
 	    public override bool CanConvert(Type objectType)
 	    {
-	        return objectType == typeof(object) || objectType == typeof(List<object>);
+		    return objectType == typeof(object) || objectType == typeof(List<object>);
 	    }
 
-	    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+	    public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
+		    JsonSerializer serializer)
 	    {
-	        var token = JToken.Load(reader);
+		    var token = JToken.Load(reader);
 
-	        if (objectType == typeof(List<object>))
-	        {
-	            var result = new List<object>();
-	            if (token.Type == JTokenType.Array)
-	            {
-	                foreach (var item in (JArray)token)
-	                    result.Add(ConvertItem(item, serializer));
-	            }
-	            else
-	            {
-	                result.Add(ConvertItem(token, serializer));
-	            }
-	            return result;
-	        }
+		    if (objectType == typeof(List<object>))
+		    {
+			    var result = new List<object>();
+			    if (token.Type == JTokenType.Array)
+			    {
+				    foreach (var item in (JArray)token)
+					    result.Add(ConvertItem(item, serializer));
+			    }
+			    else
+			    {
+				    result.Add(ConvertItem(token, serializer));
+			    }
 
-	        return ConvertItem(token, serializer);
+			    return result;
+		    }
+
+		    return ConvertItem(token, serializer);
 	    }
 
 	    private object ConvertItem(JToken item, JsonSerializer serializer)
 	    {
-	        switch (item.Type)
-	        {
-	            case JTokenType.Object:
-	            {
-	                var obj = (JObject)item;
-	                var jsonKeys = new HashSet<string>(obj.Properties().Select(p => p.Name), StringComparer.OrdinalIgnoreCase);
-	                bool looksLikeDto = jsonKeys.Overlaps(_dtoPropNames);
-	                if (!looksLikeDto)
-	                    return obj;
-	                try { return obj.ToObject<T>(serializer); }
-	                catch { return obj; }
-	            }
+		    switch (item.Type)
+		    {
+			    case JTokenType.Object:
+			    {
+				    var obj = (JObject)item;
+				    var jsonKeys = new HashSet<string>(obj.Properties().Select(p => p.Name),
+					    StringComparer.OrdinalIgnoreCase);
+				    bool looksLikeDto = jsonKeys.Overlaps(_dtoPropNames);
+				    if (!looksLikeDto)
+					    return obj;
+				    try
+				    {
+					    return obj.ToObject<T>(serializer);
+				    }
+				    catch
+				    {
+					    return obj;
+				    }
+			    }
 
-	            case JTokenType.Array:
-	            {
-	                var list = new List<object>();
-	                foreach (var child in (JArray)item)
-	                    list.Add(ConvertItem(child, serializer));
-	                return list;
-	            }
+			    case JTokenType.Array:
+			    {
+				    var list = new List<object>();
+				    foreach (var child in (JArray)item)
+					    list.Add(ConvertItem(child, serializer));
+				    return list;
+			    }
 
-	            case JTokenType.Null:
-	                return null;
+			    case JTokenType.Null:
+				    return null;
 
-	            default:
-	                return ((JValue)item).Value;
-	        }
+			    default:
+				    return ((JValue)item).Value;
+		    }
 	    }
 
 	    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 	    {
-	        JToken.FromObject(value, serializer).WriteTo(writer);
+		    JToken.FromObject(value, serializer).WriteTo(writer);
 	    }
-	}
+    }
 }
