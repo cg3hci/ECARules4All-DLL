@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories;
 using ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories;
 using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories;
 using Newtonsoft.Json;
@@ -64,7 +65,8 @@ namespace ECARules4All_DLL.Utils
         	        positions.Add(new Position(JsonConvert.DeserializeObject<Vector3>(match.Value)));
                 }
                 parameter = new Path(positions);
-            } else if(typeParameter == typeof(Scale))
+            } 
+            else if(typeParameter == typeof(Scale))
             {
                 parameter = new Scale(JsonConvert.DeserializeObject<Vector3>(receivedParameter));
             }
@@ -72,7 +74,7 @@ namespace ECARules4All_DLL.Utils
             {
                 parameter = ECABoolean.FromString(receivedParameter);
             }
-            if (typeParameter == typeof(float) || typeParameter == typeof(Single))
+            else if (typeParameter == typeof(float) || typeParameter == typeof(Single))
             {
                 parameter = float.Parse(receivedParameter);
             }
@@ -84,7 +86,6 @@ namespace ECARules4All_DLL.Utils
             {
                 parameter = int.Parse(receivedParameter);
             }
-
             else if (typeParameter == typeof(string))
             {
                 parameter = receivedParameter;
@@ -120,7 +121,8 @@ namespace ECARules4All_DLL.Utils
                     positions.Add(new Position(JsonConvert.DeserializeObject<Vector3>(match.Value)));
                 }
                 parameter = new Path(positions);
-            } else if(typeParameter == typeof(Scale))
+            } 
+            else if(typeParameter == typeof(Scale))
             {
                 parameter = new Scale(JsonConvert.DeserializeObject<Vector3>(receivedParameter.ToString()));
             }
@@ -128,7 +130,7 @@ namespace ECARules4All_DLL.Utils
             {
                 parameter = ECABoolean.FromString(receivedParameter.ToString());
             }
-            if (typeParameter == typeof(float) || typeParameter == typeof(Single))
+            else if (typeParameter == typeof(float) || typeParameter == typeof(Single))
             {
                 parameter = float.Parse(receivedParameter.ToString());
             }
@@ -143,6 +145,11 @@ namespace ECARules4All_DLL.Utils
             else if (typeParameter == typeof(string))
             {
                 parameter = receivedParameter;
+            }
+            else if (receivedParameter.ToString().Contains("@"))
+            {
+                string[] otherNames = receivedParameter.ToString().Split('@');
+                parameter = GameObject.Find(otherNames[0]);
             }
             else
             {
