@@ -17,7 +17,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         public NotificationQueue updates { get; } = new NotificationQueue();
         
         public List<object> registeredAutomations { get; set; }
-        public List<Expression> registeredExpressions { get; set; }
+        public JArray registeredExpressions { get; set; }
     }
     
     public abstract class AbstractClient<T> : AbstractClientBase where T : class, new()
@@ -44,6 +44,8 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         protected abstract void RegisterVirtualObject(object sender, List<ComponentTrackerPair> pairs);
 
         public abstract void RegisteredAutomations(object sender, List<AutomationDTO> automations);
+        
+        public abstract void RegisteredExpressions(object sender, JArray expressions);
 
         public abstract Task<List<object>> GetListAutomations();
         

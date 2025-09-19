@@ -85,17 +85,17 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 	        }
 	        
 	        if (objTrigger is Action ecaTrigger &&
-	            objConditions is ECARules4All_DLL.Condition ecaCondition && 
+	            (objConditions == null || (objConditions != null && objConditions is ECARules4All_DLL.Condition)) && 
 	            objActions.All(x => x is Action))
 	        {
 		        List<Action> ecaActions = objActions.Select(x => x as Action).ToList();    
-		        if (conditions != null)
+		        if (objConditions != null)
 		        {
 			        rule = Rule.TryCreateRule(
 				        ecaTrigger,
-				        ecaCondition,
+				        (ECARules4All_DLL.Condition)objConditions,
 				        ecaActions
-				    );
+			        );
 		        }
 		        else
 		        {
@@ -110,7 +110,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 		        }
 		        else
 		        {
-			        rule += jsonToDictionary((JObject)objTrigger);
+			        rule += "when " + jsonToDictionary((JObject)objTrigger)+"\n";
 		        }
 		        
 		        if (objConditions != null)
@@ -121,7 +121,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 			        }
 			        else
 			        {
-				        rule += jsonToDictionary((JObject)objConditions);
+				        rule += "if " + jsonToDictionary((JObject)objConditions) + "\n";
 			        }
 		        }
 
@@ -132,7 +132,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 			        }
 			        else
 			        {
-				        rule += jsonToDictionary((JObject)action);
+				        rule += "then " + jsonToDictionary((JObject)action) + "\n";
 			        }
 		        }
 	        }

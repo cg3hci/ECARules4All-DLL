@@ -1092,6 +1092,11 @@ namespace ECARules4All_DLL
         {
             return toCheck + " " + property + " " + checkSymbol + " " + compareWith;
         }
+        
+        public string ToNaturalLanguage()
+        {
+            return  toCheck.name + " " + property + " " + checkSymbol + " " + compareWith;
+        }
     }
 
     ///<summary>

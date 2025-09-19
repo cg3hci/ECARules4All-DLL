@@ -17,6 +17,9 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 {
     public class HomeAssistantClient : AbstractClient<HomeAssistantClient>
     {
+		public event EventHandler<Dictionary<string,string>> ReceivedAutomations;
+        public event EventHandler<JArray> ReceivedExpressions;
+
 	    private static class URLS
 	    {
 		    public static readonly string SEND_NOTIFICATION = "/api/services/eud4xr/receive_update_from_unity";
@@ -133,8 +136,35 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
         public override void RegisteredAutomations(object sender, List<AutomationDTO> automations)
         {
 	        registeredAutomations = this.ConvertAutomationsToRules(automations);
+	        var dict = new Dictionary<string, string>();
+	        foreach (var automation in automations)
+	        {
+		        var k = automation.alias; 
+		        string v = string.Empty;
+		        var tmp = automation.ConvertToRule();
+
+		        if (tmp is Rule rule) {
+			        v = RuleUtils.FormatRuleLabel(rule);
+		        } else if (tmp is System.String str) {
+			        v = str;
+		        }
+		        else
+		        {
+			        throw new Exception("Unexpected rule type");
+		        }
+				    
+		        dict.Add(k, v);
+	        }
+	        ReceivedAutomations?.Invoke(this, dict);
         }
-        
+
+        public override void RegisteredExpressions(object sender, JArray expressions)
+        {
+	        this.registeredExpressions = expressions;
+	        ReceivedExpressions?.Invoke(this, expressions);
+	        
+        }
+
         public override async Task<List<object>> GetListAutomations()
         {
 	        List<object> rules = new List<object>();
@@ -152,11 +182,12 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 			        // get automations and convert them to rules
 			        string jsonResponse = await response.Content.ReadAsStringAsync();
 			        JObject jsonObject = JObject.Parse(jsonResponse);
-			        var a = jsonObject["automations"]?.ToString() ;
-			        Log.Information($"Received Automations: {a}");
-			        List<AutomationDTO> automations = JsonConvert.DeserializeObject<List<AutomationDTO>>(jsonObject["automations"]?.ToString() ?? throw new InvalidOperationException());
+			        var jsonData = jsonObject["automations"]?.ToString();
+			        Log.Information($"Received Automations: {jsonData}");
+			        List<AutomationDTO> automations = JsonConvert.DeserializeObject<List<AutomationDTO>>(
+				        jsonData ?? throw new InvalidOperationException()
+				    );
 			        rules = this.ConvertAutomationsToRules(automations);
-			        
 			        Log.Information($"Receive automations list by contacting {this.url}");
 		        }
 		        catch (HttpRequestException e)
@@ -201,6 +232,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 				        .ToList();
 			        expressions = JArray.FromObject(allList);
 			        
+					//ReceivedExpressions?.Invoke(this, expressions);
 			        Log.Information($"Receive expressions list by contacting {this.url}");
 		        }
 		        catch (HttpRequestException e)
@@ -211,7 +243,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 
 	        return expressions;
         }
-
+        
         private List<object> ConvertAutomationsToRules(List<AutomationDTO> automations)
         {
 	        var rules = new List<object>();
@@ -221,6 +253,58 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 		        rules.Add(a.ConvertToRule());
 	        }
 	        return rules;
+        }
+
+        public async Task<(JArray expressions, Dictionary<string, string> automations)> GetExpressionsAndAutomations()
+        {
+	        // expressions
+	        var expressions = await this.GetListExpressions();
+	        // automations
+	        var dict = new Dictionary<string, string>();
+	        using (HttpClient client = new HttpClient())
+	        {
+		        try
+		        {
+			        string urlService = $"{this.url}{URLS.AUTOMATIONS}";
+			        client.DefaultRequestHeaders.Authorization =
+				        new AuthenticationHeaderValue("Bearer", this.token);
+			        HttpResponseMessage response = await client.GetAsync(urlService);
+			        response.EnsureSuccessStatusCode();
+			        
+			        // get automations and convert them to rules
+			        string jsonResponse = await response.Content.ReadAsStringAsync();
+			        JObject jsonObject = JObject.Parse(jsonResponse);
+			        var jsonData = jsonObject["automations"]?.ToString();
+			        Log.Information($"Received Automations: {jsonData}");
+			        List<AutomationDTO> automations = JsonConvert.DeserializeObject<List<AutomationDTO>>(
+				        jsonData ?? throw new InvalidOperationException()
+			        );
+			        foreach (var automation in automations)
+			        {
+				        var k = automation.alias; 
+				        string v = string.Empty;
+				        var tmp = automation.ConvertToRule();
+
+				        if (tmp is Rule rule) {
+					        v = RuleUtils.FormatRuleLabel(rule);
+				        } else if (tmp is System.String str) {
+					        v = str;
+				        }
+				        else
+				        {
+					        throw new Exception("Unexpected rule type");
+				        }
+				    
+				        dict.Add(k, v);
+			        }
+		        }
+		        catch (HttpRequestException e)
+		        {
+			        Log.Error($"An error occured while receiving the list of registered automations on home assistant - {e.Message}");
+		        }
+	        }
+
+	        return (expressions, dict);
         }
     }
 }
