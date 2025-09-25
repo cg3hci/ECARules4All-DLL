@@ -24,9 +24,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
     public class ECABottle : MonoBehaviour
     {
         // public AudioSource audioSource;
-        private GameObject player_character =>
-            GameObject.FindObjectOfType<ECACharacter>()
-                .gameObject; //TODO J 2nd July '25: Salvare la reference al personaggio del giocatore in un campo privato, per evitare di cercarlo ogni volta.
+        private GameObject player_character => ECAPlayer_Singleton.Instance.gameObject;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()

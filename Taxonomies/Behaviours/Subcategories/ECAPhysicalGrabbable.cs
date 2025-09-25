@@ -1,4 +1,5 @@
 ﻿using ECARules4All_DLL.Taxonomies.Objects.Characters;
+using ECARules4All_DLL.Taxonomies.Utils;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 
@@ -18,9 +19,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [SerializeField] private Collider rightHandCollider;
         [SerializeField] private Collider leftHandCollider;
 
-        private GameObject player_character =>
-            GameObject.FindObjectOfType<ECACharacter>()
-                .gameObject; //TODO J 2nd July '25: Salvare la reference al personaggio del giocatore in un campo privato, per evitare di cercarlo ogni volta.
+        private GameObject player_character => ECAPlayer_Singleton.Instance.gameObject;
         
         private void Awake()
         {

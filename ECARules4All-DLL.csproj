@@ -181,6 +181,7 @@
         <Compile Include="Taxonomies\Behaviours\Subcategories\ECAHighlight.cs" />
         <Compile Include="Taxonomies\Behaviours\Subcategories\ECAInteractable.cs" />
         <Compile Include="Taxonomies\Behaviours\Subcategories\ECASound.cs" />
+        <Compile Include="Taxonomies\ECAPlayer_Singleton.cs" />
         <Compile Include="Taxonomies\Objects\Characters\Animals\ECAAnimal.cs" />
         <Compile Include="Taxonomies\Objects\Characters\Animals\Subcategories\ECAHuman.cs" />
         <Compile Include="Taxonomies\Objects\Characters\Animals\Subcategories\ECARobot.cs" />

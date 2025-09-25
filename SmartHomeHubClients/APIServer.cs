@@ -251,7 +251,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 ComponentTracker.Instance.RemoveAllComponents();
 
                 // force object subscription in hass
-                foreach (var gameObject in Object.FindObjectsByType<ECATracker>(UnityEngine.FindObjectsSortMode.None))
+                foreach (var gameObject in Object.FindObjectsByType<ECATracker>(UnityEngine.FindObjectsSortMode.None)) //TODO optimize
                 {
                     gameObject.SubscribeObject();
                 }

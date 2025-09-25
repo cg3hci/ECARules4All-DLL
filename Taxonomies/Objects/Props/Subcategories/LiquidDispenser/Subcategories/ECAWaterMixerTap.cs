@@ -28,9 +28,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         public float PERC_THR = 0.2f; // 10% of the distance as threshold
         private TapState _lastTapState = TapState.IDLE;
 
-        private GameObject player_character =>
-            GameObject.FindObjectOfType<ECACharacter>()
-                .gameObject; //TODO J 2nd July '25: Salvare la reference al personaggio del giocatore in un campo privato, per evitare di cercarlo ogni volta.
+        private GameObject player_character => ECAPlayer_Singleton.Instance.gameObject;
 
         private void Awake()
         {
