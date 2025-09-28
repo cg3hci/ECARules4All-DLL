@@ -88,7 +88,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
             // {
             //     fs.levelTransform.gameObject.SetActive(renderSteps); // Couldn't disable simply the Renderer, so I disable the whole GameObject
             // }
-            void AddRules()
+            void AddDummyRules()
             {
                 Debug.Log("RRRRRRRRR ECALiquidcontainer Rules in the system before all: " +
                           RuleEngine.GetInstance().Rules().Count());
@@ -126,7 +126,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
                           RuleEngine.GetInstance().Rules().Count());
             }
 
-            AddRules();
+            // AddDummyRules();
         }
 
         private void OnCollisionEnter(Collision other)

@@ -494,8 +494,9 @@ namespace ECARules4All_DLL
             bool areArgsValid = AreRuleArgsValid(lWhen, lIf, lActions, out bool atLeastOneCondition);
             if (!areArgsValid)
             {
-                Log.Error("Invalid rule");
-                throw new Exception("Invalid rule"); // Per ora lancio un'eccezione per accorgersi subito se qualcosa non funziona
+                var msg = ($"Invalid rule: Action when: {lWhen}, Condition if: {lIf}, Actions then: {string.Join(", ", lActions)}");
+                Log.Error(msg);
+                throw new Exception(msg); // Per ora lancio un'eccezione per accorgersi subito se qualcosa non funziona
                 return null;
             }
 

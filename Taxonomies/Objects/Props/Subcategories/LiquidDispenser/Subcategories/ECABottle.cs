@@ -24,7 +24,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
     public class ECABottle : MonoBehaviour
     {
         // public AudioSource audioSource;
-        private GameObject player_character => ECAPlayer_Singleton.Instance.gameObject;
+        private GameObject player_character => ECAPlayer_Singleton.Instance.playerGoRef;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()

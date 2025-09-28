@@ -19,7 +19,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [SerializeField] private Collider rightHandCollider;
         [SerializeField] private Collider leftHandCollider;
 
-        private GameObject player_character => ECAPlayer_Singleton.Instance.gameObject;
+        private GameObject player_GoRef => ECAPlayer_Singleton.Instance.playerGoRef;
+        private ECACharacter player_ecaCharacterRef => ECAPlayer_Singleton.Instance.playerEcaCharacterRef;
         
         private void Awake()
         {
@@ -144,14 +145,14 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             // Publishes an ECA action and updates the system state accordingly.
             
             // Character c = GameObject.FindWithTag("Player").GetComponent<Character>();
-            Debug.Log("ECAPhysicalGrabbable LogicStartsGrabbing called for " + player_character.name + " on " +
+            Debug.Log("ECAPhysicalGrabbable LogicStartsGrabbing called for " + player_GoRef.name + " on " +
                       this.gameObject.name + " that is son of " + this.transform.parent.name);
-            _StartsGrabbing(player_character.GetComponent<ECACharacter>());
-            Action action = new Action(player_character, "starts-grabbing", this.gameObject);
+            _StartsGrabbing(player_ecaCharacterRef);
+            Action action = new Action(player_GoRef, "starts-grabbing", this.gameObject);
             EventBus.GetInstance().Publish(action);
             ECAScript.NotifyUpdate(this,
                 action); //TODO J 1st July '25: Is it necessary to notify the update here? Isn't automatic inside the EventBus?
-            Debug.Log("ECAPhysicalGrabbable Finished LogicStartsGrabbing for " + player_character.name + " on " +
+            Debug.Log("ECAPhysicalGrabbable Finished LogicStartsGrabbing for " + player_GoRef.name + " on " +
                       this.gameObject.name + " that is son of " + this.transform.parent.name);
         }
 
@@ -160,14 +161,14 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             // Internal logic for handling the end of a grab interaction.
             // Publishes an ECA action and updates the system state accordingly.
             
-            Debug.Log("ECAPhysicalGrabbable LogicStopsGrabbing called for " + player_character.name + " on " +
+            Debug.Log("ECAPhysicalGrabbable LogicStopsGrabbing called for " + player_GoRef.name + " on " +
                       this.gameObject.name + " that is son of " + this.transform.parent.name);
-            _StopsGrabbing(player_character.GetComponent<ECACharacter>());
-            Action action = new Action(player_character, "stops-grabbing", this.gameObject);
+            _StopsGrabbing(player_ecaCharacterRef);
+            Action action = new Action(player_GoRef, "stops-grabbing", this.gameObject);
             EventBus.GetInstance().Publish(action);
             ECAScript.NotifyUpdate(this,
                 action); //TODO J 1st July '25: Is it necessary to notify the update here? Isn't automatic inside the EventBus?
-            Debug.Log("ECAPhysicalGrabbable Finished LogicStopsGrabbing for " + player_character.name + " on " +
+            Debug.Log("ECAPhysicalGrabbable Finished LogicStopsGrabbing for " + player_GoRef.name + " on " +
                       this.gameObject.name + " that is son of " + this.transform.parent.name);
         }
     }

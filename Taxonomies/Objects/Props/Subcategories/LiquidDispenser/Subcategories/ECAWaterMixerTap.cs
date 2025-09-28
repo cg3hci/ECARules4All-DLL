@@ -28,7 +28,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         public float PERC_THR = 0.2f; // 10% of the distance as threshold
         private TapState _lastTapState = TapState.IDLE;
 
-        private GameObject player_character => ECAPlayer_Singleton.Instance.gameObject;
+        private GameObject player_character => ECAPlayer_Singleton.Instance.playerGoRef;
 
         private void Awake()
         {
@@ -37,7 +37,6 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
             {
                 throw new Exception("LiquidSpawner is not assigned in the ECAWaterMixerTap script.");
             }
-
         }
 
         private void Start()
