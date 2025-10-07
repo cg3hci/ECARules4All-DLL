@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Antlr4.Runtime.Misc;
 using Newtonsoft.Json;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json.Linq;
@@ -22,10 +20,10 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 
 	    private static class URLS
 	    {
-		    public static readonly string SEND_NOTIFICATION = "/api/services/eud4xr/receive_update_from_unity";
-		    public static readonly string REGISTER_VIRTUAL_OBJECT = "/api/services/eud4xr/add_virtual_object";
-		    public static readonly string AUTOMATIONS = "/api/eud4xr/automations";
-		    public static readonly string EXPRESSIONS = "/api/eud4xr/expressions";
+		    public static readonly string SEND_NOTIFICATION = "api/services/eud4xr/receive_update_from_unity";
+		    public static readonly string REGISTER_VIRTUAL_OBJECT = "api/services/eud4xr/add_virtual_object";
+		    public static readonly string AUTOMATIONS = "api/eud4xr/automations";
+		    public static readonly string EXPRESSIONS = "api/eud4xr/expressions";
 	    }
 	    
 	    protected override async void SendNotification(object sender, ContentNotification newItem)
@@ -85,11 +83,17 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 	        }
         }
 
-        protected override async void RegisterVirtualObject(object sender, List<ComponentTrackerPair> pairs)
+        protected override async void RegisterVirtualObject(
+	        object sender, 
+	        Tuple<List<ComponentTrackerPair>, AbstractClientBase> pairs
+	    )
         {
+	        if (!ReferenceEquals(pairs.Item2, this))
+		        return;
+	        
 	        List<object> payload = new List<object>();
 	        
-	        foreach (var pair in pairs)
+	        foreach (var pair in pairs.Item1)
 	        {
 		        var attribute = pair.GetAttributes();
 		        

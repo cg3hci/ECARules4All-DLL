@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ECARules4All_DLL.SmartHomeHubClients;
 using Serilog;
 
 
@@ -90,7 +91,7 @@ namespace ECARules4All_DLL.Utils
     {
         private static ComponentTracker _instance;
         private Dictionary<string, object> _components = new Dictionary<string, object>();
-        public event EventHandler<List<ComponentTrackerPair>> NewRegisteredComponents;
+        public event EventHandler<Tuple<List<ComponentTrackerPair>, AbstractClientBase>> NewRegisteredComponents;
         
         private ComponentTracker() { }
     
@@ -106,7 +107,7 @@ namespace ECARules4All_DLL.Utils
             }
         }
 
-        public void AddPairs(List<ComponentTrackerPair> pairs)
+        public void AddPairs(List<ComponentTrackerPair> pairs, AbstractClientBase client)
         {
             foreach (var pair in pairs)
             {
@@ -114,7 +115,7 @@ namespace ECARules4All_DLL.Utils
                 if (!_components.ContainsKey(pairName))
                 {
                     _components[pairName] = pair.GetSceneObject();
-                    Log.Information($"{pairName} registered - {this._components.Count}");
+                    Log.Information($"{pairName} add new component tracker pair - {this._components.Count}");
                 }
                 else
                 {
@@ -122,7 +123,7 @@ namespace ECARules4All_DLL.Utils
                     pairs.Remove(pair);
                 } 
             }
-            NewRegisteredComponents?.Invoke(this, pairs);
+            NewRegisteredComponents?.Invoke(this, Tuple.Create(pairs, client));
         }
 
         public void RemoveComponent(string pair, object component)

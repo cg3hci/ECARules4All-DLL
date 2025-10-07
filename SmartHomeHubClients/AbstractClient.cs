@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json.Linq;
@@ -41,7 +39,9 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         protected abstract void SendNotification(object sender, ContentNotification newItem);
         
-        protected abstract void RegisterVirtualObject(object sender, List<ComponentTrackerPair> pairs);
+        protected abstract void RegisterVirtualObject(
+            object sender, Tuple<List<ComponentTrackerPair>, AbstractClientBase> pairs
+            );
 
         public abstract void RegisteredAutomations(object sender, List<AutomationDTO> automations);
         

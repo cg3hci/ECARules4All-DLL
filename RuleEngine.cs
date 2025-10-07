@@ -25,10 +25,12 @@ namespace ECARules4All_DLL
 
         // Smart hub clients
         public List<AbstractClientBase> clients { get; set; } = new List<AbstractClientBase>();
+        public event EventHandler<AbstractClientBase> NewRegisteredClient;
 
         public void AddClient(AbstractClientBase newClient)
         {
             clients.Add(newClient);
+            NewRegisteredClient?.Invoke(this, newClient);
         }
 
         /// <summary>

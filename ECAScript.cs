@@ -74,12 +74,12 @@ namespace ECARules4All_DLL
             return $"{gameObject.name}@{component.GetType().Name}"; // or GetType()}";
         }
         
-        protected virtual void Start()
+        protected void Start()
         {
-            SubscribeObject();
+            RuleEngine.GetInstance().NewRegisteredClient += SubscribeObject;
         }
 
-        public void SubscribeObject()
+        public void SubscribeObject(object sender, AbstractClientBase client)
         {
             List<ComponentTrackerPair> pairs = new List<ComponentTrackerPair>();
             foreach (var component in gameObject.GetComponents<Component>())
@@ -87,11 +87,11 @@ namespace ECARules4All_DLL
                 if (Attribute.IsDefined(component.GetType(), typeof(ECARules4AllAttribute)))
                 {
                     ComponentTrackerPair componentTrackerPair = new ComponentTrackerPair(GetGameObjectComponentName(component), component);
-                    //ComponentTracker.Instance.AddComponent(trackedPair);
                     pairs.Add(componentTrackerPair);
+                    Log.Information($"[ECATracker - SubscribeObject] add new component tracker pair");
                 }
             }
-            ComponentTracker.Instance.AddPairs(pairs);
+            ComponentTracker.Instance.AddPairs(pairs, client);
         }
 
         protected virtual void OnDestroy()
