@@ -166,7 +166,6 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
         {
 	        this.registeredExpressions = expressions;
 	        ReceivedExpressions?.Invoke(this, expressions);
-	        
         }
 
         public override async Task<List<object>> GetListAutomations()
@@ -205,7 +204,6 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
         
         public override async Task<JArray> GetListExpressions()
         {
-	        //List<Expression> expressions = new ArrayList<Expression>();
 	        JArray expressions = null;
 	        
 	        using (HttpClient client = new HttpClient())
@@ -220,13 +218,6 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 			        
 			        // get expressions
 			        string jsonResponse = await response.Content.ReadAsStringAsync();
-			        
-			        /*JObject jsonObject = JObject.Parse(jsonResponse);
-			        var a = jsonObject["expressions"]?.ToString() ;
-			        Log.Information($"Received Expressions: {a}");
-			        //expressions = ExpressionUtils.ParseExpressions(jsonObject);
-			        expressions = jsonObject;*/
-			        
 			        var root = JObject.Parse(jsonResponse);
 			        var exprs = root["expressions"] as JObject;
 			        var allList = exprs.Properties()
@@ -236,7 +227,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 				        .ToList();
 			        expressions = JArray.FromObject(allList);
 			        
-					//ReceivedExpressions?.Invoke(this, expressions);
+					ReceivedExpressions?.Invoke(this, expressions);
 			        Log.Information($"Receive expressions list by contacting {this.url}");
 		        }
 		        catch (HttpRequestException e)

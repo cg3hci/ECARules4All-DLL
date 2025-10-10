@@ -69,7 +69,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             foreach (var client in RuleEngine.GetInstance().clients)
             {
                 client.updates.Enqueue(content);
-                Log.Information($"registered new value for client {client}");
+                Log.Information($"Notify a new value - {content} - to the client with url {client.url}");
             }
         }
     }

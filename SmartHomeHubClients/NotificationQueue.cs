@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
@@ -65,6 +66,11 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
             this.jsonContent = data;
             this.timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        }
+
+        public override string ToString()
+        {
+            return string.Join(Environment.NewLine, this.jsonContent);
         }
     }
     

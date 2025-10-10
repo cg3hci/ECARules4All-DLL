@@ -170,7 +170,7 @@ namespace ECARules4All_DLL
                 gameRenderer = this.gameObject.GetComponentsInChildren<Renderer>();
             if (gameRenderer.Length == 0)
             {
-                Debug.LogError(
+                Debug.LogWarning(
                     $"{gameObject.name} has not renderer component. This is important for insideCamera property.");
             }
 

@@ -19,7 +19,6 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         private int _port;
         private HttpListener _listener;
         public event EventHandler<ActionDTO> ActionUpdate;
-        //public event EventHandler<List<AutomationDTO>> RegisteredAutomations;
         public event EventHandler<List<AutomationDTO>> RegisteredAutomations;
         public event EventHandler<List<Expression>> RegisteredExpressions;
 
@@ -221,8 +220,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
             {
                 string requestBody = reader.ReadToEnd();
-                Debug.Log($"Received POST data on {this.apiExpressions}: {requestBody}");
-                
+                Log.Information($"Received POST data on {this.apiExpressions}: {requestBody}");
                 try
                 {
                     JObject jsonObject = JObject.Parse(requestBody);
@@ -234,7 +232,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 }
                 catch (Exception ex)
                 {
-                    Debug.Log($"Error processing POST data: {ex.Message}");
+                    Log.Error($"Error processing POST data: {ex.Message}");
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     context.Response.Close();
                 }

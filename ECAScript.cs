@@ -76,11 +76,19 @@ namespace ECARules4All_DLL
         
         protected void Start()
         {
+            // existing clients
+            foreach (var client in RuleEngine.GetInstance().clients)
+            {
+                SubscribeObject(RuleEngine.GetInstance(), client);                
+            }
+            
+            // new clients
             RuleEngine.GetInstance().NewRegisteredClient += SubscribeObject;
         }
 
         public void SubscribeObject(object sender, AbstractClientBase client)
         {
+            Log.Information($"[ECATracker - SubscribeObject] {this.gameObject.name} is starting to register its components.");
             List<ComponentTrackerPair> pairs = new List<ComponentTrackerPair>();
             foreach (var component in gameObject.GetComponents<Component>())
             {
@@ -88,10 +96,11 @@ namespace ECARules4All_DLL
                 {
                     ComponentTrackerPair componentTrackerPair = new ComponentTrackerPair(GetGameObjectComponentName(component), component);
                     pairs.Add(componentTrackerPair);
-                    Log.Information($"[ECATracker - SubscribeObject] add new component tracker pair");
+                    Log.Information($"[ECATracker - SubscribeObject] add {this.gameObject.name}'s component tracker pairs.");
                 }
             }
             ComponentTracker.Instance.AddPairs(pairs, client);
+            Log.Information($"[ECATracker - SubscribeObject] {this.gameObject.name} completed registering its components.");
         }
 
         protected virtual void OnDestroy()

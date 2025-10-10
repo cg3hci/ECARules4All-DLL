@@ -25,6 +25,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
     {
         // public AudioSource audioSource;
         private GameObject player_character => ECAPlayer_Singleton.Instance.playerGoRef;
+        private ECACharacter player_ecaCharacter_ref => ECAPlayer_Singleton.Instance.playerEcaCharacterRef;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
@@ -166,7 +167,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         /// </summary>
         [ECARelevance(true)]
         [Action(typeof(ECACharacter), "opens-cap", typeof(ECABottle))]
-        public void _OpenCap()
+        public void _OpenCap(ECACharacter c)
         {
             if (capOpen == ECABoolean.YES) return; // if already open, do nothing
             capOpen = ECABoolean.YES;
@@ -180,7 +181,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         /// </summary>
         [ECARelevance(true)]
         [Action(typeof(ECACharacter), "closes-cap", typeof(ECABottle))]
-        public void _CloseCap()
+        public void _CloseCap(ECACharacter c)
         {
             if (capOpen == ECABoolean.NO) return; // if already closed, do nothing
             capOpen = ECABoolean.NO;
@@ -247,7 +248,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         {
             if (capOpen == ECABoolean.YES)
             {
-                _CloseCap();
+                _CloseCap(player_ecaCharacter_ref);
                 Action action = new Action(player_character, "closes-cap", this.gameObject);
                 EventBus.GetInstance().Publish(action);
                 ECAScript.NotifyUpdate(this,
@@ -255,7 +256,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
             }
             else
             {
-                _OpenCap();
+                _OpenCap(player_ecaCharacter_ref);
                 Action action = new Action(player_character, "opens-cap", this.gameObject);
                 EventBus.GetInstance().Publish(action);
                 ECAScript.NotifyUpdate(this,
@@ -303,7 +304,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
             // make 2 buttons: one for opening the cap and one for closing the cap
             if (GUI.Button(new Rect(10, 10, 150, 30), "Open Cap"))
             {
-                _OpenCap();
+                _OpenCap(player_ecaCharacter_ref);
                 var action = new Action(player_character, "opens-cap", this.gameObject);
                 EventBus.GetInstance().Publish(action);
                 ECAScript.NotifyUpdate(this,
@@ -312,7 +313,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
 
             if (GUI.Button(new Rect(10, 50, 150, 30), "Close Cap"))
             {
-                _CloseCap();
+                _CloseCap(player_ecaCharacter_ref);
                 var action = new Action(player_character, "closes-cap", this.gameObject);
                 EventBus.GetInstance().Publish(action);
                 ECAScript.NotifyUpdate(this,
