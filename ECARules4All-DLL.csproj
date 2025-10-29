@@ -181,6 +181,7 @@
         <Compile Include="Taxonomies\Objects\Props\Subcategories\CleaningItems\Subcategories\ECAScottex.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\CleaningItems\Subcategories\ECASoakableCleaningItem.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\ECADoor.cs" />
+        <Compile Include="Taxonomies\Objects\Props\Subcategories\ECAWindow.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\LiquidContainer\ECALiquidContainer.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\LiquidContainer\Subcategories\ECABucket.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\LiquidDispenser\ECALiquidDispenser.cs" />
