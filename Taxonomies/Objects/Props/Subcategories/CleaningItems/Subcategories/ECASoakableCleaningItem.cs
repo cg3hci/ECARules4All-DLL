@@ -141,7 +141,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         public void _Wets(ECALiquidDispenser ld)
         {
             //////// Update liquid type ////////
-            var lqType = ld.liquidSpawner.GetLiquidType();
+            /*var lqType = ld.liquidSpawner.GetLiquidType();
             if (lqType == LiquidSpawner.LiquidType.Water)
             {
                 hasWater = ECABoolean.YES;
@@ -160,7 +160,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
             else if (lqType == LiquidSpawner.LiquidType.Amuchina)
             {
                 hasAmuchina = ECABoolean.YES; //TODO Cambiare stile per Amuchina
-            }
+            }*/
 
             _renderer.material = wetMaterial;
             StopAllCoroutines();
@@ -188,6 +188,19 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         {
             _renderer.material = dryMaterial;
             hasWater = ECABoolean.NO;
+        }
+        
+        // change state
+        [Action(typeof(ECASoakableCleaningItem), "changes", "hasWater", "to", typeof(ECABoolean))]
+        [ECARelevance(true)]
+        public void changesHasWater(){
+            this.hasWater = new ECABoolean(true);
+        }
+        
+        [Action(typeof(ECASoakableCleaningItem), "changes", "hasDegreaser", "to", typeof(ECABoolean))]
+        [ECARelevance(true)]
+        public void changeshasDegreaser(){
+            this.hasDegreaser = new ECABoolean(true);
         }
     }
 }

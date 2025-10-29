@@ -70,7 +70,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="c">The character initiating the grab.</param>
         [ECARelevance(true)]
-        [Action(typeof(ECACharacter), "starts-grabbing")]
+        [Action(typeof(ECACharacter), "starts-grabbing", typeof(ECAPhysicalGrabbable))]
         public void _StartsGrabbing(ECACharacter c)
         {
             Debug.Log("Starting grabbing with " + c.gameObject.name + " on " + this.gameObject.name);
