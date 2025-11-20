@@ -9,9 +9,11 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories
 {
     /// <summary>
-    /// <b>ECASoakableCleaningItem</b> is a virtual object that represents a reusable cleaning item
-    /// capable of absorbing and releasing different types of liquids (e.g., water, degreaser, battery killer, disinfectant).
-    /// It supports being wetted and dried, and tracks its current state using dedicated ECA boolean variables.
+    /// <b>ECASoakableCleaningItem</b> is a component that represents a reusable virtual cleaning item
+    /// capable of absorbing and releasing various types of liquids, such as water, degreaser, battery killer,
+    /// or disinfectant.
+    /// It can be wetted or dried and maintains its current state through dedicated ECA boolean variables,
+    /// which indicate the presence or absence of specific absorbed substances.
     /// </summary>
     [ECARules4All("soakableCleaningItem")]
     [RequireComponent(typeof(ECACleaningItem))]
@@ -32,7 +34,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         private void OnCollisionEnter(Collision other)
         {
             // If the object is a LiquidDrop, it is considered an attempt to wet the item.
-            var ldrop = other.gameObject.GetComponent<LiquidDrop>();
+            var ldrop = other.gameObject.GetComponent<ECALiquidDrop>();
             if (ldrop != null)
             {
                 ECALiquidDispenser ld = ldrop.owner;
@@ -47,7 +49,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         private void OnTriggerEnter(Collider other)
         {
             // If it belongs to a LiquidDrop, it initiates the wetting process.
-            var ldrop = other.gameObject.GetComponent<LiquidDrop>();
+            var ldrop = other.gameObject.GetComponent<ECALiquidDrop>();
             if (ldrop != null)
             {
                 ECALiquidDispenser ld = ldrop.owner;
@@ -130,37 +132,43 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         }
 
         [SerializeField] private ECABoolean _hasAmuchina = new ECABoolean(ECABoolean.BoolType.NO);
-
+        
         /// <summary>
-        /// <b>Wets</b> is an action method that updates the item’s internal state to reflect it has absorbed a specific liquid.
-        /// It changes the item's material to a "wet" visual and starts a timer for automatic drying.
+        /// <b>wets</b> represents the action in which an object equipped with the <see cref="ECASoakableCleaningItem"/>
+        /// component, such as a cloth, rag, or paper towel, becomes wet after being poured on by an object equipped with
+        /// the <see cref="ECALiquidDispenser"/> component, such as a bottle or sprayer within the environment.
+        /// When the <see cref="ECASoakableCleaningItem"/> is wetted, this event acts as a trigger within an ECA automation.
+        /// The resulting state change depends on the liquid dispensed:
+        /// - When the <see cref="ECALiquidDispenser"/> contains water, the cleaning item implicitly performs the action
+        /// <b>changes hasWater</b>.
+        /// - When the <see cref="ECALiquidDispenser"/> contains degreaser, it implicitly performs the action <b>changes hasDegreaser</b>.
+        /// Executing this action updates the internal state of the cleaning item to reflect the absorbed liquid.
         /// </summary>
-        /// <param name="ld">The liquid dispenser responsible for wetting this item.</param>
         [Action(typeof(ECALiquidDispenser), "wets", typeof(ECASoakableCleaningItem))]
         [ECARelevance(true)]
         public void _Wets(ECALiquidDispenser ld)
         {
             //////// Update liquid type ////////
-            /*var lqType = ld.liquidSpawner.GetLiquidType();
-            if (lqType == LiquidSpawner.LiquidType.Water)
+            var lqType = ld.liquidSpawner.GetLiquidType();
+            if (lqType == ECALiquidSpawner.LiquidType.Water)
             {
                 hasWater = ECABoolean.YES;
                 //TODO Cambiare stile per Water
             }
-            else if (lqType == LiquidSpawner.LiquidType.Degreaser)
+            else if (lqType == ECALiquidSpawner.LiquidType.Degreaser)
             {
                 hasDegreaser = ECABoolean.YES;
                 //TODO Cambiare stile per Degreaser
             }
-            else if (lqType == LiquidSpawner.LiquidType.BatteryKiller)
+            else if (lqType == ECALiquidSpawner.LiquidType.BatteryKiller)
             {
                 hasBatteryKiller = ECABoolean.YES;
                 //TODO Cambiare stile per Battery Killer
             }
-            else if (lqType == LiquidSpawner.LiquidType.Amuchina)
+            else if (lqType == ECALiquidSpawner.LiquidType.Amuchina)
             {
                 hasAmuchina = ECABoolean.YES; //TODO Cambiare stile per Amuchina
-            }*/
+            }
 
             _renderer.material = wetMaterial;
             StopAllCoroutines();
@@ -190,16 +198,29 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
             hasWater = ECABoolean.NO;
         }
         
-        // change state
-        [Action(typeof(ECASoakableCleaningItem), "changes", "hasWater", "to", typeof(ECABoolean))]
+        /// <summary>
+        /// <bchanges has water</b> represents the implicit action performed when an object equipped with an
+        /// <see cref="ECASoakableCleaningItem"/> component becomes wet due to the <b>wets</b> action
+        /// triggered by an object equipped with a <see cref="ECALiquidDispenser"/> component containing <b>water</b>.
+        /// This action updates the internal state of the cleaning item by setting the <b>hasWater</b> variable to <c>true</c>,
+        /// indicating that the object has absorbed water and is now ready for water-based cleaning operations.
+        /// </summary>
+        [Action(typeof(ECASoakableCleaningItem), "changes has water")]
         [ECARelevance(true)]
         public void changesHasWater(){
             this.hasWater = new ECABoolean(true);
         }
         
-        [Action(typeof(ECASoakableCleaningItem), "changes", "hasDegreaser", "to", typeof(ECABoolean))]
+        /// <summary>
+        /// <b>changes-has-degreaser</b> represents the implicit action performed when an object equipped with an
+        /// <see cref="ECASoakableCleaningItem"/> component becomes wet due to the <b>wets</b> action
+        /// triggered by an object equipped with a <see cref="ECALiquidDispenser"/> component containing <b>degreaser</b>.
+        /// This action updates the internal state of the cleaning item by setting the <b>hasDegreaser</b> variable to <c>true</c>,
+        /// indicating that the object has absorbed degreaser and is now ready for degreasing operations.
+        /// </summary>
+        [Action(typeof(ECASoakableCleaningItem), "changes has degreaser")]
         [ECARelevance(true)]
-        public void changeshasDegreaser(){
+        public void changesHasDegreaser(){
             this.hasDegreaser = new ECABoolean(true);
         }
     }

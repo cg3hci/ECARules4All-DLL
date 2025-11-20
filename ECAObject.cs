@@ -106,7 +106,7 @@ namespace ECARules4All_DLL
         private Vector3 _originalScale;
 
         /// <summary>
-        /// <b>visible</b> indicates whether the object is visible. The allowed values are either "yes" or "no".
+        /// <b>visible</b> indicates whether the object is visible. The allowed values are either 'yes' or 'no'.
         /// If invisible, the object is not rendered but remains interactive for collisions.
         /// </summary>
         [ECARelevance(true)]
@@ -124,7 +124,7 @@ namespace ECARules4All_DLL
         [SerializeField] private ECABoolean _isVisible = new ECABoolean(ECABoolean.BoolType.YES);
 
         /// <summary>
-        /// <b>active</b> indicates whether the object is active. The allowed values are either "yes" or "no".
+        /// <b>active</b> indicates whether the object is active. The allowed values are either 'yes' or 'no'.
         /// When inactive, the object is not rendered and does not interact with other objects.
         /// </summary>
         [StateVariable("active", ECARules4AllType.Boolean)]
@@ -337,7 +337,7 @@ namespace ECARules4All_DLL
         }
 
         /// <summary>
-        /// <b>ShowsHides</b> changes the visibility state of the object based on a parameter. The parameter can be either "yes" or "no".
+        /// <b>ShowsHides</b> changes the visibility state of the object based on a parameter. The parameter can be either 'yes' or 'no'.
         /// </summary>
         /// <param name="yesNo">The new visibility state.</param>
         [ECARelevance(true)]
@@ -349,7 +349,7 @@ namespace ECARules4All_DLL
         }
 
         /// <summary>
-        /// <b>ActivatesDeactivates</b> changes the active state of the object based on a parameter. The parameter can be either "yes" or "no".
+        /// <b>ActivatesDeactivates</b> changes the active state of the object based on a parameter. The parameter can be either 'yes' or 'no'.
         /// </summary>
         /// <param name="yesNo">The new active state.</param>
         [Action(typeof(ECAObject), "changes", "active", "to", typeof(YesNo))]

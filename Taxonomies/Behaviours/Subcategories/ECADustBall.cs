@@ -1,16 +1,19 @@
 using System.Collections.Generic;
 using ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories;
+using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems;
 using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories;
 using ECARules4All_DLL.Utils;
+using Serilog;
 using UnityEngine;
 
 
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
+
     /// <summary>
-    /// <b>ECADustBall</b> is a <see cref="ECABehaviour">ECABehaviour</see> that attaches dust balls to a virtual object, ideally a  <see cref="ECASurface">Surface</see>.
-    /// It can be "swept" using other objects such as brooms or scottex, and define the number of sweeps needed until all dust is removed.
-    /// Once fully swept, the object updates its state and optionally plays audio feedback.
+    /// The EcaDustBall component represents the presence of dust on a virtual object, typically a surface equipped with an see <see cref="ECASurface" /> component.
+    /// Dust can be swept away using specialized objects such as brooms, rags, or scottex equipped with an (<see cref="ECACleaningItem"/>) component.
+    /// After being swept, the object updates its state through the `allSwept` property.
     /// </summary>
     [ECARules4All("dustBall")]
     [RequireComponent(typeof(ECABehaviour))]
@@ -21,7 +24,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [SerializeField] private AudioSource audioSourceSweep;
         [SerializeField] List<GameObject> _dustyBalls;
 
-        private int _sweepsNeeded = 0;
+        /*private int _sweepsNeeded = 0;
         
         /// <summary>
         /// <b>sweepsCounter</b> defines how many times the dust ball needs to be swept before it's considered clean.
@@ -40,11 +43,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             }
         }
 
-        [SerializeField] private int _sweepsCounter = 1;
+        [SerializeField] private int _sweepsCounter = 1;*/
 
         /// <summary>
         /// <b>allSwept</b> indicates whether all the dust has been successfully removed from the object.
-        /// It becomes true once the sweeps counter reaches zero.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("allSwept", ECARules4AllType.Boolean)]
@@ -60,7 +62,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
         [SerializeField] private ECABoolean _allSwept = new ECABoolean(ECABoolean.BoolType.NO);
 
-        /// <summary>
+        /*/// <summary>
         /// <b>Changes</b> the value of the sweeps counter to a specified integer.
         /// This method ensures the new value is not negative and updates the internal sweep logic accordingly.
         /// </summary>
@@ -76,43 +78,46 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
             //
             this.sweepsCounter = v;
-        }
+        }*/
 
         /// <summary>
-        /// <b>increasingly-removes-dust</b> simulates a sweeping action by a <see cref="ECAScottex"/>, decreasing by one the number of sweeps needed.
-        /// When enough sweeps are performed, the dust ball is considered clean.
+        /// <b>removes-dust</b> defines the sweeping action performed by an object equipped with an <see cref="ECAScottex"/> component.
+        /// When the action is executed, the dust balls are removed. Typically, this is the result of a <b>wipes</b> event performed by an object equipped with an <see cref="ECAScottex"/>.
         /// </summary>
-        /// <param name="scottex">The scottex object performing the sweep.</param>
+        /// <param name="scottex">The object equipped with an ECAScottex component responsible for performing the sweeping action.</param>
         [ECARelevance(true)]
-        [Action(typeof(ECAScottex), "increasingly-removes-dust", typeof(ECADustBall))]
+        [Action(typeof(ECAScottex), "removes-dust", typeof(ECADustBall))]
         public void _IncreasinglySweeps(ECAScottex scottex)
         {
-            Debug.Log("Sweep by one scottex: " + scottex.gameObject.name);
+            Log.Debug("Removes dust by scottex: " + scottex.gameObject.name);
             InternLogicIncreasinglySweeps();
         }
 
         /// <summary>
-        /// <b>increasingly-removes-dust</b> simulates a sweeping action by a <see cref="ECABroom"/>, decreasing by one the number of sweeps needed.
-        /// When enough sweeps are performed, the dust ball is considered clean.
+        /// <b>removes-dust</b> defines the sweeping action performed by an object that has an ECABroom component.
+        /// When the action is executed, the dust balls are removed. Typically, this is the result of a <b>washes</b>
+        /// event performed by an object that has an ECABroom.
+        /// After removal, nearby objects equipped with an ECADustPan component may automatically execute
+        /// their <b>collects-dust</b> action to gather the detached dust ball.
         /// </summary>
-        /// <param name="broom">The broom object performing the sweep.</param>
+        /// <param name="broom">The object that has a ECABroomcomponent responsible for performing the sweeping action.</param>
         [ECARelevance(true)]
-        [Action(typeof(ECABroom), "increasingly-removes-dust", typeof(ECADustBall))]
+        [Action(typeof(ECABroom), "removes-dust", typeof(ECADustBall))]
         public void _IncreasinglySweeps(ECABroom broom)
         {
-            Debug.Log("Sweep by one broom: " + broom.gameObject.name);
+            Log.Debug("Removes dust by broom: " + broom.gameObject.name);
             InternLogicIncreasinglySweeps();
         }
 
         private void InternLogicIncreasinglySweeps()
         {
-            _sweepsNeeded--;
+            //_sweepsNeeded--;
             if (audioSourceSweep != null)
             {
                 audioSourceSweep.Play();
             }
-
-            if (_sweepsNeeded <= 0)
+        
+            /*if (_sweepsNeeded <= 0)
             {
                 if (audioSourceAllSwept != null)
                 {
@@ -163,6 +168,18 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                     {
                         Debug.LogWarning("No active dusty balls found to sweep.");
                     }
+                }
+            }*/
+            
+            allSwept = ECABoolean.YES;
+            Log.Debug("All Swept!");
+
+            // deactivate all dusty balls
+            foreach (var dustyBall in _dustyBalls)
+            {
+                if (dustyBall != null)
+                {
+                    dustyBall.SetActive(false);
                 }
             }
         }

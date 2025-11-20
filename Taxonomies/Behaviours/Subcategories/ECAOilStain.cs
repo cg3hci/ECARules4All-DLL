@@ -7,9 +7,9 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// <b>ECAOilStain</b> is a <see cref="ECABehaviour">ECABehaviour</see> that attaches oil stains to a virtual object, ideally a  <see cref="ECASurface">Surface</see>.
-    /// It can be "washed" using other objects such as mops or cleaning rags, and define the number of washes needed until all stains are removed.
-    /// Once fully washed, the object updates its state and optionally plays audio feedback.
+    /// <b>ECAOilStain</b> is a component that attaches oil stains to a virtual object, ideally a surface equipped with an <see cref="ECASurface"/> component.
+    /// It can be 'washed' using other objects such as mops or cleaning rags.
+    /// Once fully washed, the object updates its state.
     /// </summary>
     [ECARules4All("oilStain")]
     [RequireComponent(typeof(ECABehaviour))]
@@ -22,7 +22,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
         [Range(0, 100)] private int _percentage = 0;
 
-        private int _washesNeeded = 0;
+        /*private int _washesNeeded = 0;
 
         /// <summary>
         /// <b>washesCounter</b> defines how many times the oil stains needs to be washed before it's considered clean.
@@ -41,11 +41,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             }
         }
 
-        [SerializeField] private int _washesCounter = 1;
+        [SerializeField] private int _washesCounter = 1;*/
 
         /// <summary>
         /// <b>allWashed</b> indicates whether all the stains have been successfully removed from the object.
-        /// It becomes true once the washes counter reaches zero.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("allWashed", ECARules4AllType.Boolean)]
@@ -62,7 +61,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [SerializeField] private ECABoolean _allWashed = new ECABoolean(ECABoolean.BoolType.NO);
 
 
-        /// <summary>
+        /*/// <summary>
         /// <b>Changes</b> the value of the washes counter to a specified integer.
         /// This method ensures the new value is not negative and updates the internal wash logic accordingly.
         /// </summary>
@@ -78,16 +77,15 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
             //
             this.washesCounter = v;
-        }
-
-
+        }*/
+        
         /// <summary>
-        /// <b>increasingly-removes-stain</b> simulates a washing action by a <see cref="ECACleaningRag"/>, decreasing by one the number of washes needed.
-        /// When enough washes are performed, the oil stains are considered clean.
+        /// <b>removes-stain</b> defines the sweeping action performed by an object that has an <see cref="ECACleaningRag"/> component.
+        /// When the action is executed, the stains are removed. Typically, this is the result of a <b>washes</b> event performed by an object that has an <see cref="ECACleaningRag"/>.
         /// </summary>
-        /// <param name="cleaningRag">The cleaning rag object performing the wash.</param>
+        /// <param name="cleaningRag">The object that has a <see cref="ECACleaningRag"/> component responsible for performing the washing action.</param>
         [ECARelevance(true)]
-        [Action(typeof(ECACleaningRag), "increasingly-removes-stain", typeof(ECAOilStain))]
+        [Action(typeof(ECACleaningRag), "removes-stain", typeof(ECAOilStain))]
         public void _IncreasinglyWashes(ECACleaningRag cleaningRag)
         {
             Debug.Log("Washes by one rag. Cleaning rag: " + cleaningRag.gameObject.name);
@@ -95,12 +93,12 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// <b>increasingly-removes-stain</b> simulates a washing action by a <see cref="ECAMop"/>, decreasing by one the number of washes needed.
-        /// When enough washes are performed, the oil stains are considered clean.
+        /// <b>removes-stain</b> defines the sweeping action performed by an object equipped with an <see cref="ECAMop"/> component.
+        /// When the action is executed, the stains are removed. Typically, this is the result of a <b>washes</b> event performed by an object that has an <see cref="ECAMop"/>..
         /// </summary>
-        /// <param name="mop">The mop object performing the wash.</param>
+        /// <param name="mop">The object equipped with an ECAMop component responsible for performing the washing action.</param>
         [ECARelevance(true)]
-        [Action(typeof(ECAMop), "increasingly-removes-stain", typeof(ECAOilStain))]
+        [Action(typeof(ECAMop), "removes-stain", typeof(ECAOilStain))]
         public void _IncreasinglyWashes(ECAMop mop)
         {
             Debug.Log("Washes by one mop. Mop: " + mop.gameObject.name);
@@ -109,13 +107,13 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
         private void InternLogicIncreasinglyWashes()
         {
-            _washesNeeded--;
+            //_washesNeeded--;
             if (audioSourceWash != null)
             {
                 audioSourceWash.Play();
             }
-
-            if (_washesNeeded <= 0)
+            
+            /*if (_washesNeeded <= 0)
             {
                 if (audioSourceAllWashed != null)
                 {
@@ -165,6 +163,18 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
                     {
                         Debug.LogWarning("No active oil stains found to wash.");
                     }
+                }
+            }*/
+            
+            allWashed = ECABoolean.YES;
+            Debug.Log("All washed!");
+
+            //TODO Deactivate all oil stains
+            foreach (var oilStain in _oilStains)
+            {
+                if (oilStain != null)
+                {
+                    oilStain.SetActive(false);
                 }
             }
         }

@@ -4,19 +4,21 @@ using System.Linq;
 using ECARules4All_DLL.Taxonomies.Objects.Characters;
 using ECARules4All_DLL.Taxonomies.Utils;
 using ECARules4All_DLL.Utils;
+using Serilog;
 using UnityEngine;
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories
 {
     /// <summary>
-    /// <b>ECABottle</b> is a virtual bottle object that can contain and dispense liquid.
-    /// It supports state variables such as <c>capOpen</c> and <c>flipped</c>, and interacts with a <see cref="ECALiquidDispenser"/> component for liquid spawning.
-    /// It provides actions for flipping the bottle, opening or closing its cap, and starting or stopping the flow of liquid.
-    /// Some rules are added automatically at the start:
-    /// - Flipping the bottle down while the cap is open will cause liquid to drop.
-    /// - Flipping the bottle up will stop the liquid from dropping.
-    /// - Closing the cap will stop the liquid from dropping.
-    /// - Opening the cap while the bottle is flipped down will cause liquid to drop.
+    /// <b>ECABottle</b> is a component that represents a virtual bottle capable of containing and dispensing
+    /// liquid within the environment. It maintains internal state variables such as <c>capOpen</c> and <c>flipped</c>,
+    /// and interacts with objects equipped with an <see cref="ECALiquidDispenser"/> component to
+    /// manage liquid flow and spawning. The bottle provides actions for flipping, opening or closing the cap,
+    /// and starting or stopping the liquid flow. Several default automation rules are initialized at startup:
+    /// - Flipping the bottle downward while the cap is open causes liquid to flow.
+    /// - Flipping the bottle upward stops the liquid flow.
+    /// - Closing the cap stops the liquid flow.
+    /// - Opening the cap while the bottle is flipped downward resumes the liquid flow.
     /// </summary>
     [ECARules4All("bottle")]
     [RequireComponent(typeof(ECALiquidDispenser))]
@@ -32,7 +34,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         {
             void AddRules()
             {
-                Debug.Log("Rules in the system before all: " + RuleEngine.GetInstance().Rules().Count());
+                Log.Debug("Rules in the system before all: " + RuleEngine.GetInstance().Rules().Count());
 
                 var flipsDownAction = new Action(this.gameObject, "flips-down");
                 var flipsUpAction = new Action(this.gameObject, "flips-up");
@@ -51,7 +53,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
                     new List<Action> { dropsLiquidAction }
                 );
                 RuleEngine.GetInstance().Add(rule_whenFlipDownIfCapOpenThenLiquidDrops);
-                Debug.Log("Rules in the system after one add: " + RuleEngine.GetInstance().Rules().Count());
+                Log.Debug("Rules in the system after one add: " + RuleEngine.GetInstance().Rules().Count());
 
 
                 var rule_whenFlipUpThenWaterStopsDropping = Rule.TryCreateRule(
@@ -59,7 +61,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
                     new List<Action> { stopsDroppingLiquidAction }
                 );
                 RuleEngine.GetInstance().Add(rule_whenFlipUpThenWaterStopsDropping);
-                Debug.Log("Rules in the system after two add: " + RuleEngine.GetInstance().Rules().Count());
+                Log.Debug("Rules in the system after two add: " + RuleEngine.GetInstance().Rules().Count());
 
 
                 var rule_whenClosesCapThenWaterStopsDropping = Rule.TryCreateRule(
@@ -67,7 +69,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
                     new List<Action> { stopsDroppingLiquidAction }
                 );
                 RuleEngine.GetInstance().Add(rule_whenClosesCapThenWaterStopsDropping);
-                Debug.Log("Rules in the system after one add: " + RuleEngine.GetInstance().Rules().Count());
+                Log.Debug("Rules in the system after one add: " + RuleEngine.GetInstance().Rules().Count());
 
                 var rule_whenOpensCapIfFlippedDownThenWaterDrops = Rule.TryCreateRule(
                     capOpensAction,
@@ -75,7 +77,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
                     new List<Action> { dropsLiquidAction }
                 );
                 RuleEngine.GetInstance().Add(rule_whenOpensCapIfFlippedDownThenWaterDrops);
-                Debug.Log("Rules in the system after one add: " + RuleEngine.GetInstance().Rules().Count());
+                Log.Debug("Rules in the system after one add: " + RuleEngine.GetInstance().Rules().Count());
             }
 
             AddRules();
@@ -85,7 +87,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         private float
             _angleOpenBottle = 0.9f; // value between 0 and 1, where 1 means the bottle is perfectly upside down
 
-        private LiquidSpawner _waterSpawner;
+        private ECALiquidSpawner _waterSpawner;
         public GameObject capGO;
 
         private void Awake()
@@ -149,55 +151,58 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
             get => _flipped;
             set
             {
-                // if (value != _flipped)
-                // {
                 _flipped = value;
-                Debug.Log("CHANGE");
+                Log.Debug("CHANGE");
                 ECAScript.NotifyUpdate(this, nameof(flipped), flipped.ToString());
-                // Debug.Log("Rules in the system: " + RuleEngine.GetInstance().Rules().Count());
-                // }
             }
         }
 
         [SerializeField] private ECABoolean _flipped = new ECABoolean(ECABoolean.BoolType.NO);
-
-
+        
         /// <summary>
-        /// <b>opens-cap</b> is an action that opens the bottle’s cap.
+        /// <b>opens-cap</b> represents the action of opening the cap of a bottle equipped with an <see cref="ECABottle"/>
+        /// component.
+        /// When executed, it sets the internal state variable <c>capOpen</c> to <c>true</c>
+        /// and, if the bottle is flipped downward, triggers the <b>drops-liquid</b> action to start the liquid flow.
         /// </summary>
         [ECARelevance(true)]
-        [Action(typeof(ECACharacter), "opens-cap", typeof(ECABottle))]
+        [Action(typeof(ECACharacter), "opens cap", typeof(ECABottle))]
         public void _OpenCap(ECACharacter c)
         {
             if (capOpen == ECABoolean.YES) return; // if already open, do nothing
             capOpen = ECABoolean.YES;
             // capGO.SetActive(true);
             UpdateCapVisibility();
-            Debug.Log("the cap is open");
+            Log.Debug("the cap is open");
         }
 
         /// <summary>
-        /// <b>closes-cap</b> is an action that closes the bottle’s cap.
+        /// <b>closes-cap</b> represents the action of closing the cap of a bottle equipped with
+        /// an <see cref="ECABottle"/> component.
+        /// When executed, it sets the internal state variable <c>capOpen</c> to <c>false</c>
+        /// and triggers the <b>stops-dropping</b> action to halt any ongoing liquid flow.
         /// </summary>
         [ECARelevance(true)]
-        [Action(typeof(ECACharacter), "closes-cap", typeof(ECABottle))]
+        [Action(typeof(ECACharacter), "closes cap", typeof(ECABottle))]
         public void _CloseCap(ECACharacter c)
         {
             if (capOpen == ECABoolean.NO) return; // if already closed, do nothing
             capOpen = ECABoolean.NO;
             // capGO.SetActive(false)
             UpdateCapVisibility();
-            Debug.Log("the cap is closed");
+            Log.Debug("the cap is closed");
         }
 
         /// <summary>
-        /// <b>flips-down</b> is an action that simulates turning the bottle upside down.
+        /// <b>flips-down</b> represents the action of turning a bottle equipped with an <see cref="ECABottle"/> component
+        /// upside down. When executed, it updates the internal state variable <c>flipped</c> to <c>true</c>
+        /// and, if the cap is open, triggers the <b>drops-liquid</b> action to start the liquid flow.
         /// </summary>
-        [Action(typeof(ECABottle), "flips-down")]
+        [Action(typeof(ECABottle), "flips down")]
         [ECARelevance(true)]
         public void FlipsDown()
         {
-            Debug.Log("FlipsDown called");
+            Log.Debug("FlipsDown called");
             flipped = ECABoolean.YES;
             // Action action = new Action(this.gameObject, "flips-down");
             // EventBus.GetInstance().Publish(action);
@@ -205,13 +210,15 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         }
 
         /// <summary>
-        /// <b>flips-up</b> is an action that simulates turning the bottle upright.
+        /// <b>flips-up</b> represents the action of turning a bottle equipped with an <see cref="ECABottle"/> component
+        /// to an upright position. When executed, it updates the internal state variable <c>flipped</c> to <c>false</c>
+        /// and stops any ongoing liquid flow if the bottle was previously pouring.
         /// </summary>
-        [Action(typeof(ECABottle), "flips-up")]
+        [Action(typeof(ECABottle), "flips up")]
         [ECARelevance(true)]
         public void FlipsUp()
         {
-            Debug.Log("FlipsUp called");
+            Log.Debug("FlipsUp called");
             flipped = ECABoolean.NO; // Update the flipped state
             // Action action = new Action(this.gameObject, "flips-up");
             // EventBus.GetInstance().Publish(action);
@@ -220,20 +227,25 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
 
 
         /// <summary>
-        /// <b>drops-liquid</b> is an internal action that triggers the liquid to start spawning from the spawner.
+        /// <b>drops liquid</b> represents the action that initiates the release of liquid from the spawner
+        /// associated with an object equipped with an <see cref="ECABottle"/> component.
+        /// When executed, it starts the spawning of liquid particles or drops within the environment.
         /// </summary>
-        [Action(typeof(ECABottle), "drops-liquid")]
+        [Action(typeof(ECABottle), "drops liquid")]
         [ECARelevance(true)]
         public void DropsLiquid()
         {
-            Debug.Log("DropsLiquid called");
-            _waterSpawner.SpawnLiquid(LiquidSpawner.LiquidTemperature.Ambient);
+            Log.Debug("DropsLiquid called");
+            _waterSpawner.SpawnLiquid(ECALiquidSpawner.LiquidTemperature.Ambient);
         }
 
         /// <summary>
-        /// <b>stops-dropping</b> is an internal action that stops the flow of liquid from the bottle.
+        /// <b>stops dropping</b> represents the internal action that stops the flow of liquid from an object
+        /// equipped with an <see cref="ECABottle"/> component.
+        /// When executed, it halts the spawning of liquid particles or drops and updates the dispenser’s internal state
+        /// to indicate that the liquid flow has stopped.
         /// </summary>
-        [Action(typeof(ECABottle), "stops-dropping")]
+        [Action(typeof(ECABottle), "stops dropping")]
         [ECARelevance(true)]
         public void StopsDropping()
         {
@@ -269,16 +281,14 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
             var isCurrFlipped = Vector3.Dot(gameObject.transform.up, Vector3.down) > _angleOpenBottle
                 ? ECABoolean.YES
                 : ECABoolean.NO;
-            // Debug.Log("PPPPP Start Update Bottle");
-            // Debug.Log("PPPPP Vector3.Dot(gameObject.transform.up, Vector3.down): " + Vector3.Dot(gameObject.transform.up, Vector3.down));
-            // Debug.Log("PPPPP CurrFlipped: " + isCurrFlipped + " vs flipped:" + flipped + " .... isCurrFlipped == flipped? " + (isCurrFlipped == flipped));
+            
             if (isCurrFlipped == flipped) return;
 
-            Debug.Log("PPPP isCurrFlipped " + isCurrFlipped + " vs flipped: " + flipped +
-                      " .... isCurrFlipped == flipped? " + (isCurrFlipped == flipped));
+            // Log.Debug("[ECABootle - Update] isCurrFlipped " + isCurrFlipped + " vs flipped: " + flipped +
+            //           " .... isCurrFlipped == flipped? " + (isCurrFlipped == flipped));
             if (isCurrFlipped == ECABoolean.YES)
             {
-                Debug.Log("PPPPP FlipsDown");
+                //Log.Debug("[ECABootle - Update] FlipsDown");
                 FlipsDown();
                 Action action = new Action(this.gameObject, "flips-down");
                 EventBus.GetInstance().Publish(action);
@@ -287,7 +297,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
             }
             else
             {
-                Debug.Log("PPPPP FlipsUp");
+                //Log.Debug("[ECABootle - Update] FlipsUp");
                 FlipsUp();
                 Action action = new Action(this.gameObject, "flips-up");
                 EventBus.GetInstance().Publish(action);
@@ -295,8 +305,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
                     action); //TODO J 1st July '25: Is it necessary to notify the update here? Isn't automatic inside the EventBus?
             }
 
-            Debug.Log("PPPPP End Update Bottle");
-            Debug.Log("PPPPP");
+            //Log.Debug("[ECABootle - Update] End Update Bottle");
         }
 
         private void OnGUI()
@@ -326,123 +335,4 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
             }
         }
     }
-    
-    /*/// <summary>
-    /// Defines a custom ECA object representing a bottle, with properties and actions
-    /// such as fill level and whether the cap is open or closed.
-    /// </summary>
-    [ECARules4All("bottle")]
-    [RequireComponent(typeof(ECAObject))]
-    [RequireComponent(typeof(ECAInteraction))]
-    [RequireComponent(typeof(ECAInteractable))]
-    [DisallowMultipleComponent]
-    public class ECABottle : MonoBehaviour
-    {
-        /// <summary>
-        /// <b>Level</b>: Represents the current fill level of the bottle (0–100).
-        /// </summary>
-        [StateVariable("fillLevel", ECARules4AllType.Integer)] 
-        [ECARelevance(true)] 
-        public int Level
-        {
-            get => _level;
-            private set
-            {
-                int newValue = Mathf.Clamp(value, 0, 100);
-                if (_level != newValue)
-                {
-                    _level = newValue;
-                    ECAScript.NotifyUpdate(this, nameof(Level), _level.ToString());
-                }
-            }
-        }
-
-        [SerializeField]
-        [Range(0,100)]
-        private int _level = 100;
-
-        /// <summary>
-        /// <b>IsCapped</b>: Indicates whether the bottle is currently capped.
-        /// </summary>
-        [StateVariable("IsCapped", ECARules4AllType.Boolean)]
-        [ECARelevance(true)]
-        public ECABoolean IsCapped
-        {
-            get => _isCapped;
-            private set
-            {
-                if (_isCapped != value)
-                {
-                    _isCapped = value;
-                    ECAScript.NotifyUpdate(this, nameof(IsCapped), _isCapped.ToString());
-                }
-            }
-        }
-
-        [SerializeField] private ECABoolean _isCapped = new ECABoolean(true);
-        
-        /// <summary>
-        /// Increases the fill level of the bottle by a specified amount, 
-        /// if the cap is open.
-        /// </summary>
-        [ECARelevance(true)]
-        [Action(typeof(ECABottle), "increase", "level", "by", typeof(int))]
-        public void Fill(int amount)
-        {
-            if (amount <= 0) return;
-
-            if (IsCapped == ECABoolean.YES)
-            {
-                Debug.Log("The ECABottle is capped");
-                return;
-            }
-            Level += amount;
-        }
-
-        /// <summary>
-        /// Decreases the fill level of the bottle by a specified amount, 
-        /// if the cap is open and the bottle is not empty.
-        /// </summary>
-        [ECARelevance(true)]
-        [Action(typeof(ECABottle), "decrease", "level", "by", typeof(int))]
-        public void Empty(int amount)
-        {
-            if (IsCapped == ECABoolean.YES)
-            {
-                Debug.Log("The ECABottle is capped");
-                return;
-            }
-            if (Level == 0)
-            {
-                Debug.Log("The ECABottle is empty");
-                return;
-            }
-
-            Level -= amount;
-        }
-
-        /// <summary>
-        /// Opens the bottle cap, if it is currently closed.
-        /// </summary>
-        [ECARelevance(true)]
-        [Action(typeof(ECABottle), "open cap")]
-        public void OpenCap()
-        {
-            if (IsCapped == ECABoolean.NO) return;
-            IsCapped = ECABoolean.NO;
-            Debug.Log("the cap is open");
-        }
-
-        /// <summary>
-        /// Closes the bottle cap, if it is currently open.
-        /// </summary>
-        [ECARelevance(true)]
-        [Action(typeof(ECABottle), "close cap")]
-        public void CloseCap()
-        {
-            if (IsCapped == ECABoolean.YES) return;
-            IsCapped = ECABoolean.YES;
-            Debug.Log("the cap is closed");
-        }
-    }*/
 }

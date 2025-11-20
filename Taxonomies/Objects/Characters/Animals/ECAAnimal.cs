@@ -6,9 +6,9 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals
 {
     /// <summary>
-    /// Represents an animal character within the ECA rules framework. 
-    /// An <b>Animal</b> is a specialized subclass of <see cref="ECACharacter"/> that embodies animal-like traits 
-    /// and behaviors, enabling interactions and actions unique to animal entities.
+    /// <b>ECAAnimal</b> is a component that represents an animal character within the ECA rules framework.
+    /// It extends <see cref="ECACharacter"/> to provide animal-specific traits and behaviors,
+    /// enabling actions and interactions characteristic of animal entities.
     /// </summary>
     [ECARules4All("animal")]
     [RequireComponent(typeof(ECACharacter))]

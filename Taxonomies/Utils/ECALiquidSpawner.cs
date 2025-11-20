@@ -6,7 +6,7 @@ namespace ECARules4All_DLL.Taxonomies.Utils
 {
     /// <summary>
     /// </summary>
-    public class LiquidSpawner : MonoBehaviour
+    public class ECALiquidSpawner : MonoBehaviour
     {
         public ECALiquidDispenser liquidDispenser = null; // Reference to the liquid dispenser component
 
@@ -82,23 +82,23 @@ namespace ECARules4All_DLL.Taxonomies.Utils
 
                 // Instantiate the water drop prefab at the random position
                 GameObject waterDrop = null;
-                LiquidDrop waterDropRef;
+                ECALiquidDrop waterDropRef;
                 if (_liquidTemperature == LiquidTemperature.Cold)
                 {
                     waterDrop = Instantiate(dropPrefabTempCold, randomPosition, Quaternion.identity);
-                    waterDropRef = waterDrop.GetComponent<LiquidDrop>();
+                    waterDropRef = waterDrop.GetComponent<ECALiquidDrop>();
                     waterDropRef.temperature = 10f;
                 }
                 else if (_liquidTemperature == LiquidTemperature.Ambient)
                 {
                     waterDrop = Instantiate(dropPrefabTempAmbient, randomPosition, Quaternion.identity);
-                    waterDropRef = waterDrop.GetComponent<LiquidDrop>();
+                    waterDropRef = waterDrop.GetComponent<ECALiquidDrop>();
                     waterDropRef.temperature = 20f;
                 }
                 else if (_liquidTemperature == LiquidTemperature.Warm)
                 {
                     waterDrop = Instantiate(dropPrefabTempWarm, randomPosition, Quaternion.identity);
-                    waterDropRef = waterDrop.GetComponent<LiquidDrop>();
+                    waterDropRef = waterDrop.GetComponent<ECALiquidDrop>();
                     waterDropRef.temperature = 30f;
                 }
                 else throw new Exception("Unknown liquid temperature: " + _liquidTemperature);

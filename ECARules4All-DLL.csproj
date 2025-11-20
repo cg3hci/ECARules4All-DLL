@@ -188,8 +188,8 @@
         <Compile Include="Taxonomies\Objects\Props\Subcategories\LiquidDispenser\Subcategories\ECABottle.cs" />
         <Compile Include="Taxonomies\Objects\Props\Subcategories\LiquidDispenser\Subcategories\ECAWaterMixerTap.cs" />
         <Compile Include="Taxonomies\Objects\Systems\ECASystem.cs" />
-        <Compile Include="Taxonomies\Utils\LiquidDrop.cs" />
-        <Compile Include="Taxonomies\Utils\LiquidSpawner.cs" />
+        <Compile Include="Taxonomies\Utils\ECALiquidDrop.cs" />
+        <Compile Include="Taxonomies\Utils\ECALiquidSpawner.cs" />
         <Compile Include="UI\ECAUI_Utils.cs" />
         <Compile Include="UI\UIColors.cs" />
         <Compile Include="UI\VerbComposition.cs" />

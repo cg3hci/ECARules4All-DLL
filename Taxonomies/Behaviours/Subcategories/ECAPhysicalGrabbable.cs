@@ -7,8 +7,8 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// <b>ECAPhysicalGrabbable</b> represents a physical object in the scene that can be grabbed by the player using one or both hands.
-    /// It tracks the grabbing state, handles interaction logic based on trigger collisions with hand colliders, and communicates grabbing events through the automation system.
+    /// <b>ECAPhysicalGrabbable</b> is a component that represents a physical object in the scene which can be grabbed by a player, or user, object equipped with an <see cref="ECACharacter"/> component, using one or both hands.
+    /// It tracks the grabbing state, manages interaction logic based on trigger collisions with hand colliders, and communicates grab-related events through the automation system.
     /// </summary>
     [ECARules4All("physicalGrabbable")]
     [RequireComponent(typeof(ECABehaviour))]
@@ -40,8 +40,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// <b>grabbed</b> indicates whether the object is currently being held by the player.
-        /// This state is updated based on collision triggers with hand colliders and is used to drive interactive behaviors.
+        /// <b>grabbed</b> indicates whether the object is currently being held by a player or user object equipped with an ECACharacter component.
+        /// This state is updated based on trigger collisions with hand colliders and is used to control interactive behaviors.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("grabbed", ECARules4AllType.Boolean)]
@@ -63,12 +63,12 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         // Case 3. Triggers with left -> Triggers with right -> Stops triggering with left => It still grabs right, so it should not stop grabbing
         private bool leftHandGrabbed = false;
         private bool rightHandGrabbed = false;
-
+        
         /// <summary>
-        /// <b>starts-grabbing</b> is triggered when the player begins to grab the object with either hand.
-        /// Updates the <see cref="grabbed"/> state and notifies the system about the interaction.
+        /// <b>starts-grabbing</b> is triggered when a player or user object equipped with an <see cref="ECACharacter"/> component begins to grab this object with either hand.
+        /// When triggered, it sets the <see cref="grabbed"/> state to true and notifies the automation system of the grab event.
         /// </summary>
-        /// <param name="c">The character initiating the grab.</param>
+        /// <param name="c">The object equipped with an <see cref="ECACharacter"/> component that initiates the grab action.</param>
         [ECARelevance(true)]
         [Action(typeof(ECACharacter), "starts-grabbing", typeof(ECAPhysicalGrabbable))]
         public void _StartsGrabbing(ECACharacter c)
@@ -78,10 +78,10 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// <b>stops-grabbing</b> is triggered when the player releases the object with both hands.
-        /// Resets the <see cref="grabbed"/> state and notifies the system of the interaction ending.
+        /// <b>stops-grabbing</b> is triggered when a player or user object equipped with an <see cref="ECACharacter"/> component releases this object with both hands.
+        /// When triggered, it sets the <see cref="grabbed"/> state to false and notifies the automation system that the grab interaction has ended.
         /// </summary>
-        /// <param name="c">The character releasing the object.</param>
+        /// <param name="c">The object equipped with an <see cref="ECACharacter"/> component that releases the object.</param>
         [ECARelevance(true)]
         [Action(typeof(ECACharacter), "stops-grabbing")]
         public void _StopsGrabbing(ECACharacter c)

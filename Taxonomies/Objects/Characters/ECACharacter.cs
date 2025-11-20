@@ -8,10 +8,9 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Characters
 {
     /// <summary>
-    /// Represents a versatile character within the ECA rules framework. 
-    /// A <b>Character</b> can embody various forms, including animals, humanoids, robots, or generic creatures. 
-    /// It can operate autonomously or be controlled by the player, supporting a range of actions and state attributes 
-    /// to interact dynamically with the environment
+    /// <b>ECACharacter</b> is a behavior component that represents a versatile entity within the ECA rules framework.
+    /// It can embody different forms such as animals, humanoids, robots, or other autonomous or player-controlled beings.
+    /// The component supports a wide range of actions and state attributes, enabling dynamic interaction with the environment.
     /// </summary>
     [ECARules4All("character")]
     [RequireComponent(typeof(ECAObject), typeof(Animator))]
@@ -36,7 +35,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Characters
         private float _life;
         
         /// <summary>
-        /// <b>playing</b> indicates whether the character is controlled by the player ("yes") or operating autonomously ("no").
+        /// <b>playing</b> indicates whether the character is controlled by the player ('yes') or operating autonomously ('no').
         /// </summary>
         [StateVariable("playing", ECARules4AllType.Boolean)]
         public ECABoolean playing

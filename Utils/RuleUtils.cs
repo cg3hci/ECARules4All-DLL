@@ -659,6 +659,7 @@ namespace ECARules4All_DLL.Utils
             foreach (var comp in listEcaComponents)
             {
                 int dept =  GetDepth(comp, 0);
+                
                 try
                 {
                     depths.Add(dept, comp.Name);

@@ -5,7 +5,7 @@ namespace ECARules4All_DLL.Taxonomies.Utils
 {
     /// <summary>
     /// </summary>
-    public class LiquidDrop : MonoBehaviour
+    public class ECALiquidDrop : MonoBehaviour
     {
         public bool doDestroyOnCollision = true; // Option to destroy on collision
         public bool doDestroyAfterLongDelay = true; // Option to destroy after a delay

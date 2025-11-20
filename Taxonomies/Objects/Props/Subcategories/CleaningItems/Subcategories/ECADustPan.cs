@@ -1,24 +1,34 @@
 using System.Collections.Generic;
 using ECARules4All_DLL.Taxonomies.Behaviours.Subcategories;
 using ECARules4All_DLL.Utils;
+using Serilog;
 using UnityEngine;
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories
 {
     /// <summary>
-    /// <b>ECADustPan</b> is a virtual object that simulates the behavior of a dustpan used in cleaning tasks.
-    /// It has a method for collecting dust balls (<see cref="ECADustBall"/>).
+    /// <b>ECADustPan</b> is a component that represents a virtual dustpan used in cleaning tasks within the environment.
+    /// It interacts with objects equipped with an <see cref="ECADustBall"/> component and allows the collection and containment
+    /// of dust balls that have been previously removed or swept by other cleaning tools.
     /// </summary>
     [ECARules4All("dustPan")]
     [RequireComponent(typeof(ECACleaningItem))]
     [DisallowMultipleComponent]
     public class ECADustPan : MonoBehaviour
     {
-
+        [SerializeField] private Transform dustSpawnPoint; // The spawn point above the pan (assign in Inspector)
+        [SerializeField] private List<GameObject> dustBallPool; // Pool of dust balls to activate one by one
+        private int currentIndex = 0;
+        
         /// <summary>
-        /// <b>CollectsDust</b> is a method that simulates the action of the dustpan collecting a dust ball.
+        /// <b>collects-dust</b> simulates the action of a dustpan collecting a dust ball from an object equipped
+        /// with the <see cref="ECADustBall"/> component, generally a surface within the environment.
+        /// This method is typically triggered after a <b>sweeps</b> action performed by an object equipped with an
+        /// <see cref="ECABroom"/> component, often in combination with the <b>remove-dust</b> action
+        /// of an <see cref="ECADustBall"/> component.
+        /// When executed, it transfers the dust ball into the dustpan, updating its collected state
         /// </summary>
-        /// <param name="dustBall">The <see cref="ECADustBall"/> object being collected.</param>
+        /// <param name="dustBall">The <see cref="ECADustBall"/> object being collected by the dustpan.</param>
         [ECARelevance(true)]
         [Action(typeof(ECADustPan), "collects-dust", typeof(ECADustBall))]
         public void CollectsDust(ECADustBall dustBall)
@@ -26,10 +36,6 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
             Debug.Log(this.gameObject + " collects-dust from " + dustBall.gameObject.name);
             LogicShowNextDustBall();
         }
-
-        [SerializeField] private Transform dustSpawnPoint; // The spawn point above the pan (assign in Inspector)
-        [SerializeField] private List<GameObject> dustBallPool; // Pool of dust balls to activate one by one
-        private int currentIndex = 0;
 
         void Awake()
         {
@@ -50,7 +56,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
             }
             else
             {
-                Debug.LogWarning("No more dust balls available in the pool.");
+                Log.Warning("No more dust balls available in the pool.");
             }
         }
 

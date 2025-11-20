@@ -6,9 +6,9 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
 {
     /// <summary>
-    /// The <b>Human</b> class represents a human character.
-    /// A Human can perform various movements such as running, walking, and swimming, each with a specific animation.
-    /// This class extends the functionality of <see cref="ECAAnimal"/> to include human-specific behaviors.
+    /// <b>ECAHuman</b> is a component that represents a human character capable of performing physical actions within the environment.
+    /// It can execute movements such as walking, running, and swimming, each associated with a specific animation sequence.
+    /// This component extends <see cref="ECAAnimal"/> by adding human-specific behaviors and interaction capabilities.
     /// </summary>
     [ECARules4All("human")]
     [RequireComponent(typeof(ECAAnimal))]

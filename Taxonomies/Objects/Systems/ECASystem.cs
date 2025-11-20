@@ -1,13 +1,15 @@
 
 using System.Collections;
 using ECARules4All_DLL.Utils;
+using Serilog;
 using UnityEngine;
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Systems
 {
     /// <summary>
-    /// <b>ECASystem</b> represents the virtual system within the automation system.
-    /// It notifies when the virtual system starts, allowing the execution of rules at the start of the application.
+    /// <b>ECASystem</b> is a component that represents the virtual automation system within the environment.
+    /// It handles system-level initialization events and notifies when the virtual system starts,
+    /// enabling the execution of ECA rules and actions defined to occur at application startup.
     /// </summary>
     [ECARules4All("system")]
     [RequireComponent(typeof(ECAObject))]
@@ -23,26 +25,27 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Systems
         {
             // Wait for the ECAObject to be created and initialized
             yield return new WaitForSeconds(0.1f); 
-            Debug.Log("I'm ready to start up the eca system");
+            Log.Debug("I'm ready to start up the eca system");
             StartsUpTest();
             
-            var action = new Action(this.gameObject, "starts-up");
+            var action = new Action(this.gameObject, "starts up");
             
             EventBus.GetInstance().Publish(action);
             ECAScript.NotifyUpdate(this, action); //TODO J 1st July '25: Is it necessary to notify the update here? Isn't automatic inside the EventBus?
             
-            Debug.Log("I have started up the eca system");
+            Log.Debug("I have started up the eca system");
         }
 
         /// <summary>
-        /// <b>StartsUpTest</b> is a method that triggers the startup process of the system.
-        /// It can be used as trigger for automations.
+        /// <b>starts up</b> represents the action that triggers the startup process of the virtual system.
+        /// When executed, it signals that the system has initialized successfully and can serve as a trigger
+        /// for ECA automation rules that should run at application startup.
         /// </summary>
-        [Action(typeof(ECASystem), "starts-up")]
+        [Action(typeof(ECASystem), "starts up")]
         [ECARelevance(true)]
         public void StartsUpTest()
         {
-            Debug.Log("StartsUpTest ColdWater");
+            Log.Debug("StartsUpTest ColdWater");
         }
     }
 

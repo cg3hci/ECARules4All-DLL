@@ -9,8 +9,10 @@ using Serilog;
 
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
-    /// <b>Sound</b> is a behavior that functions as a media player specifically designed for audio files.
-    /// It extends <see cref="ECABehaviour"/> to provide audio-related functionalities such as playback, volume control, and source management.
+    /// <summary>
+    /// <b>Sound</b> is a behavior component that acts as a media player specifically designed for audio playback.
+    /// It provides functionalities such as playing, pausing, and stopping audio, as well as controlling volume and managing audio sources.
+    /// </summary>
     [ECARules4All("sound")]
     [RequireComponent(typeof(ECABehaviour))]
     [RequireComponent(typeof(AudioSource))]
@@ -86,7 +88,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [SerializeField] private float _currentTime;
 
         /// <summary>
-        /// <b>playing</b> indicates whether the audio is currently playing. The value is either "yes" or "no". If paused or stopped are "yes", playing will be "no".
+        /// <b>playing</b> indicates whether the audio is currently playing. The value is either 'yes' or 'no'. If paused or stopped are 'yes', playing will be 'no'.
         /// </summary>
         [StateVariable("playing", ECARules4AllType.Boolean)]
         [ECARelevance(true)]
@@ -102,7 +104,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [SerializeField] private ECABoolean _playing = new ECABoolean(ECABoolean.BoolType.NO);
 
         /// <summary>
-        /// <b>paused</b> indicates whether the audio playback is paused. The value is either "yes" or "no". When playing again, the audio will resume from the paused time.
+        /// <b>paused</b> indicates whether the audio playback is paused. The value is either 'yes' or 'no'. When playing again, the audio will resume from the paused time.
         /// </summary>
         [StateVariable("paused", ECARules4AllType.Boolean)]
         [ECARelevance(false)]
@@ -118,7 +120,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [SerializeField] private ECABoolean _paused = new ECABoolean(ECABoolean.BoolType.NO);
 
         /// <summary>
-        /// <b> Stopped </b> indicates whether the audio playback is stopped. The value is either "yes" or "no". When playing again, the audio will start from the beginning.
+        /// <b> Stopped </b> indicates whether the audio playback is stopped. The value is either 'yes' or 'no'. When playing again, the audio will start from the beginning.
         /// </summary>
         [StateVariable("stopped", ECARules4AllType.Boolean)]
         [ECARelevance(true)]

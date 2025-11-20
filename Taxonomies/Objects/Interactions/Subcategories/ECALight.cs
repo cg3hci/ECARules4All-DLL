@@ -46,7 +46,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         private float _maxIntensity = 10;
 
         /// <summary>
-        /// <b>color</b> represents the color of the light source. The value is a string that represents the color name (e.g., "red", "blue", "green").
+        /// <b>color</b> represents the color of the light source. The value is a string that represents the color name (e.g., 'red', 'blue', 'green').
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("color", ECARules4AllType.Color)]
@@ -63,7 +63,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories
         private Color _color = new Color(1, 0.95686271f, 0.8392157f, 1);
 
         /// <summary>
-        /// <b>on</b> indicates whether the light source is currently active or inactive. The accepted values are "on" or "off".
+        /// <b>on</b> indicates whether the light source is currently active or inactive. The accepted values are 'on' or 'off'.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("on", ECARules4AllType.Boolean)]

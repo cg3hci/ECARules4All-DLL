@@ -4,14 +4,14 @@ using System.Linq;
 using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser;
 using ECARules4All_DLL.Taxonomies.Utils;
 using ECARules4All_DLL.Utils;
+using Serilog;
 using UnityEngine;
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContainer
 {
     /// <summary>
-    /// <b>ECALiquidContainer</b> represents a virtual container that can hold various virtual liquids and tracks their fill levels.
-    /// It manages the fill steps between start and end positions, tracks different types of liquid drops,
-    /// updates the visual liquid level, and handles temperature changes as liquids are added.
+    /// <b>ECALiquidContainer</b> is a component that represents a virtual container capable of holding different
+    /// types of virtual liquids and tracking their fill levels within the environment.
     /// </summary>
     [ECARules4All("liquidContainer")]
     [RequireComponent(typeof(ECAProp))]
@@ -83,14 +83,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
 
 
             waterCircleInstance.SetActive(false);
-
-            // foreach (var fs in fillSteps)
-            // {
-            //     fs.levelTransform.gameObject.SetActive(renderSteps); // Couldn't disable simply the Renderer, so I disable the whole GameObject
-            // }
+            
             void AddDummyRules()
             {
-                Debug.Log("RRRRRRRRR ECALiquidcontainer Rules in the system before all: " +
+                Debug.Log("[ECALiquidcontainer - AddDummyRules] ECALiquidcontainer Rules in the system before all: " +
                           RuleEngine.GetInstance().Rules().Count());
 
                 ECALiquidDispenser
@@ -102,7 +98,6 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
 
                 var isVisibleCondition = new SimpleCondition(this.gameObject, "visible", "is", ECABoolean.YES);
                 var isHiddenCondition = new SimpleCondition(this.gameObject, "visible", "is", ECABoolean.NO);
-                // new SimpleCondition(this.gameObject, "capOpen", "is", ECABoolean.YES);
 
                 var hidesAction = new Action(this.gameObject, "hides");
                 var showsAction = new Action(this.gameObject, "shows");
@@ -113,7 +108,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
                     new List<Action> { hidesAction }
                 );
                 RuleEngine.GetInstance().Add(rule_whenFillsIn_ifVisible_thenHides);
-                Debug.Log("RRRRRRRRR ECALiquidcontainer Rules in the system after one add: " +
+                Debug.Log("[ECALiquidcontainer - AddDummyRules] ECALiquidcontainer Rules in the system after one add: " +
                           RuleEngine.GetInstance().Rules().Count());
 
                 var rule_whenFillsIn_ifHidden_thenShows = Rule.TryCreateRule(
@@ -122,16 +117,14 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
                     new List<Action> { showsAction }
                 );
                 RuleEngine.GetInstance().Add(rule_whenFillsIn_ifHidden_thenShows);
-                Debug.Log("RRRRRRRRR ECALiquidcontainer Rules in the system after one add: " +
+                Debug.Log("[ECALiquidcontainer - AddDummyRules] ECALiquidcontainer Rules in the system after one add: " +
                           RuleEngine.GetInstance().Rules().Count());
             }
-
-            // AddDummyRules();
         }
 
         private void OnCollisionEnter(Collision other)
         {
-            var liquidDropRef = other.gameObject.GetComponent<LiquidDrop>();
+            var liquidDropRef = other.gameObject.GetComponent<ECALiquidDrop>();
             if (liquidDropRef != null)
             {
                 HandleWaterTouching(liquidDropRef);
@@ -140,51 +133,43 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
 
         private void OnTriggerEnter(Collider other)
         {
-            var liquidDropRef = other.gameObject.GetComponent<LiquidDrop>();
+            var liquidDropRef = other.gameObject.GetComponent<ECALiquidDrop>();
             if (liquidDropRef != null)
             {
                 HandleWaterTouching(liquidDropRef);
             }
         }
 
-        private void HandleWaterTouching(LiquidDrop liquidRef)
+        private void HandleWaterTouching(ECALiquidDrop liquidRef)
         {
             //////// Update counters based on liquid type ////////
             var lqType = liquidRef.owner.liquidSpawner.GetLiquidType();
-            if (lqType == LiquidSpawner.LiquidType.Water)
+            if (lqType == ECALiquidSpawner.LiquidType.Water)
             {
-                // Debug.Log("AAA LIQUID TYPE IS WATER");
                 waterDrops += 1;
             }
-            else if (lqType == LiquidSpawner.LiquidType.Degreaser)
+            else if (lqType == ECALiquidSpawner.LiquidType.Degreaser)
             {
-                // Debug.Log("AAA LIQUID TYPE IS DEGREASER");
                 degreaserDrops += 1;
             }
-            else if (lqType == LiquidSpawner.LiquidType.BatteryKiller)
+            else if (lqType == ECALiquidSpawner.LiquidType.BatteryKiller)
             {
-                // Debug.Log("AAA LIQUID TYPE IS BATTERY KILLER");
                 batteryKillerDrops += 1;
             }
-            else if (lqType == LiquidSpawner.LiquidType.Amuchina)
+            else if (lqType == ECALiquidSpawner.LiquidType.Amuchina)
             {
-                // Debug.Log("AAA LIQUID TYPE IS AMUCHINA");
                 amuchinaDrops += 1;
             }
-
-
+            
             ////////  Update rendered water level ////////
             var totalLiquidIn = waterDrops + degreaserDrops + batteryKillerDrops + amuchinaDrops;
-
             int currentLevel = Mathf.FloorToInt(totalLiquidIn / liquidPerLevel);
-            // Debug.Log($"counterWaterInlevel: {counterWaterIn}");
-            // Debug.Log($"Current water level: {currentLevel}");
 
             // Find the highest FillStep whose level is <= currentLevel
             FillStep bestStep = null;
             foreach (var step in fillSteps)
             {
-                Debug.Log(
+                Log.Debug(
                     $"Checking currentLevel >= step.level = {step.level} >= {currentLevel} = {currentLevel >= step.level}");
                 if (currentLevel >= step.level)
                 {
@@ -198,31 +183,27 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
 
             if (bestStep != null)
             {
-                Debug.Log($"BBBB");
                 // if disabled, enable waterCircleInstance
                 // Move water visual to the fill level's transform
                 if (!waterCircleInstance.activeSelf)
                 {
-                    Debug.Log("Enabling waterCircleInstance");
+                    Log.Debug("Enabling waterCircleInstance");
                     waterCircleInstance.SetActive(true);
                 }
-
                 waterCircleInstance.transform.position = bestStep.levelTransform.position;
             }
 
             ////////  Update temperature  ////////
             float UpdateBucketTemperature(float oldBucketTemperature, float dropTemperature, int existingDropCount)
             {
-                Debug.Log("dropTemperature = " + dropTemperature);
+                Log.Debug("dropTemperature = " + dropTemperature);
                 if (existingDropCount <= 0)
                 {
                     // If this is the first drop, the bucket's temperature becomes the drop's temperature
                     return dropTemperature;
                 }
-
                 float newTemp = ((oldBucketTemperature * existingDropCount) + dropTemperature) /
                                 (existingDropCount + 1);
-
                 // Snap to dropTemperature if within 0.5°C
                 if (Mathf.Abs(newTemp - dropTemperature) <= 0.5f)
                 {
@@ -241,8 +222,6 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
             ECAScript.NotifyUpdate(this,
                 action); //TODO J 1st July '25: Is it necessary to notify the update here? Isn't automatic inside the EventBus?
         }
-
-        // Properties tracking the count of different liquid drops added to the container
 	
         /// <summary>
         /// <b>waterDrops</b> counts how many water drops have been added to the container.
@@ -258,10 +237,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
                 ECAScript.NotifyUpdate(this, nameof(waterDrops), waterDrops.ToString());
             }
         }
-
         [SerializeField] private int _waterDrops = 0;
-
-
+        
         /// <summary>
         /// <b>degreaserDrops</b> counts how many degreaser drops have been added to the container.
         /// </summary>
@@ -276,10 +253,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
                 ECAScript.NotifyUpdate(this, nameof(degreaserDrops), degreaserDrops.ToString());
             }
         }
-
         [SerializeField] private int _degreaserDrops = 0;
-
-
+        
         /// <summary>
         /// <b>batteryKillerDrops</b> counts how many battery killer drops have been added to the container.
         /// </summary>
@@ -294,7 +269,6 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
                 ECAScript.NotifyUpdate(this, nameof(batteryKillerDrops), batteryKillerDrops.ToString());
             }
         }
-
         [SerializeField] private int _batteryKillerDrops = 0;
 
         /// <summary>
@@ -311,7 +285,6 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
                 ECAScript.NotifyUpdate(this, nameof(amuchinaDrops), amuchinaDrops.ToString());
             }
         }
-
         [SerializeField] private int _amuchinaDrops = 0;
 
 
@@ -330,13 +303,13 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
                 ECAScript.NotifyUpdate(this, nameof(temperature), temperature.ToString());
             }
         }
-
         [SerializeField] private float _temperature = 0;
 
         /// <summary>
-        /// <b>_FillsIn</b> is an action method invoked when the container is filled by a liquid dispenser.
+        /// <b>fills-in</b> represents the action performed when an object equipped with an <see cref="ECALiquidContainer"/> component
+        /// is filled by an object equipped with an <see cref="ECALiquidDispenser"/> component.
         /// </summary>
-        /// <param name="dispenser">The liquid dispenser that fills the container.</param>
+        /// <param name="dispenser">The object equipped with an <see cref="ECALiquidDispenser"/> component that fills the container.</param>
         [ECARelevance(true)]
         [Action(typeof(ECALiquidDispenser), "fills-in", typeof(ECALiquidContainer))]
         public void _FillsIn(ECALiquidDispenser dispenser)

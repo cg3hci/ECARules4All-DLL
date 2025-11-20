@@ -4,24 +4,28 @@ using System.Linq;
 using ECARules4All_DLL.Taxonomies.Objects.Characters;
 using ECARules4All_DLL.Taxonomies.Utils;
 using ECARules4All_DLL.Utils;
+using Serilog;
 using UnityEngine;
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories
 {
     /// <summary>
-    /// <b>ECAWaterMixerTap</b> is a virtual object representing a water mixer tap that can be turned left, idle (middle), or right.
-    /// Some rules are added automatically at the start:
-    /// - Turning left flows warm water.
-    /// - Turning right flows cold water
-    /// - Turning idle (middle) stops the flow.
-    /// The class includes properties and methods for controlling and responding to user interactions.
+    /// <b>ECAWaterMixerTap</b> is a component that represents a virtual water mixer tap within the environment.
+    /// It can be turned to the left, idle (center), or right positions, corresponding respectively to warm,
+    /// neutral, and cold water flow states.
+    /// Several default automation rules are initialized at startup:
+    /// - Turning left starts the flow of warm water.
+    /// - Turning right starts the flow of cold water.
+    /// - Returning to the idle (center) position stops the water flow.
+    /// The component provides properties and actions for controlling its rotation state, managing the water flow,
+    /// and responding to user interactions or automation triggers.
     /// </summary>
     [ECARules4All("waterMixerTap")]
     [RequireComponent(typeof(ECALiquidDispenser))]
     [DisallowMultipleComponent]
     public class ECAWaterMixerTap : MonoBehaviour
     {
-        private LiquidSpawner _waterSpawner;
+        private ECALiquidSpawner _waterSpawner;
         public AudioSource audioSource;
         public GameObject tapHandle;
         public GameObject pivot;
@@ -43,7 +47,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         {
             void AddRules()
             {
-                Debug.Log("Rules in the system before all: " + RuleEngine.GetInstance().Rules().Count());
+                Log.Debug("Rules in the system before all: " + RuleEngine.GetInstance().Rules().Count());
 
                 var tapTurnsLeftAction = new Action(player_character, "turns-left", this.gameObject);
                 var tapTurnsIdleAction = new Action(player_character, "turns-idle", this.gameObject);
@@ -58,7 +62,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
                     new List<Action> { tapFlowsColdWater }
                 );
                 RuleEngine.GetInstance().Add(rule_whenTurnsRightThenColdWaterFlows);
-                Debug.Log("Rules in the system after one add: " + RuleEngine.GetInstance().Rules().Count());
+                Log.Debug("Rules in the system after one add: " + RuleEngine.GetInstance().Rules().Count());
 
 
                 var rule_whenTurnsLeftThenWarmWaterFlows = Rule.TryCreateRule(
@@ -66,7 +70,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
                     new List<Action> { tapFlowsWarmWater }
                 );
                 RuleEngine.GetInstance().Add(rule_whenTurnsLeftThenWarmWaterFlows);
-                Debug.Log("Rules in the system after two add: " + RuleEngine.GetInstance().Rules().Count());
+                Log.Debug("Rules in the system after two add: " + RuleEngine.GetInstance().Rules().Count());
 
 
                 var rule_whenTurnsMiddleThenStopsFlowingWater = Rule.TryCreateRule(
@@ -74,7 +78,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
                     new List<Action> { tapStopsFlowingWater }
                 );
                 RuleEngine.GetInstance().Add(rule_whenTurnsMiddleThenStopsFlowingWater);
-                Debug.Log("Rules in the system after one add: " + RuleEngine.GetInstance().Rules().Count());
+                Log.Debug("Rules in the system after one add: " + RuleEngine.GetInstance().Rules().Count());
             }
 
             AddRules();
@@ -85,7 +89,6 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
             var state = CheckTapHandle();
             if (state != _lastTapState)
             {
-                // Debug.Log("Tap state changed from " + _lastTapState + " to " + state);
                 _lastTapState = state;
                 if (_lastTapState == TapState.IDLE)
                 {
@@ -96,7 +99,6 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
                 }
                 else if (_lastTapState == TapState.LEFT)
                 {
-                    // [Action(typeof(ECACharacter), "turns-left", typeof(ECAWaterMixerTap))]
                     Action action = new Action(player_character, "turns-left", this.gameObject);
                     EventBus.GetInstance().Publish(action);
                     ECAScript.NotifyUpdate(this,
@@ -109,11 +111,6 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
                     ECAScript.NotifyUpdate(this,
                         action); //TODO J 2nd July '25: Is it necessary to notify the update here? Isn't automatic inside the EventBus?
                 }
-            }
-            else
-            {
-                // Debug.Log("Tap state remains " + state);
-                return;
             }
 
             // if (state == TapState.LEFT || state == TapState.RIGHT)
@@ -138,21 +135,22 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         }
 
         /// <summary>
-        /// <b>FlowsWarmWater</b> causes the tap to emit warm water.
+        /// <b>flows-warm-water</b> represents the action that causes an object equipped with an
+        /// <see cref="ECAWaterMixerTap"/> component, typically a tap, to emit warm water. 
         /// </summary>
         [Action(typeof(ECAWaterMixerTap), "flows-warm-water")]
         [ECARelevance(true)]
         public void FlowsWarmWater()
         {
-            Debug.Log("ECAWaterMixerTap: FlowsWarmWater called");
+            Log.Debug("ECAWaterMixerTap: FlowsWarmWater called");
             if (!audioSource.isPlaying)
                 audioSource.Play();
-            Debug.Log("After If");
-            Debug.Log("BEFORE Spawn Liquid");
-            Debug.Log("Water Spawner " + _waterSpawner);
-            Debug.Log("Liquid Spawner " + _waterSpawner.GetType());
-            _waterSpawner.SpawnLiquid(LiquidSpawner.LiquidTemperature.Warm);
-            Debug.Log("AFTER Spawn Liquid");
+            Log.Debug("After If");
+            Log.Debug("BEFORE Spawn Liquid");
+            Log.Debug("Water Spawner " + _waterSpawner);
+            Log.Debug("Liquid Spawner " + _waterSpawner.GetType());
+            _waterSpawner.SpawnLiquid(ECALiquidSpawner.LiquidTemperature.Warm);
+            Log.Debug("AFTER Spawn Liquid");
         }
 
         /// <summary>
@@ -164,7 +162,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         {
             if (!audioSource.isPlaying)
                 audioSource.Play();
-            _waterSpawner.SpawnLiquid(LiquidSpawner.LiquidTemperature.Cold);
+            _waterSpawner.SpawnLiquid(ECALiquidSpawner.LiquidTemperature.Cold);
         }
 
         /// <summary>
@@ -218,16 +216,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
 
         public TapState CheckTapHandle()
         {
-            // Debug.Log("ABCDEFGHILMNO Checking tap handle. Rotation(x,y,z)= " + tapHandle.transform.rotation);
-            // Debug.Log("ABCDEFGHILMNO Checking tap handle. Rotation Euler (x,y,z)= " +
-            //           tapHandle.transform.rotation.eulerAngles);
-            // Debug.Log("ABCDEFGHILMNO Checking tap handle. LocalRotation(x,y,z)= " + tapHandle.transform.localRotation);
-            // Debug.Log("ABCDEFGHILMNO Checking tap handle. LocalRotation Euler(x,y,z)= " +
-            //           tapHandle.transform.localRotation.eulerAngles);
-
             var vecPivotPosition = tapHandle.transform.position - pivot.transform.position;
-            // Debug.Log("ABCDEFGHILMNO Vector Pivot --> Position: " + vecPivotPosition);
-
 
             float threshold = PERC_THR * vecPivotPosition.magnitude; // 10% of the distance as threshold
 

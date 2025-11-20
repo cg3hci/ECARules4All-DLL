@@ -1,12 +1,14 @@
+using ECARules4All_DLL.Taxonomies.Behaviours.Subcategories;
 using ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories;
 using ECARules4All_DLL.Utils;
+using Serilog;
 using UnityEngine;
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories
 {
     /// <summary>
-    /// <b>ECAScottex</b> represents a virtual disposable paper towel used to clean surfaces in the simulation.
-    /// It interacts with surfaces by sweeping over them and is automatically linked to a soakable cleaning system via the <see cref="ECASoakableCleaningItem"/> component.
+    /// <b>ECAScottex</b> represents a virtual disposable paper towel used to clean an object equipped with an
+    /// <see cref="ECASurface"/> component, typically a surface within the environment.
     /// </summary>
     [ECARules4All("scottex")]
     [RequireComponent(typeof(ECASoakableCleaningItem))]
@@ -19,34 +21,38 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         {
             _soakableCleaningItem = GetComponent<ECASoakableCleaningItem>();
         }
-
+        
         /// <summary>
-        /// <b>Sweeps</b> is a method that simulates the action of the scottex wiping or cleaning a given surface.
-        /// This action is used to trigger an ECA event when a surface is swept by the object.
+        /// <b>sweeps</b> represents the action of a paper towel (or scottex) cleaning an object equipped with an <see cref="ECASurface"/> component,
+        /// typically representing a surface within the environment. This method is usually invoked when the paper towel
+        /// comes into contact with an object equipped with an <see cref="ECASurface"/> component.
+        /// When executed, if the target object also includes an <see cref="ECADustBall"/> component,
+        /// it removes any dust balls present and triggers the corresponding <b>remove-dust</b> action,
+        /// performed by an object equipped with an <see cref="ECAScottex"/> component.
         /// </summary>
-        /// <param name="surface">The surface being swept by the scottex.</param>
+        /// <param name="surface">The object equipped with an <see cref="ECASurface"/> component representing the surface to be swept.</param>
         [ECARelevance(true)]
         [Action(typeof(ECAScottex), "sweeps", typeof(ECASurface))]
         public void Sweeps(ECASurface surface)
         {
-            Debug.Log(this.gameObject + " sweeps (scottex) with " + surface.gameObject.name);
+            Log.Debug(this.gameObject + " sweeps (scottex) with " + surface.gameObject.name);
         }
 
 
         private void OnTriggerEnter(Collider other)
         {
             // If the collided object has an ECASurface component, this triggers a sweep interaction and publishes the event to the ECA system.
-            Debug.Log("STO TRIGGERANDO CON " + other.gameObject.name);
+            Log.Information("[ECAScottex - OnTriggerEnter] " + other.gameObject.name);
 
             ECASurface surface = other.gameObject.GetComponent<ECASurface>();
             if (surface != null)
             {
-                Debug.Log("AAA The scottex is sweeping the surface: " + surface.gameObject.name);
+                Log.Debug("[ECAScottex - OnTriggerEnter] The scottex is sweeping the surface: " + surface.gameObject.name);
                 Sweeps(surface);
                 Action action = new Action(this.gameObject, "sweeps", surface.gameObject);
                 EventBus.GetInstance().Publish(action);
                 ECAScript.NotifyUpdate(this,
-                    action); //TODO J 1st July '25: Is it necessary to notify the update here? Isn't automatic inside the EventBus?
+                    action);
             }
         }
     }

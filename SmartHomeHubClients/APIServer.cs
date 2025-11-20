@@ -1,5 +1,4 @@
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -8,7 +7,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 
 namespace ECARules4All_DLL.SmartHomeHubClients

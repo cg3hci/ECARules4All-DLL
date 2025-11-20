@@ -6,7 +6,7 @@ using UnityEngine;
 namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 {
     /// <summary>
-    /// <b>Highlight</b> is a <see cref="ECABehaviour">ECABehaviour</see> that is used to highlight the objects that are in the scene.
+    /// <b>Highlight</b> is a component that is used to highlight the objects that are in the scene.
     /// </summary>
     [ECARules4All("highlight")]
     [RequireComponent(typeof(ECABehaviour))]

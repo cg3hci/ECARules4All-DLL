@@ -1,11 +1,12 @@
-﻿using ECARules4All_DLL.Utils;
+﻿using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems;
+using ECARules4All_DLL.Utils;
 using UnityEngine;
 
 namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
 {
     /// <summary>
-    /// <b>ECASurface</b> represents a physical or virtual surface within the automation environment.
-    /// It is used to define surfaces such as tables, floors, walls, or ceilings that cleaning items can interact with.
+    /// <b>ECASurface</b> is a component that represents a virtual surface within the automation environment.
+    /// It defines surfaces such as tables, floors, walls, or ceilings that can be detected and interacted with by cleaning items (<see cref="ECACleaningItem"/>) or other objects.
     /// </summary>
     [ECARules4All("surface")]
     [RequireComponent(typeof(ECAEnvironment))]
@@ -13,8 +14,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories
     public class ECASurface : MonoBehaviour
     {
         /// <summary>
-        /// <b>type</b> specifies the kind of surface.
-        /// Possible values include "table", "floor", "wall", or "ceiling".
+        /// <b>type</b> specifies the kind of surface represented by an object equipped with the ECASurface component.
+        /// Valid values include 'table', 'floor', 'wall', and 'ceiling'.
+        /// This attribute is used by cleaning items to determine how to interact with the surface.
         /// </summary>
         [ECARelevance(true)]
         [StateVariable("type", ECARules4AllType.Text)]
