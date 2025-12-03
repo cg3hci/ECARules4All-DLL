@@ -166,7 +166,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         /// and, if the bottle is flipped downward, triggers the <b>drops-liquid</b> action to start the liquid flow.
         /// </summary>
         [ECARelevance(true)]
-        [Action(typeof(ECACharacter), "opens cap", typeof(ECABottle))]
+        [Action(typeof(ECACharacter), "opens-cap", typeof(ECABottle))]
         public void _OpenCap(ECACharacter c)
         {
             if (capOpen == ECABoolean.YES) return; // if already open, do nothing
@@ -183,7 +183,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         /// and triggers the <b>stops-dropping</b> action to halt any ongoing liquid flow.
         /// </summary>
         [ECARelevance(true)]
-        [Action(typeof(ECACharacter), "closes cap", typeof(ECABottle))]
+        [Action(typeof(ECACharacter), "closes-cap", typeof(ECABottle))]
         public void _CloseCap(ECACharacter c)
         {
             if (capOpen == ECABoolean.NO) return; // if already closed, do nothing
@@ -198,7 +198,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         /// upside down. When executed, it updates the internal state variable <c>flipped</c> to <c>true</c>
         /// and, if the cap is open, triggers the <b>drops-liquid</b> action to start the liquid flow.
         /// </summary>
-        [Action(typeof(ECABottle), "flips down")]
+        [Action(typeof(ECABottle), "flips-down")]
         [ECARelevance(true)]
         public void FlipsDown()
         {
@@ -214,7 +214,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         /// to an upright position. When executed, it updates the internal state variable <c>flipped</c> to <c>false</c>
         /// and stops any ongoing liquid flow if the bottle was previously pouring.
         /// </summary>
-        [Action(typeof(ECABottle), "flips up")]
+        [Action(typeof(ECABottle), "flips-up")]
         [ECARelevance(true)]
         public void FlipsUp()
         {
@@ -231,7 +231,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         /// associated with an object equipped with an <see cref="ECABottle"/> component.
         /// When executed, it starts the spawning of liquid particles or drops within the environment.
         /// </summary>
-        [Action(typeof(ECABottle), "drops liquid")]
+        [Action(typeof(ECABottle), "drops-liquid")]
         [ECARelevance(true)]
         public void DropsLiquid()
         {
@@ -245,7 +245,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispense
         /// When executed, it halts the spawning of liquid particles or drops and updates the dispenser’s internal state
         /// to indicate that the liquid flow has stopped.
         /// </summary>
-        [Action(typeof(ECABottle), "stops dropping")]
+        [Action(typeof(ECABottle), "stops-dropping")]
         [ECARelevance(true)]
         public void StopsDropping()
         {

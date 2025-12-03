@@ -3,6 +3,7 @@ using System.Collections;
 using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser;
 using ECARules4All_DLL.Taxonomies.Utils;
 using ECARules4All_DLL.Utils;
+using Serilog;
 using UnityEngine;
 
 
@@ -33,34 +34,42 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
 
         private void OnCollisionEnter(Collision other)
         {
+            Log.Information("[ECASoakableCleaningItem] on collision enter");
+            
             // If the object is a LiquidDrop, it is considered an attempt to wet the item.
-            var ldrop = other.gameObject.GetComponent<ECALiquidDrop>();
+            //var ldrop = other.gameObject.GetComponent<ECALiquidDrop>();
+            var ldrop = other.gameObject.GetComponent<ECALiquidDispenser>();
             if (ldrop != null)
             {
-                ECALiquidDispenser ld = ldrop.owner;
+                //ECALiquidDispenser ld = ldrop.owner;
+                ECALiquidDispenser ld = ldrop;
                 _Wets(ld);
                 Action action = new Action(ld.gameObject, "wets", this.gameObject);
                 EventBus.GetInstance().Publish(action);
-                ECAScript.NotifyUpdate(this,
-                    action); //TODO J 1st July '25: Is it necessary to notify the update here? Isn't automatic inside the EventBus?
+                ECAScript.NotifyUpdate(this,action); //TODO J 1st July '25: Is it necessary to notify the update here? Isn't automatic inside the EventBus?
+                Log.Information("[ECASoakableCleaningItem] on collision enter - publish wets action");
             }
         }
 
         private void OnTriggerEnter(Collider other)
         {
+            Log.Information("[ECASoakableCleaningItem] on trigger enter");
+            
             // If it belongs to a LiquidDrop, it initiates the wetting process.
-            var ldrop = other.gameObject.GetComponent<ECALiquidDrop>();
+            //var ldrop = other.gameObject.GetComponent<ECALiquidDrop>();
+            var ldrop = other.gameObject.GetComponent<ECALiquidDispenser>();
             if (ldrop != null)
             {
-                ECALiquidDispenser ld = ldrop.owner;
+                //ECALiquidDispenser ld = ldrop.owner;
+                ECALiquidDispenser ld = ldrop;
                 _Wets(ld);
                 Action action = new Action(ld.gameObject, "wets", this.gameObject);
                 EventBus.GetInstance().Publish(action);
                 ECAScript.NotifyUpdate(this,
                     action); //TODO J 1st July '25: Is it necessary to notify the update here? Isn't automatic inside the EventBus?
+                Log.Information("[ECASoakableCleaningItem] on trigger enter - publish wets action");
             }
         }
-
 
         /// <summary>
         /// <b>hasWater</b> indicates whether the item currently contains water.
