@@ -208,11 +208,15 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         }
         
         /// <summary>
-        /// <bchanges has water</b> represents the implicit action performed when an object equipped with an
-        /// <see cref="ECASoakableCleaningItem"/> component becomes wet due to the <b>wets</b> action
-        /// triggered by an object equipped with a <see cref="ECALiquidDispenser"/> component containing <b>water</b>.
-        /// This action updates the internal state of the cleaning item by setting the <b>hasWater</b> variable to <c>true</c>,
-        /// indicating that the object has absorbed water and is now ready for water-based cleaning operations.
+        /// <b>changes has water</b> represents the implicit action performed when an object equipped with an
+        /// <see cref="ECASoakableCleaningItem"/> component absorbs water due to the <b>wets</b> action
+        /// triggered by an object equipped with a <see cref="ECALiquidDispenser"/> component whose
+        /// <b>liquidSpawner</b> property is explicitly set to <b>water</b> (e.g., a spruzzino object).
+        /// In other words, this action is only applicable if the liquid dispenser is configured to dispense
+        /// water; liquid dispensers configured with any other liquid do not trigger this state change.
+        /// When this condition is satisfied, the action updates the internal state of the cleaning item by
+        /// setting the <b>hasWater</b> variable to <c>true</c>, indicating that the object has absorbed
+        /// water and is now ready for water-based cleaning operations.
         /// </summary>
         [Action(typeof(ECASoakableCleaningItem), "changes has water")]
         [ECARelevance(true)]
@@ -222,15 +226,36 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         
         /// <summary>
         /// <b>changes-has-degreaser</b> represents the implicit action performed when an object equipped with an
-        /// <see cref="ECASoakableCleaningItem"/> component becomes wet due to the <b>wets</b> action
-        /// triggered by an object equipped with a <see cref="ECALiquidDispenser"/> component containing <b>degreaser</b>.
-        /// This action updates the internal state of the cleaning item by setting the <b>hasDegreaser</b> variable to <c>true</c>,
-        /// indicating that the object has absorbed degreaser and is now ready for degreasing operations.
+        /// <see cref="ECASoakableCleaningItem"/> component absorbs degreaser due to the <b>wets</b> action
+        /// triggered by an object equipped with a <see cref="ECALiquidDispenser"/> component whose
+        /// <b>liquidSpawner</b> property is explicitly set to <b>degreaser</b> (e.g., spruzzinosgrassatore object).
+        /// In other words, this action is only applicable if the liquid dispenser is configured to dispense
+        /// degreaser; liquid dispensers configured with any other liquid do not trigger this state change.
+        /// When this condition is satisfied, the action updates the internal state of the cleaning item by
+        /// setting the <b>hasDegreaser</b> variable to <c>true</c>, indicating that the object has absorbed
+        /// degreaser and is therefore ready for degreasing operations.
         /// </summary>
         [Action(typeof(ECASoakableCleaningItem), "changes has degreaser")]
         [ECARelevance(true)]
         public void changesHasDegreaser(){
             this.hasDegreaser = new ECABoolean(true);
+        }
+        
+        /// <summary>
+        /// <b>changes-has-amuchina</b> represents the implicit action performed when an object equipped with an
+        /// <see cref="ECASoakableCleaningItem"/> component absorbs amuchina due to the <b>wets</b> action
+        /// triggered by an object equipped with a <see cref="ECALiquidDispenser"/> component whose
+        /// <b>liquidSpawner</b> property is explicitly set to <b>amuchina</b> (e.g., spruzzinoamuchina object).
+        /// In other words, this action is only applicable if the liquid dispenser is configured to dispense
+        /// amuchina; liquid dispensers configured with any other liquid do not trigger this state change.
+        /// When this condition is satisfied, the action updates the internal state of the cleaning item by
+        /// setting the <b>hasAmuchina</b> variable to <c>true</c>, indicating that the object has absorbed
+        /// amuchina and is therefore ready for sanitizing operations.
+        /// </summary>
+        [Action(typeof(ECASoakableCleaningItem), "changes has amuchina")]
+        [ECARelevance(true)]
+        public void changesHasAmuchina(){
+            this.hasAmuchina = new ECABoolean(true);
         }
     }
 }
