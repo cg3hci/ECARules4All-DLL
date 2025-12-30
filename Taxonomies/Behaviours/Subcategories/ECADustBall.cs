@@ -81,12 +81,12 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }*/
 
         /// <summary>
-        /// <b>removes-dust</b> defines the sweeping action performed by an object equipped with an <see cref="ECAScottex"/> component.
+        /// <b>removes-dust-with-scottex</b> defines the sweeping action performed by an object equipped with an <see cref="ECAScottex"/> component.
         /// When the action is executed, the dust balls are removed. Typically, this is the result of a <b>wipes</b> event performed by an object equipped with an <see cref="ECAScottex"/>.
         /// </summary>
         /// <param name="scottex">The object equipped with an ECAScottex component responsible for performing the sweeping action.</param>
         [ECARelevance(true)]
-        [Action(typeof(ECAScottex), "removes-dust", typeof(ECADustBall))]
+        [Action(typeof(ECAScottex), "removes-dust-with-scottex", typeof(ECADustBall))]
         public void _IncreasinglySweeps(ECAScottex scottex)
         {
             Log.Debug("Removes dust by scottex: " + scottex.gameObject.name);
@@ -94,7 +94,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// <b>removes-dust</b> defines the sweeping action performed by an object that has an ECABroom component.
+        /// <b>removes-dust-with-broom</b> defines the sweeping action performed by an object that has an ECABroom component.
         /// When the action is executed, the dust balls are removed. Typically, this is the result of a <b>washes</b>
         /// event performed by an object that has an ECABroom.
         /// After removal, nearby objects equipped with an ECADustPan component may automatically execute
@@ -102,7 +102,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         /// </summary>
         /// <param name="broom">The object that has a ECABroomcomponent responsible for performing the sweeping action.</param>
         [ECARelevance(true)]
-        [Action(typeof(ECABroom), "removes-dust", typeof(ECADustBall))]
+        [Action(typeof(ECABroom), "removes-dust-with-broom", typeof(ECADustBall))]
         public void _IncreasinglySweeps(ECABroom broom)
         {
             Log.Debug("Removes dust by broom: " + broom.gameObject.name);

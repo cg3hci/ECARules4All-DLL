@@ -80,12 +80,12 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }*/
         
         /// <summary>
-        /// <b>removes-stain</b> defines the sweeping action performed by an object that has an <see cref="ECACleaningRag"/> component.
+        /// <b>removes-stain-with-rag</b> defines the sweeping action performed by an object that has an <see cref="ECACleaningRag"/> component.
         /// When the action is executed, the stains are removed. Typically, this is the result of a <b>washes</b> event performed by an object that has an <see cref="ECACleaningRag"/>.
         /// </summary>
         /// <param name="cleaningRag">The object that has a <see cref="ECACleaningRag"/> component responsible for performing the washing action.</param>
         [ECARelevance(true)]
-        [Action(typeof(ECACleaningRag), "removes-stain", typeof(ECAOilStain))]
+        [Action(typeof(ECACleaningRag), "removes-stain-with-rag", typeof(ECAOilStain))]
         public void _IncreasinglyWashes(ECACleaningRag cleaningRag)
         {
             Debug.Log("Washes by one rag. Cleaning rag: " + cleaningRag.gameObject.name);
@@ -93,12 +93,12 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         }
 
         /// <summary>
-        /// <b>removes-stain</b> defines the sweeping action performed by an object equipped with an <see cref="ECAMop"/> component.
+        /// <b>removes-stain-with-mop</b> defines the sweeping action performed by an object equipped with an <see cref="ECAMop"/> component.
         /// When the action is executed, the stains are removed. Typically, this is the result of a <b>washes</b> event performed by an object that has an <see cref="ECAMop"/>..
         /// </summary>
         /// <param name="mop">The object equipped with an ECAMop component responsible for performing the washing action.</param>
         [ECARelevance(true)]
-        [Action(typeof(ECAMop), "removes-stain", typeof(ECAOilStain))]
+        [Action(typeof(ECAMop), "removes-stain-with-mop", typeof(ECAOilStain))]
         public void _IncreasinglyWashes(ECAMop mop)
         {
             Debug.Log("Washes by one mop. Mop: " + mop.gameObject.name);
