@@ -81,7 +81,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         
         /// <summary>
         /// <b>removes-stain-with-rag</b> defines the sweeping action performed by an object that has an <see cref="ECACleaningRag"/> component.
-        /// When the action is executed, the stains are removed. Typically, this is the result of a <b>washes</b> event performed by an object that has an <see cref="ECACleaningRag"/>.
+        /// When the action is executed, the stains are removed. Typically, this is the result of a <b>washes</b> event
+        /// performed by an object that has an <see cref="ECACleaningRag"/>.
         /// </summary>
         /// <param name="cleaningRag">The object that has a <see cref="ECACleaningRag"/> component responsible for performing the washing action.</param>
         [ECARelevance(true)]
@@ -94,7 +95,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
         /// <summary>
         /// <b>removes-stain-with-mop</b> defines the sweeping action performed by an object equipped with an <see cref="ECAMop"/> component.
-        /// When the action is executed, the stains are removed. Typically, this is the result of a <b>washes</b> event performed by an object that has an <see cref="ECAMop"/>..
+        /// When the action is executed, the stains are removed. Typically, this is the result of a <b>washes</b> event performed by an
+        /// object that has an <see cref="ECAMop"/>..
         /// </summary>
         /// <param name="mop">The object equipped with an ECAMop component responsible for performing the washing action.</param>
         [ECARelevance(true)]

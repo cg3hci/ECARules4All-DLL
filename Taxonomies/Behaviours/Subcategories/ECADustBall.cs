@@ -95,8 +95,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
         /// <summary>
         /// <b>removes-dust-with-broom</b> defines the sweeping action performed by an object that has an ECABroom component.
-        /// When the action is executed, the dust balls are removed. Typically, this is the result of a <b>washes</b>
-        /// event performed by an object that has an ECABroom.
+        /// When the action is executed, the dust balls are removed. Typically, this is the result of a <b>sweeps</b>
+        /// event performed by an object that has an <see cref="ECABroom"/> component.
         /// After removal, nearby objects equipped with an ECADustPan component may automatically execute
         /// their <b>collects-dust</b> action to gather the detached dust ball.
         /// </summary>

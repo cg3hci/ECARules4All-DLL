@@ -21,8 +21,10 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         /// typically representing a surface within the environment. This method is typically invoked when the mop comes
         /// into contact with an object equipped with an <see cref="ECASurface"/> component, and it assumes that
         /// the mop has the property <b>hasWater</b> set to <c>true</c>.
-        /// When executed, if it interacts with objects equipped with both <see cref="ECASurface"/> and <see cref="ECAOilStain"/> components,
-        /// it removes dirt, liquid residues, or stains from the surface as part of the cleaning process.
+        /// When <b>washes</b> is used as a trigger in an ECA automation, if it interacts with objects equipped with
+        /// both <see cref="ECASurface"/> and <see cref="ECAOilStain"/> components, it MUST trigger in the same automation
+        /// the corresponding <b>removes-stain-with-mop</b> action (that removes dirt, liquid residues, or stains from
+        /// the surface as part of the cleaning process). 
         /// </summary>
         /// <param name="surface">The object equipped with an <see cref="ECASurface"/> component representing the surface to be cleaned.</param>
         [ECARelevance(true)]

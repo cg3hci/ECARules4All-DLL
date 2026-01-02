@@ -149,8 +149,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         /// When the <see cref="ECASoakableCleaningItem"/> is wetted, this event acts as a trigger within an ECA automation.
         /// The resulting state change depends on the liquid dispensed:
         /// - When the <see cref="ECALiquidDispenser"/> contains water, the cleaning item implicitly performs the action
-        /// <b>changes hasWater</b>.
-        /// - When the <see cref="ECALiquidDispenser"/> contains degreaser, it implicitly performs the action <b>changes hasDegreaser</b>.
+        /// <b>changes-has-water</b>.
+        /// - When the <see cref="ECALiquidDispenser"/> contains degreaser, it implicitly performs the action <b>changes-has-dDegreaser</b>.
+        /// - When the <see cref="ECALiquidDispenser"/> contains amuchina, it implicitly performs the action <b>changes-has-amuchina</b>.
         /// Executing this action updates the internal state of the cleaning item to reflect the absorbed liquid.
         /// </summary>
         [Action(typeof(ECALiquidDispenser), "wets", typeof(ECASoakableCleaningItem))]

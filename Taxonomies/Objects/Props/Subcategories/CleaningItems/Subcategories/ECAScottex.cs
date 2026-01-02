@@ -26,9 +26,9 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         /// <b>sweeps</b> represents the action of a paper towel (or scottex) cleaning an object equipped with an <see cref="ECASurface"/> component,
         /// typically representing a surface within the environment. This method is usually invoked when the paper towel
         /// comes into contact with an object equipped with an <see cref="ECASurface"/> component.
-        /// When executed, if the target object also includes an <see cref="ECADustBall"/> component,
-        /// it removes any dust balls present and triggers the corresponding <b>remove-dust</b> action,
-        /// performed by an object equipped with an <see cref="ECAScottex"/> component.
+        /// When <b>sweeps</b> is used as a trigger in an ECA automation, if it interacts with objects equipped with
+        /// both <see cref="ECASurface"/> and <see cref="ECADustBall"/> components, it MUST trigger in the same automation
+        /// the corresponding <b>removes-dust-with-scottex</b> action (that removes the dust from the surface). 
         /// </summary>
         /// <param name="surface">The object equipped with an <see cref="ECASurface"/> component representing the surface to be swept.</param>
         [ECARelevance(true)]
