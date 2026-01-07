@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 using ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories;
 using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems;
 using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories;
@@ -23,6 +24,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [SerializeField] private AudioSource audioSourceAllSwept;
         [SerializeField] private AudioSource audioSourceSweep;
         [SerializeField] List<GameObject> _dustyBalls;
+        public MonoBehaviour MonoBehaviourChangeTexture;
 
         /*private int _sweepsNeeded = 0;
         
@@ -173,6 +175,17 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             
             allSwept = ECABoolean.YES;
             Log.Debug("All Swept!");
+            
+            if (this.MonoBehaviourChangeTexture != null)
+            {
+                MethodInfo m = MonoBehaviourChangeTexture
+                    .GetType()
+                    .GetMethod(
+                        "SetCleanTexture",
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
+                    );
+                m?.Invoke(MonoBehaviourChangeTexture, null);
+            }
 
             // deactivate all dusty balls
             foreach (var dustyBall in _dustyBalls)

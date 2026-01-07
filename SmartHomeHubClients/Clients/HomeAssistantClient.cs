@@ -45,23 +45,23 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 
             using (HttpClient client = new HttpClient())
             {
+	            string urlService = $"{this.url}{URLS.SEND_NOTIFICATION}";
                 try
                 {
                     var body = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-                    string urlService = $"{this.url}{URLS.SEND_NOTIFICATION}";
                     client.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue("Bearer", this.token);
                     HttpResponseMessage response = await client.PostAsync(urlService, body);
                     response.EnsureSuccessStatusCode();
                     
                     Log.Information("Sent update {@Content}", jsonBody);
-                    Log.Information($"Sent an update to Home Assistant Client at {this.url} - content: {lastContent.jsonContent} - timestamp: {lastContent.timestamp}");
+                    Log.Information($"Sent an update to Home Assistant Client at {urlService} - content: {lastContent.jsonContent} - timestamp: {lastContent.timestamp}");
                     // delete list content
                     //this.updates.Remove(lastContent);
                 }
                 catch (HttpRequestException e)
                 {
-                    Log.Error($"An error occured during an update request - {e.Message}");
+                    Log.Error($"An error occured during an update request ({urlService}) - {e.Message}");
                 }
             }
         }

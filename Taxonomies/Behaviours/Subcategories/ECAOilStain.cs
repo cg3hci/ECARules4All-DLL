@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 using ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories;
 using ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories;
 using ECARules4All_DLL.Utils;
@@ -19,6 +20,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         [SerializeField] private AudioSource audioSourceAllWashed;
         [SerializeField] private AudioSource audioSourceWash;
         [SerializeField] private List<GameObject> _oilStains;
+        public MonoBehaviour MonoBehaviourChangeTexture;
 
         [Range(0, 100)] private int _percentage = 0;
 
@@ -170,6 +172,17 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
             
             allWashed = ECABoolean.YES;
             Debug.Log("All washed!");
+
+            if (this.MonoBehaviourChangeTexture != null)
+            {
+                MethodInfo m = MonoBehaviourChangeTexture
+                    .GetType()
+                    .GetMethod(
+                        "SetCleanTexture",
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
+                    );
+                m?.Invoke(MonoBehaviourChangeTexture, null);
+            }
 
             //TODO Deactivate all oil stains
             foreach (var oilStain in _oilStains)
