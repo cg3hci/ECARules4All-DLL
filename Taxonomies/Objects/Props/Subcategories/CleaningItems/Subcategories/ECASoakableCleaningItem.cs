@@ -159,7 +159,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         public void _Wets(ECALiquidDispenser ld)
         {
             //////// Update liquid type ////////
-            var lqType = ld.liquidSpawner.GetLiquidType();
+            /*var lqType = ld.liquidSpawner.GetLiquidType();
             if (lqType == ECALiquidSpawner.LiquidType.Water)
             {
                 hasWater = ECABoolean.YES;
@@ -178,11 +178,11 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
             else if (lqType == ECALiquidSpawner.LiquidType.Amuchina)
             {
                 hasAmuchina = ECABoolean.YES; //TODO Cambiare stile per Amuchina
-            }
+            }*/
 
             _renderer.material = wetMaterial;
             StopAllCoroutines();
-            StartCoroutine(CoroutineDries(30f)); //TODO Pensare se vogliamo rimetterlo
+            //StartCoroutine(CoroutineDries(30000f)); //TODO Pensare se vogliamo rimetterlo
         }
 
         // Waits for a specified delay before drying the item automatically.
@@ -222,7 +222,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         [Action(typeof(ECASoakableCleaningItem), "changes has water")]
         [ECARelevance(true)]
         public void changesHasWater(){
-            this.hasWater = new ECABoolean(true);
+            this.hasWater = new ECABoolean(ECABoolean.BoolType.YES);
         }
         
         /// <summary>
@@ -239,7 +239,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         [Action(typeof(ECASoakableCleaningItem), "changes has degreaser")]
         [ECARelevance(true)]
         public void changesHasDegreaser(){
-            this.hasDegreaser = new ECABoolean(true);
+            this.hasDegreaser = new ECABoolean(ECABoolean.BoolType.YES);
         }
         
         /// <summary>
@@ -256,7 +256,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         [Action(typeof(ECASoakableCleaningItem), "changes has amuchina")]
         [ECARelevance(true)]
         public void changesHasAmuchina(){
-            this.hasAmuchina = new ECABoolean(true);
+            this.hasAmuchina = new ECABoolean(ECABoolean.BoolType.YES);
         }
     }
 }

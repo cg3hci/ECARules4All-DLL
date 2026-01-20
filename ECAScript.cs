@@ -88,19 +88,30 @@ namespace ECARules4All_DLL
 
         public void SubscribeObject(object sender, AbstractClientBase client)
         {
-            Log.Information($"[ECATracker - SubscribeObject] {this.gameObject.name} is starting to register its components.");
-            List<ComponentTrackerPair> pairs = new List<ComponentTrackerPair>();
-            foreach (var component in gameObject.GetComponents<Component>())
+            if (client == null)
+                return;
+            
+            try
             {
-                if (Attribute.IsDefined(component.GetType(), typeof(ECARules4AllAttribute)))
+                Log.Information($"[ECATracker - SubscribeObject] {this.gameObject.name} is starting to register its components.");
+                List<ComponentTrackerPair> pairs = new List<ComponentTrackerPair>();
+                foreach (var component in gameObject.GetComponents<Component>())
                 {
-                    ComponentTrackerPair componentTrackerPair = new ComponentTrackerPair(GetGameObjectComponentName(component), component);
-                    pairs.Add(componentTrackerPair);
-                    Log.Information($"[ECATracker - SubscribeObject] add {this.gameObject.name}'s component tracker pairs.");
+                    if (Attribute.IsDefined(component.GetType(), typeof(ECARules4AllAttribute)))
+                    {
+                        ComponentTrackerPair componentTrackerPair = new ComponentTrackerPair(GetGameObjectComponentName(component), component);
+                        pairs.Add(componentTrackerPair);
+                        Log.Information($"[ECATracker - SubscribeObject] add {this.gameObject.name}'s component tracker pairs.");
+                    }
                 }
+                ComponentTracker.Instance.AddPairs(pairs, client);
+                Log.Information($"[ECATracker - SubscribeObject] {this.gameObject.name} completed registering its components.");
             }
-            ComponentTracker.Instance.AddPairs(pairs, client);
-            Log.Information($"[ECATracker - SubscribeObject] {this.gameObject.name} completed registering its components.");
+            catch (Exception e)
+            {
+                Log.Information($"[ECATracker - SubscribeObject] Error: {e}");
+            }
+            
         }
 
         protected virtual void OnDestroy()

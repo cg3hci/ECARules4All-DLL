@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using ECARules4All_DLL.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -26,65 +27,33 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         private string apiTest = $"/api/test/";
         private string apiForceRestart = $"/api/force_restart/";
 
-        public APIServer(string url, int port)
+        public APIServer(int port)
         {
-            // if urls doesn't start with http:// or https://, add http://
-            if (!url.StartsWith("http://") && !url.StartsWith("https://"))
-            {
-                url = "http://" + url;
-            }
-
-            _url = url;
             _port = port;
             _listener = new HttpListener();
-            this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiExternalUpdates}");
-            this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiAutomations}");
-            this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiExpressions}");
-            this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiTest}");
-            this._listener.Prefixes.Add($"{this._url}:{this._port}{this.apiForceRestart}");
-            this.Start();
-        }
-        
-        public APIServer(bool fromDevice = false) : this(GetLocalIPAddress(fromDevice), 8080)
-        {
-            // Default constructor that initializes with localhost or device's ip and port 8080
-        }
-        
-        public static string GetLocalIPAddress(bool fromDevice)
-        {
-            string ipLocal = null;
-            
-            if (fromDevice)
-            {
-                
-                var host = Dns.GetHostEntry(Dns.GetHostName());
-                foreach (var ip in host.AddressList)
-                {
-                    if (ip.AddressFamily == AddressFamily.InterNetwork)
-                        ipLocal = ip.ToString();
-                }
-            }
-            else
-            {
-                ipLocal = "http://localhost"; 
-            }
-            
-            return ipLocal;
+
+            _listener.Prefixes.Add($"http://*:{_port}/api/external_updates/");
+            _listener.Prefixes.Add($"http://*:{_port}/api/automations/");
+            _listener.Prefixes.Add($"http://*:{_port}/api/expressions/");
+            _listener.Prefixes.Add($"http://*:{_port}/api/test/");
+            _listener.Prefixes.Add($"http://*:{_port}/api/force_restart/");
+
+            Start();
         }
 
         public void Start()
         {
             _listener.Start();
-            Receive();
+            _ = Receive();
         }
 
         public void Stop()
         {
             _listener.Stop();
-            Debug.Log($"Server stopped.");
+            Log.Information($"Server stopped.");
         }
 
-        private async void Receive()
+        private async Task Receive()
         {
             while (_listener.IsListening)
             {
@@ -93,9 +62,19 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                     var context = await _listener.GetContextAsync();
                     HandleRequest(context);
                 }
-                catch (HttpListenerException) when (!_listener.IsListening)
+                catch (ObjectDisposedException)
                 {
+                    Log.Information("[Receive] Listener disposed, exiting loop.");
                     break;
+                }
+                catch (HttpListenerException ex) when (!_listener.IsListening)
+                {
+                    Log.Error($"[Receive] [HttpListenerException] HTTP listener error: {ex}");
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"[Receive] [Generic Exception] HTTP listener error: {ex}");
                 }
             }
         }
@@ -104,27 +83,39 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         {
             string path = context.Request.Url.AbsolutePath;
             
-            Debug.Log($"Received a request at: {path}");
+            Log.Information($"[HandleRequest] start handling a request at: {path}");
 
             if (context.Request.HttpMethod == "POST")
             {
-                if (path.Contains(this.apiExternalUpdates))
+                if (path.Equals(this.apiExternalUpdates, StringComparison.OrdinalIgnoreCase))
                 {
                     this.HandleExternalUpdates(context);
                 }
-                else if(path.Contains(this.apiAutomations))
+                else if(path.Equals(this.apiAutomations, StringComparison.OrdinalIgnoreCase))
                 {
                     this.HandleAutomations(context);
                 }
-                else if(path.Contains(this.apiExpressions))
+                else if(path.Equals(this.apiExpressions, StringComparison.OrdinalIgnoreCase))
                 {
                     this.HandleExpressions(context);
                 }
-                else if(path.Contains(this.apiForceRestart))
+                else if(path.Equals(this.apiForceRestart, StringComparison.OrdinalIgnoreCase))
                 {
                     this.HandleForceRestart(context);
                 }
-                else if(path.Contains(this.apiTest))
+                else if(path.Equals(this.apiTest, StringComparison.OrdinalIgnoreCase))
+                {
+                    this.HandleTest(context);
+                }
+                else
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                    context.Response.Close();
+                }
+            }
+            else if (context.Request.HttpMethod == "GET")
+            {
+                if (path.Equals(this.apiTest, StringComparison.OrdinalIgnoreCase))
                 {
                     this.HandleTest(context);
                 }
@@ -139,6 +130,8 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
                 context.Response.Close();
             }
+            
+            Log.Information($"[HandleRequest] end handling a request at: {path}");
         }
         
         private void HandleTest(HttpListenerContext context)
@@ -167,22 +160,24 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         
         private void HandleExternalUpdates(HttpListenerContext context)
         {
+            Log.Information($"[HandleExternalUpdates] start");
+            
             using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
             {
                 string requestBody = reader.ReadToEnd();
-                Debug.Log($"Received POST data on {this.apiExternalUpdates}: {requestBody}");
+                Log.Information($"[HandleExternalUpdates] Received POST data on {this.apiExternalUpdates}: {requestBody}");
 
                 try
                 {
                     ActionDTO data = JsonConvert.DeserializeObject<ActionDTO>(requestBody);
                     ActionUpdate?.Invoke(this, data);
-
+                    Log.Information($"[HandleExternalUpdates] end");
                     context.Response.StatusCode = (int)HttpStatusCode.OK;
                     context.Response.Close();
                 }
                 catch (Exception ex)
                 {
-                    Debug.Log($"Error processing POST data: {ex.Message}");
+                    Log.Information($"[HandleExternalUpdates] Error processing POST data: {ex.Message}");
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     context.Response.Close();
                 }
@@ -194,7 +189,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             using (var reader = new System.IO.StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
             {
                 string requestBody = reader.ReadToEnd();
-                Debug.Log($"Received POST data on {this.apiAutomations}: {requestBody}");
+                Log.Information($"Received POST data on {this.apiAutomations}: {requestBody}");
                 
                 try
                 {
@@ -206,7 +201,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 }
                 catch (Exception ex)
                 {
-                    Debug.Log($"Error processing POST data: {ex.Message}");
+                    Log.Information($"Error processing POST data: {ex.Message}");
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     context.Response.Close();
                 }

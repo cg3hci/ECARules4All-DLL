@@ -29,8 +29,12 @@ namespace ECARules4All_DLL
 
         public void AddClient(AbstractClientBase newClient)
         {
+            Debug.Log("[RuleEngine] [AddClient] start");
+            Log.Information("[RuleEngine] [AddClient] start");
             clients.Add(newClient);
             NewRegisteredClient?.Invoke(this, newClient);
+            Debug.Log("[RuleEngine] [AddClient] end");
+            Log.Information("[RuleEngine] [AddClient] start");
         }
 
         /// <summary>
