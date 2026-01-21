@@ -19,8 +19,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("NonEcaInteractable")) return;
+            if (other.GetComponent<ECAObject>() == null) return;
             
-            //PROVE
             Action action = new Action(other.gameObject, "interacts with", this.gameObject);
             Log.Information(other.gameObject + "Interacts-with (trigger) " + this.gameObject);
             EventBus.GetInstance().Publish(action);
@@ -30,6 +30,7 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         private void OnCollisionEnter(Collision other)
         {
             if (other.gameObject.CompareTag("NonEcaInteractable")) return;
+            if (other.gameObject.GetComponent<ECAObject>() == null) return;
 
             Action action = new Action(other.gameObject, "interacts with", this.gameObject);
             EventBus.GetInstance().Publish(action);
@@ -39,8 +40,9 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
 
         private void OnTriggerExit(Collider other)
         {
-            //PROVE
             if (other.CompareTag("NonEcaInteractable")) return;
+            if (other.GetComponent<ECAObject>() == null) return;
+            
             Action action = new Action(other.gameObject, "stops-interacting with", this.gameObject);
             EventBus.GetInstance().Publish(action);
             ECAScript.NotifyUpdate(this, action);
@@ -50,6 +52,8 @@ namespace ECARules4All_DLL.Taxonomies.Behaviours.Subcategories
         private void OnCollisionExit(Collision other)
         {
             if (other.gameObject.CompareTag("NonEcaInteractable")) return;
+            if (other.gameObject.GetComponent<ECAObject>() == null) return;
+            
             Action action = new Action(other.gameObject, "stops-interacting with", this.gameObject);
             EventBus.GetInstance().Publish(action);
             ECAScript.NotifyUpdate(this, action);
