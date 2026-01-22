@@ -11,6 +11,30 @@ using UnityEngine;
 
 namespace ECARules4All_DLL.SmartHomeHubClients
 {
+	public class RuleDTO
+	{
+		public object rule;
+		public string alias;
+		public string description;
+
+		public RuleDTO(object rule, string alias, string description)
+		{
+			if (rule.GetType() == typeof(Rule))
+			{
+				this.rule = (Rule)rule;
+			}else if (rule.GetType() == typeof(string))
+			{
+				this.rule = (string)rule;
+			}
+			else
+			{
+				this.rule = rule;
+			}
+			this.alias = alias;
+			this.description = description;
+		}
+	}
+	
     public class AutomationDTO
     {
 	    /*public List<ActionDTO> trigger { get; set; } = null;
@@ -136,8 +160,13 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 			        }
 		        }
 	        }
-
 	        return rule;
+        }
+
+        public RuleDTO ConvertToRuleDTO()
+        {
+	        object rule = ConvertToRule();
+	        return new RuleDTO(rule, this.alias, this.description);
         }
         
         public static Type FindTypeByName(string className)

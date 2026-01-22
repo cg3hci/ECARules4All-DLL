@@ -239,7 +239,11 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.
         [Action(typeof(ECASoakableCleaningItem), "changes has degreaser")]
         [ECARelevance(true)]
         public void changesHasDegreaser(){
+            Debug.Log($"[ECASoakableCleaningItem] start changes has degreaser - {this.hasDegreaser}");
+            Log.Information($"[ECASoakableCleaningItem] start changes has degreaser - {this.hasDegreaser}");
             this.hasDegreaser = new ECABoolean(ECABoolean.BoolType.YES);
+            Debug.Log($"[ECASoakableCleaningItem] end changes has degreaser - {this.hasDegreaser}");
+            Log.Information($"[ECASoakableCleaningItem] end changes has degreaser - {this.hasDegreaser}");
         }
         
         /// <summary>

@@ -202,6 +202,43 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 	        return rules;
         }
         
+        public override async Task<List<RuleDTO>> GetListAutomationsWithDescription()
+        {
+	        List<RuleDTO> rules = new List<RuleDTO>();
+	        
+	        using (HttpClient client = new HttpClient())
+	        {
+		        try
+		        {
+			        string urlService = $"{this.url}{URLS.AUTOMATIONS}";
+			        client.DefaultRequestHeaders.Authorization =
+				        new AuthenticationHeaderValue("Bearer", this.token);
+			        HttpResponseMessage response = await client.GetAsync(urlService);
+			        response.EnsureSuccessStatusCode();
+			        
+			        // get automations and convert them to rules
+			        string jsonResponse = await response.Content.ReadAsStringAsync();
+			        JObject jsonObject = JObject.Parse(jsonResponse);
+			        var jsonData = jsonObject["automations"]?.ToString();
+			        Log.Information($"Received Automations: {jsonData}");
+			        List<AutomationDTO> automations = JsonConvert.DeserializeObject<List<AutomationDTO>>(
+				        jsonData ?? throw new InvalidOperationException()
+			        );
+			        foreach (var a in automations)
+			        {
+				        rules.Add(a.ConvertToRuleDTO());
+			        }
+			        Log.Information($"Receive automations list by contacting {this.url}");
+		        }
+		        catch (HttpRequestException e)
+		        {
+			        Log.Error($"An error occured while receiving the list of registered automations on home assistant - {e.Message}");
+		        }
+	        }
+
+	        return rules;
+        }
+        
         public override async Task<JArray> GetListExpressions()
         {
 	        JArray expressions = null;

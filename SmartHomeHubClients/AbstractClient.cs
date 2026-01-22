@@ -49,6 +49,8 @@ namespace ECARules4All_DLL.SmartHomeHubClients
 
         public abstract Task<List<object>> GetListAutomations();
         
+        public abstract Task<List<RuleDTO>> GetListAutomationsWithDescription();
+        
         public abstract Task<JArray> GetListExpressions();
 
         
