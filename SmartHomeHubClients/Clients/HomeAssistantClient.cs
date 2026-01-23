@@ -68,19 +68,21 @@ namespace ECARules4All_DLL.SmartHomeHubClients.Clients
 	    
         public async void ReceivedUpdateHandler(object sender, ActionDTO receivedUpdate)
         {
+	        Log.Information($"[HomeAssistantClient ReceivedUpdateHandler] start handling update: {receivedUpdate}");
 	        Action action = receivedUpdate.ConvertToAction();
-
+	        Log.Information($"[HomeAssistantClient ReceivedUpdateHandler] converted action: {action}");
 	        if (action == null)
 	        {
-		        Log.Error($"Error on handling the action '{receivedUpdate.verb}' of the subject '{receivedUpdate.subject}'");
+		        Log.Error($"[HomeAssistantClient ReceivedUpdateHandler] Error on handling the action '{receivedUpdate.verb}' of the subject '{receivedUpdate.subject}'");
 	        }
 	        else
 	        {
 		        RuleEngine.GetInstance().ExecuteAction(
 			        action
 		        );
-		        Log.Information($"Reflection method (aka Action) {action.GetActionMethod()} performed");
+		        Log.Information($"[HomeAssistantClient ReceivedUpdateHandler] Reflection method (aka Action) {action.GetActionMethod()} performed");
 	        }
+	        Log.Information($"[HomeAssistantClient ReceivedUpdateHandler] handling update completed.");
         }
 
         protected override async void RegisterVirtualObject(

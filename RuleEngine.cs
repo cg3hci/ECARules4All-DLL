@@ -409,6 +409,30 @@ namespace ECARules4All_DLL
 
             return involvedRules;
         }
+        
+        public List<object> GetRulesInvolvingGameObject(GameObject gO, List<object> rules)
+        {
+            var involvedRules = new List<object>();
+
+            foreach (var r in rules)
+            {
+                if (r is Rule rule)
+                {
+                    if (rule.InvolvesGameObject(gO))
+                    {
+                        involvedRules.Add(rule);
+                    }
+                }
+                else if(r is string ruleString)
+                {
+                    if (ruleString.Contains(gO.name))
+                    {
+                        involvedRules.Add(ruleString);
+                    }
+                }
+            }
+            return involvedRules;
+        }
     }
 
     ///<summary>
