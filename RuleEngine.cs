@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ECARules4All_DLL.Debugger;
 using Serilog;
 using UnityEngine;
 using ECARules4All_DLL.Logger;
@@ -48,6 +49,11 @@ namespace ECARules4All_DLL
             if (singleton == null)
             {
                 singleton = new RuleEngine();
+                // DEBUGGER TEST
+                DebuggerTest.SaveState();
+
+
+                
             }
 
             return singleton;
