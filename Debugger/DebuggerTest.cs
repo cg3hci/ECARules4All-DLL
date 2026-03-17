@@ -8,6 +8,14 @@ namespace ECARules4All_DLL.Debugger
 {
     public class DebuggerTest
     {
+        /* Struct to identify a single state property within an ECAComponent within a gameObject
+         * gameObjects can be distinguished by their InstanceID
+         * We are assuming that we are not adding more than one component of the same type to an object,
+         * therefore components are distinguished by their name (ComponentName).
+         * If this is NOT the case, components should instead be distinguished by their InstanceID as with gameObjects
+         * propName distinguishes properties within the same ECAComponent.
+         * ObjName is a superfluous parameter that is there for printing convenience.
+        */
         public struct StatePropertyKey
         {
             public StatePropertyKey(int objID, string objName, string componentName, string propName)
@@ -28,8 +36,8 @@ namespace ECARules4All_DLL.Debugger
             public override string ToString() => $"Object: {ObjName} (ID: {ObjID}), Component: {ComponentName}, Property: {PropName}";
         }
         
-        // a list of dictionaries is a possible way to save and reload the state over time
-        // it may be treated as a stack for the purposes of an "undo"
+        /* a list of dictionaries is a possible way to save and reload the state over time
+        it may be treated as a stack for the purposes of an "undo" */
         public static List<Dictionary<StatePropertyKey, object>> StateOfVariables = new List<Dictionary<StatePropertyKey, object>>();
         
         /* integer representing the next index to save a state at. Nominally this would be equal to the last index
@@ -46,17 +54,17 @@ namespace ECARules4All_DLL.Debugger
         private static bool _indexChecker = false;
         private static bool _debugPrintValues = false;
         
+        
         public static void SaveState()
         {
-            /* key value pair for properties, the string is temporarily a collection of the name of the object,
-             the name of the ECA Member and the name of the state variable to identify it
-             */
-            Dictionary<StatePropertyKey, object> attributesCollection = new Dictionary<StatePropertyKey, object>();
+            // dictionary holding the ID/name of properties for the key and their value as the value
+            Dictionary<StatePropertyKey, object> propertiesDictionary = new Dictionary<StatePropertyKey, object>();
+            
+            
             GameObject[] allObjects = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
             
-            
             foreach (var gameObject in allObjects)
-                //Iterate each game object, checking if ECAObject - an universal component - appears in their components
+                // Iterate each game object, checking if ECAObject - an universal component - appears in their components
             {
                 MonoBehaviour[] components;
                 if (gameObject.GetComponent<ECAObject>() != null)
@@ -72,18 +80,16 @@ namespace ECARules4All_DLL.Debugger
                         {   
                             IEnumerable<MemberInfo> ECAStateVariables = component.GetType().GetMembers().Where(ECAMember =>
                                 ECAMember.GetCustomAttributes(typeof(StateVariableAttribute), true).Length > 0);
-                            /*
-                             * For every state variable get the value and add it to the dictionary
+                            /* For every state variable get the value and add it to the dictionary
                              * keyed under the ID of the object and name of component and property
                              */
                             foreach (MemberInfo ECAStateVariable in ECAStateVariables)
                             {
-                                
                                 StatePropertyKey key = new StatePropertyKey(gameObject.GetInstanceID(), gameObject.name, component.GetType().Name, ECAStateVariable.Name);
                                 FieldInfo fieldInfo;
                                 PropertyInfo propertyInfo;
                                 object value = null;
-                                //object processedValue = null;
+                                
                                 if (ECAStateVariable.MemberType.Equals(MemberTypes.Field))
                                 {
                                     fieldInfo = (FieldInfo)ECAStateVariable;
@@ -95,14 +101,13 @@ namespace ECARules4All_DLL.Debugger
                                     propertyInfo = (PropertyInfo)ECAStateVariable;
                                     value = propertyInfo.GetValue(component);
                                 }
-                                /*if(value != null){
-                                    processedValue = SerializeUtils.SerializeAttribute(value);
-                                }*/
+                                
+                                // Debug 
                                 if (_indexChecker && ECAStateVariable.Name == "intensity")
                                 {
                                     value = _indexToSaveAt * 10;
                                 }
-                                attributesCollection.Add(key, value);
+                                propertiesDictionary.Add(key, value);
                             }
                         }
                     }
@@ -110,20 +115,20 @@ namespace ECARules4All_DLL.Debugger
                 
             }
             if(_debugPrintValues){
-                foreach (var keyValuePair in attributesCollection)
+                foreach (var keyValuePair in propertiesDictionary)
                 {
                     Debug.Log(keyValuePair.Key + " - " + keyValuePair.Value);
                 }
             }
             /* Finally, add the completed dictionary to the list of states
-             First check if we are not saving at the end of the state list;
-             in that case we need to wipe the list first
+             First check if we are saving in the middle of the state list;
+             in that case we need to truncate the states after the index we're saving the state at
              */
             if (StateOfVariables.Count > _indexToSaveAt)
             {
                 WipeStatesPastIndex(_indexToSaveAt);
             }
-            StateOfVariables.Add(attributesCollection);
+            StateOfVariables.Add(propertiesDictionary);
             _indexToSaveAt = StateOfVariables.Count;
             Debug.Log($"Saved state at index: {_indexToSaveAt-1}");
         }
@@ -140,12 +145,12 @@ namespace ECARules4All_DLL.Debugger
         {
             RestoreStateAtIndex(_indexToSaveAt-2);
         }
-
         public static void RedoState()
         {
             RestoreStateAtIndex(_indexToSaveAt);
         }
 
+        // Simply calls RestoreState assuming the index is valid
         public static void RestoreStateAtIndex(int index)
         {
             if(StateOfVariables.Count > index && index >= 0){
@@ -159,7 +164,7 @@ namespace ECARules4All_DLL.Debugger
             }
         }
         
-        // Same general flow as SaveState, but when an attribute is found get the value from the state and set it
+        // Same general flow to locate properties as SaveState, but when a property is found get the value from the state and set it
         private static void RestoreState(Dictionary<StatePropertyKey, object> state)
         {
             GameObject[] allObjects = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
