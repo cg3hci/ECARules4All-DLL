@@ -24,9 +24,12 @@ namespace ECARules4All_DLL.SmartHomeHubClients
         private string apiExternalUpdates = $"/api/external_updates/";
         private string apiAutomations = $"/api/automations/";
         private string apiExpressions = $"/api/expressions/";
+        private string apiDisableSilenceDetection = $"/api/disableSilenceDetection/";
         private string apiTest = $"/api/test/";
         private string apiForceRestart = $"/api/force_restart/";
 
+        public bool disableSilenceDetection = false;
+        
         public APIServer(int port)
         {
             _port = port;
@@ -35,6 +38,7 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             _listener.Prefixes.Add($"http://*:{_port}/api/external_updates/");
             _listener.Prefixes.Add($"http://*:{_port}/api/automations/");
             _listener.Prefixes.Add($"http://*:{_port}/api/expressions/");
+            _listener.Prefixes.Add($"http://*:{_port}/api/disableSilenceDetection/");
             _listener.Prefixes.Add($"http://*:{_port}/api/test/");
             _listener.Prefixes.Add($"http://*:{_port}/api/force_restart/");
 
@@ -115,7 +119,11 @@ namespace ECARules4All_DLL.SmartHomeHubClients
             }
             else if (context.Request.HttpMethod == "GET")
             {
-                if (path.Equals(this.apiTest, StringComparison.OrdinalIgnoreCase))
+                if (path.Equals(this.apiDisableSilenceDetection, StringComparison.OrdinalIgnoreCase))
+                {
+                    this.HandleDisableSilenceDetection(context);
+                }
+                else if (path.Equals(this.apiTest, StringComparison.OrdinalIgnoreCase))
                 {
                     this.HandleTest(context);
                 }
@@ -171,17 +179,42 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                 {
                     ActionDTO data = JsonConvert.DeserializeObject<ActionDTO>(requestBody);
                     ActionUpdate?.Invoke(this, data);
-                    Log.Information($"[HandleExternalUpdates] end");
-                    context.Response.StatusCode = (int)HttpStatusCode.OK;
-                    context.Response.Close();
+                    try
+                    {
+                        Log.Information($"[HandleExternalUpdates] set status code");
+                        context.Response.StatusCode = (int)HttpStatusCode.OK;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Information($"[HandleExternalUpdates] error when setting status code");
+                    }
                 }
                 catch (Exception ex)
                 {
                     Log.Information($"[HandleExternalUpdates] Error processing POST data: {ex.Message}");
-                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    context.Response.Close();
+                    try
+                    {
+                        Log.Information($"[HandleExternalUpdates] set status code");
+                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    }
+                    catch (Exception ex2)
+                    {
+                        Log.Information($"[HandleExternalUpdates] error when setting status code");
+                    }
                 }
             }
+            
+            Log.Information($"[HandleExternalUpdates] end");
+            try
+            {
+                Log.Information($"[HandleExternalUpdates] try closing response");
+                context.Response.Close();
+            }
+            catch (Exception e)
+            {
+                Log.Information($"[HandleExternalUpdates] error on closing response");
+            }
+            
         }
 
         private void HandleAutomations(HttpListenerContext context)
@@ -230,6 +263,13 @@ namespace ECARules4All_DLL.SmartHomeHubClients
                     context.Response.Close();
                 }
             }
+        }
+
+        private void HandleDisableSilenceDetection(HttpListenerContext context)
+        {
+            disableSilenceDetection = !disableSilenceDetection;
+            context.Response.StatusCode = (int)HttpStatusCode.OK;
+            context.Response.Close();
         }
         
         private void HandleForceRestart(HttpListenerContext context)

@@ -90,7 +90,8 @@ namespace ECARules4All_DLL
         {
             if (client == null)
                 return;
-            
+
+            ComponentTracker.Instance.GetAllComponents();
             try
             {
                 Log.Information($"[ECATracker - SubscribeObject] {this.gameObject.name} is starting to register its components.");
