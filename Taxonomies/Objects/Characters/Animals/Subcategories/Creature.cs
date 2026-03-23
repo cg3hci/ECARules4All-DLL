@@ -1,0 +1,207 @@
+﻿using System.Collections;
+using ECARules4All_DLL.Utils;
+using UnityEngine;
+
+
+namespace ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories
+{
+    /// <summary>
+    /// The <b>Creature</b> class represents a generic creature.
+    /// A Creature can perform various movements such as running, walking, and swimming, each with a specific animation.
+    /// This class extends the functionality of <see cref="Animal"/> to include creature-specific behaviors.
+    /// </summary>
+    [ECARules4All("creature")]
+    [RequireComponent(typeof(ECAAnimal))]
+    [DisallowMultipleComponent]
+    public class Creature : MonoBehaviour
+    {
+        private bool isBusyMoving = false;
+
+        /// <summary>
+        /// <b>IdleAnimation</b> specifies the name of the animation clip played when the creature is idle.
+        /// </summary>
+        public string IdleAnimation;
+
+        /// <summary>
+        /// <b>SwimAnimation</b> specifies the name of the animation clip played when the creature is swimming.
+        /// </summary>
+        public string SwimAnimation;
+
+        /// <summary>
+        /// <b>FlyAnimation</b> specifies the name of the animation clip played when the creature is running.
+        /// </summary>
+        public string FlyAnimation;
+
+        /// <summary>
+        /// <b>RunAnimation</b> specifies the name of the animation clip played when the creature is running.
+        /// </summary>
+        public string RunAnimation;
+
+        /// <summary>
+        /// <b>WalkAnimation</b> specifies the name of the animation clip played when the creature is walking.
+        /// </summary>
+        public string WalkAnimation;
+
+        private string selected = "";
+
+        /// <summary>
+        /// <b>Flies</b> (to) is a method that moves the creature to a specific position with a flying animation.
+        /// </summary>
+        /// <param name="p">The target position to fly to.</param>
+        [Action(typeof(Creature), "flies to", typeof(Position))]
+        public void Flies(Position p)
+        {
+            float speed = 5.0F;
+            Vector3 endMarker = new Vector3(p.x, p.y, p.z);
+            selected = FlyAnimation;
+            StartCoroutine(MoveObject(speed, endMarker));
+        }
+
+        /// <summary>
+        /// <b>Flies</b> (on) is a method that moves the creature along a specified path while playing the flying animation.
+        /// </summary>
+        /// <param name="p">The path to follow while flying.</param>
+        [Action(typeof(Creature), "flies on", typeof(Path))]
+        public void Flies(Path p)
+        {
+            selected = FlyAnimation;
+            StartCoroutine(WaitForOrderedMovement(p, "flies"));
+        }
+
+        /// <summary>
+        /// <b>Runs</b> (to) is a method that moves the creature to a specific position with a running animation.
+        /// </summary>
+        /// <param name="p">The target position to run to.</param>
+        [Action(typeof(Creature), "runs to", typeof(Position))]
+        [ECARelevance(true)]
+        public void Runs(Position p)
+        {
+            float speed = 2.0F;
+            Vector3 endMarker = new Vector3(p.x, p.y, p.z);
+            selected = RunAnimation;
+            StartCoroutine(MoveObject(speed, endMarker));
+        }
+
+        /// <summary>
+        /// <b>Runs</b> (on) is a method that moves the creature along a specified path while playing the running animation.
+        /// </summary>
+        /// <param name="p">The path to follow while running.</param>
+        [Action(typeof(Creature), "runs on", typeof(Path))]
+        [ECARelevance(true)]
+        public void Runs(Path p)
+        {
+            selected = RunAnimation;
+            StartCoroutine(WaitForOrderedMovement(p, "runs"));
+        }
+
+        /// <summary>
+        /// <b>Swims</b> (to) is a method that moves the creature to a specific position with a swimming animation.
+        /// </summary>
+        /// <param name="p">The target position to swim to.</param>
+        [Action(typeof(Creature), "swims to", typeof(Position))]
+        public void Swims(Position p)
+        {
+            float speed = 0.5F;
+            Vector3 endMarker = new Vector3(p.x, p.y, p.z);
+            selected = SwimAnimation;
+            StartCoroutine(MoveObject(speed, endMarker));
+        }
+
+        /// <summary>
+        /// <b>Swims</b> (on) is a method that moves the creature along a specified path while playing the swimming animation.
+        /// </summary>
+        /// <param name="p">The path to follow while swimming.</param>
+        [Action(typeof(Creature), "swims on", typeof(Path))]
+        public void Swims(Path p)
+        {
+            selected = SwimAnimation;
+            StartCoroutine(WaitForOrderedMovement(p, "swims"));
+        }
+        /// <summary>
+        /// <b>Walks</b> (to) is a method that moves the creature to a specific position with a walking animation.
+        /// </summary>
+        /// <param name="p">The target position to walk to.</param>
+        [Action(typeof(Creature), "walks to", typeof(Position))]
+        public void Walks(Position p)
+        {
+            float speed = 1.0F;
+            Vector3 endMarker = new Vector3(p.x, p.y, p.z);
+            selected = WalkAnimation;
+            StartCoroutine(MoveObject(speed, endMarker));
+
+        }
+
+        /// <summary>
+        /// <b>Walks</b> (on) is a method that moves the creature along a specified path while playing the walking animation.
+        /// </summary>
+        /// <param name="p">The path to follow while walking.</param>
+        [Action(typeof(Creature), "walks on", typeof(Path))]
+        public void Walks(Path p)
+        {
+            selected = WalkAnimation;
+            StartCoroutine(WaitForOrderedMovement(p, "walks"));
+        }
+
+        private IEnumerator MoveObject(float speed, Vector3 endMarker)
+        {
+            isBusyMoving = true;
+            Animate(selected);
+            Vector3 startMarker = gameObject.transform.position;
+            float startTime = Time.time;
+            float journeyLength = Vector3.Distance(startMarker, endMarker);
+            while (gameObject.transform.position != endMarker)
+            {
+                float distCovered = (Time.time - startTime) * speed;
+
+                // Fraction of journey completed equals current distance divided by total distance.
+                float fractionOfJourney = distCovered / journeyLength;
+
+                // Set our position as a fraction of the distance between the markers.
+
+                gameObject.transform.position = Vector3.Lerp(startMarker, endMarker, fractionOfJourney);
+                // GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+                GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
+                yield return null;
+            }
+
+            //GetComponent<ECAObject>().p.Assign(gameObject.transform.position);
+            GetComponent<ECAObject>().p = new Position(gameObject.transform.position);
+            isBusyMoving = false;
+            Animate(IdleAnimation);
+        }
+
+        private IEnumerator WaitForOrderedMovement(Path p, string method)
+        {
+            foreach (Position pos in p.Points)
+            {
+                while (isBusyMoving)
+                {
+                    yield return null;
+                }
+
+                switch (method)
+                {
+                    case "flies":
+                        Flies(pos);
+                        break;
+                    case "runs":
+                        Runs(pos);
+                        break;
+                    case "swims":
+                        Swims(pos);
+                        break;
+                    case "walks":
+                        Walks(pos);
+                        break;
+                }
+
+            }
+        }
+
+        private void Animate(string animation)
+        {
+            gameObject.GetComponent<Animator>().Play(animation);
+        }
+
+    }
+}
