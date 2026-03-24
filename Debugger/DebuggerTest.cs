@@ -11,14 +11,8 @@ using Object = UnityEngine.Object;
 
 namespace ECARules4All_DLL.Debugger
 {
-
-    /*
-     * TODO:
-     * - Function to use when saving state before an action is executed
-     */
     public class DebuggerTest
     {
-        
         static DebuggerTest()
         {
             CleanDebuggerFolder();
@@ -32,6 +26,12 @@ namespace ECARules4All_DLL.Debugger
             private DateTime timestamp;
             private Rule[] rules;
             private Action action;
+            
+            /* Structure to keep track of state variables, a list of triple-nested dictionaries,
+             * the outer dictionary has gameObject names as keys
+             * the middle dictionary has component names as keys
+             * the inner dictionary has property names as keys, with the property values as names
+             */
             private Dictionary<string, Dictionary<string, Dictionary<string, object>>> properties;
 
             public DateTime Timestamp
@@ -58,35 +58,28 @@ namespace ECARules4All_DLL.Debugger
                 set => properties = value;
             }
 
-            // Constructor to be used when the debugger is used to execute an action
             public FrozenState(Action action)
             {
                 Timestamp = DateTime.Now;
                 Rules = RuleEngine.GetInstance().Rules().ToArray();
                 Action = action;
             }
-
-            public FrozenState()
-            {
-                Timestamp = DateTime.Now;
-                Rules = RuleEngine.GetInstance().Rules().ToArray();
-            }
             
         }
         
-        /* Structure to keep track of state variables, a list of triple-nested dictionaries,
-         * the outer dictionary has gameObject names as keys
-         * the middle dictionary has component names as keys
-         * the inner dictionary has property names as keys, with the property values as names
-         */
-        public static List<Dictionary<string, Dictionary<string, Dictionary<string, object>>>> StateOfVariables 
-            = new List<Dictionary<string, Dictionary<string, Dictionary<string, object>>>>();
-        
         /* integer representing the next index to save a state at. Nominally this would be equal to the last index
-         of StateOfVariables + 1, but in case of restoring a state from the middle of the list, it would instead be
-         (Last Restored State) + 1 instead. _indexToSaveAt-1 represents the current state. 
+         of JSON files saved in DebuggerTempSaveData + 1, but in case of restoring a state from the middle of it, 
+         it would instead be (Last Restored State) + 1 instead. _indexToSaveAt-1 represents the current state. 
          */
         private static int _indexToSaveAt;
+        
+        /* integer representing the amount of states saved. Used primarily to check whether we're in the middle of
+         * the "state list" when saving a new state, in order to wipe any states coming after it
+         * E.G: We save 10 states, _stateCount and _indexToSaveAt are both at 10; We restore a state at index 0,
+         * so _indexToSaveAt becomes 1, and if we then try to save a state it compares the two variables to see that
+         * we need to wipe the states above 0 before saving a new state
+         */
+        private static int _stateCount;
 
         
         /* Const representing debug options
@@ -97,18 +90,36 @@ namespace ECARules4All_DLL.Debugger
          * the current state index
          */
         private const bool DebugPrintSaveValues = false;
-        private const bool DebugPrintRestoreValues = true;
-        private const bool DebugPrintFileOps = true;
+        private const bool DebugPrintRestoreValues = false;
+        private const bool DebugPrintFileOps = false;
         private const bool DebugIndexChecker = false;
         
         // Where JSON data is saved and loaded
         private const string FolderPath = "DebuggerTempSaveData";
+
+        /* Save the completed state to the files
+        *  First check if we are saving in the middle of the "state list";
+        *  in that case we need to delete the states after the index we're saving the state at
+        */
+        public static void SaveState(Action action = null)
+        {
+            FrozenState frozenState = new FrozenState(action);
+            frozenState.Properties = SaveProperties();
+            
+            if (_stateCount > _indexToSaveAt)
+            {
+                CleanDebuggerFolderPastIndex(_indexToSaveAt);
+            }
+            SaveStateToFile(frozenState);
+            _indexToSaveAt += 1;
+            _stateCount = _indexToSaveAt;
+        }
         
-        public static void SaveState()
+        // Finds and saves every state variable to JSON
+        private static Dictionary<string,Dictionary<string,Dictionary<string,object>>> SaveProperties()
         {
             GameObject[] allObjects = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
             
-            Dictionary<string,Dictionary<string,Dictionary<string,object>>> objDict_JSON = new  Dictionary<string,Dictionary<string,Dictionary<string,object>>>();
             Dictionary<string,Dictionary<string,Dictionary<string,object>>> objDict = new  Dictionary<string,Dictionary<string,Dictionary<string,object>>>();
             foreach (var gameObject in allObjects)
                 // Iterate each game object, checking if ECAObject - a universal component - appears in their components
@@ -117,7 +128,6 @@ namespace ECARules4All_DLL.Debugger
                 if (gameObject.GetComponent<ECAObject>() != null)
                 {
                     components = gameObject.GetComponents<MonoBehaviour>();
-                    Dictionary<string,Dictionary<string,object>> compDict_JSON = new Dictionary<string, Dictionary<string,object>>();
                     Dictionary<string,Dictionary<string,object>> compDict = new Dictionary<string, Dictionary<string,object>>();
                     /* If they have ECAObject, iterate through their components to find other ECA Components
                      by checking to see if they have the ECARules4All.
@@ -126,13 +136,12 @@ namespace ECARules4All_DLL.Debugger
                     {
                         if (component.GetType().GetCustomAttributes(typeof(ECARules4AllAttribute), true).Length > 0)
                         {   
-                            Dictionary<string,object> propDict_JSON = new Dictionary<string, object>();
                             Dictionary<string,object> propDict = new Dictionary<string, object>();
                             IEnumerable<MemberInfo> ECAStateVariables = component.GetType().GetMembers().Where(ECAMember =>
                                 ECAMember.GetCustomAttributes(typeof(StateVariableAttribute), true).Length > 0);
                             
                             /* For every state variable get the value and add it to the dictionary
-                             * keyed under the ID of the object and name of component and property
+                             * keyed under the name of the property
                              */
                             foreach (MemberInfo ECAStateVariable in ECAStateVariables)
                             {
@@ -163,22 +172,16 @@ namespace ECARules4All_DLL.Debugger
                                     processedValue = SerializeUtils.SerializeAttribute(value);
                                 }
                                 
-                                propDict_JSON.Add(ECAStateVariable.Name, processedValue);
-                                propDict.Add(ECAStateVariable.Name, value);
+                                propDict.Add(ECAStateVariable.Name, processedValue);
                             }
-
-                            compDict_JSON.Add(component.GetType().Name, propDict_JSON);
+                            // Then add every propDict to compDict keyed to the name of the component's type
                             compDict.Add(component.GetType().Name, propDict);
                         }
                     }
-                    objDict_JSON.Add(gameObject.name, compDict_JSON);
+                    // Then add every compDict to objDict keyed to the name of the object
                     objDict.Add(gameObject.name, compDict);
                 }
-                
             }
-
-            FrozenState frozenState = new FrozenState();
-            frozenState.Properties = objDict_JSON;
             if(DebugPrintSaveValues)
             {
                 foreach(KeyValuePair<string,Dictionary<string,Dictionary<string,object>>> objData in objDict)
@@ -192,24 +195,14 @@ namespace ECARules4All_DLL.Debugger
                     }
                 }
             }
-            /* Finally, add the completed dictionary to the list of states
-             First check if we are saving in the middle of the state list;
-             in that case we need to truncate the states after the index we're saving the state at
-             do the same for saving the complete state represented by frozenState to a file
-             */
-            if (StateOfVariables.Count > _indexToSaveAt)
-            {
-                WipeStatesPastIndex(_indexToSaveAt);
-            }
-            SaveStateToFile(frozenState);
-            StateOfVariables.Add(objDict);
-            _indexToSaveAt = StateOfVariables.Count;
-            Debug.Log($"Saved state at index: {_indexToSaveAt-1}");
+
+            return objDict;
+            
         }
 
         public static void RestoreLatestState()
         {
-            RestoreStateAtIndex(StateOfVariables.Count-1);
+            RestoreStateAtIndex(_stateCount-1);
         }
         
         /* Undo and redo methods: the idea is that since our current state index is at _indexToSaveAt-1,
@@ -224,143 +217,95 @@ namespace ECARules4All_DLL.Debugger
             RestoreStateAtIndex(_indexToSaveAt);
         }
 
-        // Simply calls RestoreState assuming the index is valid
+        // Simply calls RestoreStateFromFile assuming the index is valid
         public static void RestoreStateAtIndex(int index)
         {
-            if(StateOfVariables.Count > index && index >= 0){
-                Debug.Log($"Restoring state at index: {index}");
-                RestoreState(StateOfVariables[index]);
+            if(_stateCount > index && index >= 0){
+                RestoreStateFromFile(index);
                 _indexToSaveAt = index + 1;
             }
             else
             {
-                Debug.LogError($"Error restoring state at index: {index} (index must be between 0 and {StateOfVariables.Count - 1})");
+                Debug.LogError($"Error restoring state at index: {index} (index must be between 0 and {_stateCount - 1})");
             }
         }
-        
-        
-        /* Restores a state using the nested dictionary representing saved properties
-         * Could be optimized by removing the check for an ECAObject component, and similar? Unsure
-         */
-        private static void RestoreState(Dictionary<string,Dictionary<string,Dictionary<string,object>>> objectsDict)
-        {
-            GameObject[] allObjects = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-            foreach (var gameObject in allObjects)
-            {
-                Dictionary<string,Dictionary<string,object>> componentsDict = new Dictionary<string, Dictionary<string,object>>();
-                MonoBehaviour[] components;
-                if (objectsDict.TryGetValue(gameObject.name, out componentsDict) && gameObject.GetComponent<ECAObject>() != null)
-                {
-                    components = gameObject.GetComponents<MonoBehaviour>();
-                    foreach (MonoBehaviour component in components)
-                    {
-                        Dictionary<string,object> propsDict = new Dictionary<string, object>();
-                        if (componentsDict.TryGetValue(component.GetType().Name, out propsDict) 
-                            && component.GetType().GetCustomAttributes(typeof(ECARules4AllAttribute), true).Length > 0)
-                        {   
-                            IEnumerable<MemberInfo> ECAStateVariables = component.GetType().GetMembers().Where(ECAMember =>
-                                ECAMember.GetCustomAttributes(typeof(StateVariableAttribute), true).Length > 0);
-                            foreach (MemberInfo ECAStateVariable in ECAStateVariables)
-                            {
-                                
-                                object value;
-                                if (propsDict.TryGetValue(ECAStateVariable.Name, out value)){
-                                    FieldInfo fieldInfo;
-                                    PropertyInfo propertyInfo;
-                                    if (ECAStateVariable.MemberType.Equals(MemberTypes.Field))
-                                    {
-                                        fieldInfo = (FieldInfo)ECAStateVariable;
-                                        fieldInfo.SetValue(component, value);
-                                    }
-
-                                    if (ECAStateVariable.MemberType.Equals(MemberTypes.Property))
-                                    {
-                                        propertyInfo = (PropertyInfo)ECAStateVariable;
-                                        propertyInfo.SetValue(component, value);
-                                    }
-
-                                }
-                                else
-                                {
-                                    Debug.LogError($"Error getting state variable at key: {ECAStateVariable.Name}");
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-         
          
         // Attempts to restore a state by reading a file and deserializing the JSON
-        public static void RestoreStateFromFile(int index)
+        private static void RestoreStateFromFile(int index)
         {
-            Dictionary<string,Dictionary<string,Dictionary<string,object>>> objectsDict = ReadJsonFile(index).Properties;
-            
-            GameObject[] allObjects = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-            foreach (var gameObject in allObjects)
+            try
             {
-                Dictionary<string,Dictionary<string,object>> componentsDict = new Dictionary<string, Dictionary<string,object>>();
-                MonoBehaviour[] components;
-                if (objectsDict.TryGetValue(gameObject.name, out componentsDict) && gameObject.GetComponent<ECAObject>() != null)
+                Dictionary<string, Dictionary<string, Dictionary<string, object>>> objectsDict =
+                    ReadJsonFile(index).Properties;
+
+                GameObject[] allObjects = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+                foreach (var gameObject in allObjects)
                 {
-                    components = gameObject.GetComponents<MonoBehaviour>();
-                    foreach (MonoBehaviour component in components)
+                    Dictionary<string, Dictionary<string, object>> componentsDict =
+                        new Dictionary<string, Dictionary<string, object>>();
+                    MonoBehaviour[] components;
+                    if (objectsDict.TryGetValue(gameObject.name, out componentsDict) &&
+                        gameObject.GetComponent<ECAObject>() != null)
                     {
-                        Dictionary<string,object> propsDict = new Dictionary<string, object>();
-                        if (componentsDict.TryGetValue(component.GetType().Name, out propsDict) 
-                            && component.GetType().GetCustomAttributes(typeof(ECARules4AllAttribute), true).Length > 0)
-                        {   
-                            IEnumerable<MemberInfo> ECAStateVariables = component.GetType().GetMembers().Where(ECAMember =>
-                                ECAMember.GetCustomAttributes(typeof(StateVariableAttribute), true).Length > 0);
-                            foreach (MemberInfo ECAStateVariable in ECAStateVariables)
+                        components = gameObject.GetComponents<MonoBehaviour>();
+                        foreach (MonoBehaviour component in components)
+                        {
+                            Dictionary<string, object> propsDict = new Dictionary<string, object>();
+                            if (componentsDict.TryGetValue(component.GetType().Name, out propsDict)
+                                && component.GetType().GetCustomAttributes(typeof(ECARules4AllAttribute), true).Length >
+                                0)
                             {
-                                
-                                object json;
-                                object value = null;
-                                if (propsDict.TryGetValue(ECAStateVariable.Name, out json))
+                                IEnumerable<MemberInfo> ECAStateVariables = component.GetType().GetMembers()
+                                    .Where(ECAMember =>
+                                        ECAMember.GetCustomAttributes(typeof(StateVariableAttribute), true).Length > 0);
+                                foreach (MemberInfo ECAStateVariable in ECAStateVariables)
                                 {
-                                    if (json != null)
+
+                                    object json;
+                                    object value = null;
+                                    if (propsDict.TryGetValue(ECAStateVariable.Name, out json))
                                     {
-                                        value = DeserializeProperty(
-                                            ECAStateVariable.GetCustomAttribute<StateVariableAttribute>().type, json.ToString());
-                                        if (DebugPrintRestoreValues)
+                                        if (json != null)
                                         {
-                                            Debug.Log($"Restoring value from json for {gameObject.name}/{component.GetType().Name}/{ECAStateVariable.Name}: {json} -> {value}");
+                                            value = DeserializeProperty(
+                                                ECAStateVariable.GetCustomAttribute<StateVariableAttribute>().type,
+                                                json.ToString());
+                                            if (DebugPrintRestoreValues)
+                                            {
+                                                Debug.Log(
+                                                    $"Restoring value from json for {gameObject.name}/{component.GetType().Name}/{ECAStateVariable.Name}: {json} -> {value}");
+                                            }
                                         }
-                                    }
-                                   
-                                    
-                                    FieldInfo fieldInfo;
-                                    PropertyInfo propertyInfo;
-                                    if (ECAStateVariable.MemberType.Equals(MemberTypes.Field))
-                                    {
-                                        fieldInfo = (FieldInfo)ECAStateVariable;
-                                        fieldInfo.SetValue(component, value);
-                                    }
 
-                                    if (ECAStateVariable.MemberType.Equals(MemberTypes.Property))
-                                    {
-                                        propertyInfo = (PropertyInfo)ECAStateVariable;
-                                        propertyInfo.SetValue(component, value);
-                                    }
+                                        FieldInfo fieldInfo;
+                                        PropertyInfo propertyInfo;
+                                        if (ECAStateVariable.MemberType.Equals(MemberTypes.Field))
+                                        {
+                                            fieldInfo = (FieldInfo)ECAStateVariable;
+                                            fieldInfo.SetValue(component, value);
+                                        }
 
-                                }
-                                else
-                                {
-                                    Debug.LogError($"Error getting state variable at key: {ECAStateVariable.Name}");
+                                        if (ECAStateVariable.MemberType.Equals(MemberTypes.Property))
+                                        {
+                                            propertyInfo = (PropertyInfo)ECAStateVariable;
+                                            propertyInfo.SetValue(component, value);
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        Debug.LogError($"Error getting state variable at key: {ECAStateVariable.Name}");
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-        }
-
-        private static void WipeStatesPastIndex(int index)
-        {
-            StateOfVariables.RemoveRange(index, StateOfVariables.Count - index);
-            CleanDebuggerFolderPastIndex(index);
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
         }
         
          // Saves the serialized state as a .txt JSON file, following an incrementing index for the file name
@@ -433,26 +378,13 @@ namespace ECARules4All_DLL.Debugger
             {
                 string json = File.ReadAllText(filePath);
                 FrozenState loadedState = JsonConvert.DeserializeObject<FrozenState>(json);
-                /*foreach(KeyValuePair<string,Dictionary<string,Dictionary<string,object>>> objData in loadedState.Properties)
-                {
-                    foreach(KeyValuePair<string,Dictionary<string,object>> compData in objData.Value)
-                    {
-                        foreach(KeyValuePair<string,object> propData in compData.Value)
-                        {
-                            
-                            Debug.Log($"{objData.Key}/{compData.Key}/{propData.Key}: {propData.Value}");
-                        }
-                    }
-                }*/
                 return loadedState;
             }
-            Debug.LogError($"File not found at path: {filePath}");
-            return null;
-
+            throw new FileNotFoundException($"File not found at path: {filePath}");
 
         }
 
-        // Attempts to deserialize a serialized property, largely uses ConvertStringToParameter except for Color
+        // Attempts to deserialize a serialized property, largely makes use of ConvertStringToParameter except for Color
         public static object DeserializeProperty(ECARules4AllType type, string json)
         {
             object value = null;
