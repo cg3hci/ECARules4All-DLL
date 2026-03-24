@@ -51,7 +51,7 @@ namespace ECARules4All_DLL
                 singleton = new RuleEngine();
                 // DEBUGGER TEST
                 DebuggerTest.SaveState();
-
+                DebuggerTest.RestoreStateFromFile(0);
 
                 
             }
