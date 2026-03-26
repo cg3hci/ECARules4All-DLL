@@ -308,7 +308,7 @@ namespace ECARules4All_DLL.Debugger
             }
         }
         
-         // Saves the serialized state as a .txt JSON file, following an incrementing index for the file name
+         // Saves the serialized state as a .json file, following an incrementing index for the file name
         public static void SaveStateToFile(FrozenState state)
         {
             
@@ -316,7 +316,7 @@ namespace ECARules4All_DLL.Debugger
                 Directory.CreateDirectory(FolderPath);
             }
 
-            string filePath = FolderPath + "\\" + _indexToSaveAt + ".txt";
+            string filePath = FolderPath + "\\" + _indexToSaveAt + ".json";
             
             string json = JsonConvert.SerializeObject(state, Formatting.Indented);
             if (DebugPrintFileOps)
@@ -342,7 +342,7 @@ namespace ECARules4All_DLL.Debugger
             }
         }
         
-        // Cleans the debug folder of every file with the format "{Number}.txt", where Number is >= index
+        // Cleans the debug folder of every file with the format "{Number}.json", where Number is >= index
         public static void CleanDebuggerFolderPastIndex(int index)
         {
             if (!Directory.Exists(FolderPath)){
@@ -373,7 +373,7 @@ namespace ECARules4All_DLL.Debugger
             if (!Directory.Exists(FolderPath)){
                 Directory.CreateDirectory(FolderPath);
             }
-            string filePath = FolderPath + "\\" + index + ".txt";
+            string filePath = FolderPath + "\\" + index + ".json";
             if (File.Exists(filePath))
             {
                 string json = File.ReadAllText(filePath);
