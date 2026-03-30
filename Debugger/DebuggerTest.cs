@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Reflection;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 using Newtonsoft.Json;
+using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
 namespace ECARules4All_DLL.Debugger
@@ -27,7 +29,7 @@ namespace ECARules4All_DLL.Debugger
             private Rule[] rules;
             private Action action;
             
-            /* Structure to keep track of state variables, a list of triple-nested dictionaries,
+            /* Structure to keep track of state variables, a triple-nested dictionary,
              * the outer dictionary has gameObject names as keys
              * the middle dictionary has component names as keys
              * the inner dictionary has property names as keys, with the property values as names
@@ -309,7 +311,7 @@ namespace ECARules4All_DLL.Debugger
         }
         
          // Saves the serialized state as a .json file, following an incrementing index for the file name
-        public static void SaveStateToFile(FrozenState state)
+        private static void SaveStateToFile(FrozenState state)
         {
             
             if (!Directory.Exists(FolderPath)){
@@ -445,8 +447,94 @@ namespace ECARules4All_DLL.Debugger
             return value;
         }
 
+        /* NEEDS TESTING
+         * Given an action, returns a list of matching states with that action
+         * starts from the end of the state list and goes backwards, so list of states goes from newest to oldest
+         */
+        public static List<FrozenState> FindStatesFromAction(Action action)
+        {
+            List<FrozenState> states = new List<FrozenState>();
+            FrozenState stateHolder;
+            for (int i = _stateCount - 1; i >= 0; i--)
+            {
+                try
+                {
+                    stateHolder = ReadJsonFile(i);
+                    if (stateHolder != null)
+                    {
+                        if (stateHolder.Action != null)
+                        {
+                            if (stateHolder.Action == action)
+                            {
+                                states.Add(stateHolder);
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                }
+            }
+            return states;
+        }
+
+        // As above, but only returns the most recent state matching the action
+        public static FrozenState FindLastStateFromAction(Action action)
+        {
+            FrozenState stateHolder;
+            for (int i = _stateCount - 1; i >= 0; i--)
+            {
+                try
+                {
+                    stateHolder = ReadJsonFile(i);
+                    if (stateHolder != null)
+                    {
+                        if (stateHolder.Action != null)
+                        {
+                            if (stateHolder.Action == action)
+                            {
+                                return stateHolder;
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                }
+            }
+            return null;
+        }
         
-        
+        /*
+         * Simple benchmark function to check how long saving and restoring states takes
+         */
+        public static void Benchmark()
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+            SaveState();
+            sw.Stop();
+            Debug.Log($"Saving 1 state took {sw.ElapsedMilliseconds}ms");
+            
+            sw.Restart();
+            for(int i= 0; i < 10; i++){
+                SaveState();
+            }
+            sw.Stop();
+            Debug.Log($"Saving 10 states took {sw.ElapsedMilliseconds}ms");
+            
+            sw.Restart();
+            RestoreStateFromFile(0);
+            sw.Stop();
+            Debug.Log($"Restoring 1 state took {sw.ElapsedMilliseconds}ms");
+            
+            sw.Restart();
+            for(int i= 0; i < 10; i++){
+                RestoreStateFromFile(0);
+            }
+            sw.Stop();
+            Debug.Log($"Restoring 10 states took {sw.ElapsedMilliseconds}ms");
+        }
     }
-    
 }
