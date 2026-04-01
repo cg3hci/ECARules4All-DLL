@@ -28,10 +28,8 @@ namespace ECARules4All_DLL.Debugger
         public class FrozenState
         {
             private DateTime timestamp;
-            //private Rule[] rules;
-            //private Action action;
-            private string actionString;
-            private List<string> rulesString;
+            private string action;
+            private List<string> rules;
             /* Structure to keep track of state variables, a triple-nested dictionary,
              * the outer dictionary has gameObject names as keys
              * the middle dictionary has component names as keys
@@ -44,29 +42,17 @@ namespace ECARules4All_DLL.Debugger
                 get => timestamp;
                 set => timestamp = value;
             }
-
-            /*public Rule[] Rules
-            {
-                get => rules;
-                set => rules = value;
-            }*/
-
-            /*public Action Action
+            
+            public string Action
             {
                 get => action;
                 set => action = value;
-            }*/
-
-            public string ActionString
-            {
-                get => actionString;
-                set => actionString = value;
             }
 
-            public List<string> RulesString
+            public List<string> Rules
             {
-                get => rulesString;
-                set => rulesString = value;
+                get => rules;
+                set => rules = value;
             }
 
             public Dictionary<string, Dictionary<string, Dictionary<string, object>>> Properties
@@ -78,16 +64,15 @@ namespace ECARules4All_DLL.Debugger
             public FrozenState(Action action)
             {
                 Timestamp = DateTime.Now;
-                //Action = action;
-                ActionString = action.ToString();
-                //Rules = RuleEngine.GetInstance().Rules().ToArray();
+                Action = action.ToString();
+                
                 TextRuleSerializer textRuleSerializer = new TextRuleSerializer();
-                RulesString = new List<string>();
+                Rules = new List<string>();
                 foreach (Rule r in RuleEngine.GetInstance().Rules())
                 {
                     StringWriter stringWriter = new StringWriter();
                     textRuleSerializer.PrintRule(r, stringWriter);
-                    RulesString.Add(stringWriter.ToString());
+                    Rules.Add(stringWriter.ToString());
                 }
                 
                 
@@ -490,9 +475,9 @@ namespace ECARules4All_DLL.Debugger
                     stateHolder = ReadJsonFile(i);
                     if (stateHolder != null)
                     {
-                        if (stateHolder.ActionString != null)
+                        if (stateHolder.Action != null)
                         {
-                            if (stateHolder.ActionString == action.ToString())
+                            if (stateHolder.Action == action.ToString())
                             {
                                 states.Add(stateHolder);
                             }
@@ -518,9 +503,9 @@ namespace ECARules4All_DLL.Debugger
                     stateHolder = ReadJsonFile(i);
                     if (stateHolder != null)
                     {
-                        if (stateHolder.ActionString != null)
+                        if (stateHolder.Action != null)
                         {
-                            if (stateHolder.ActionString == action.ToString())
+                            if (stateHolder.Action == action.ToString())
                             {
                                 return stateHolder;
                             }
