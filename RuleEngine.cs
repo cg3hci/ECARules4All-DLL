@@ -50,8 +50,9 @@ namespace ECARules4All_DLL
             {
                 singleton = new RuleEngine();
                 // DEBUGGER TEST; Should be removed eventually
-                DebuggerTest.SaveState();
-                //DebuggerTest.Benchmark();
+                DebuggerTest.RuleTesting();
+                DebuggerTest.ActionTesting();
+                
             }
 
             return singleton;
@@ -169,7 +170,7 @@ namespace ECARules4All_DLL
             
             if (type != Action.ActionType.INVALID)
             {
-                // DEBUGGER TEST; likely where it should be placed
+                // DEBUGGER
                 DebuggerTest.SaveState(act);
                 
                 List<FieldInfo> fields = new List<FieldInfo>(); //TODO Do we want to use GetProperties() as well?
@@ -1153,7 +1154,8 @@ namespace ECARules4All_DLL
             VALUE,
             PASSIVE,
         }
-
+        
+        
         private GameObject a_subject = null;
 
         private string a_verb;

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using ECARules4All_DLL.Parsers;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 using Newtonsoft.Json;
@@ -22,13 +23,15 @@ namespace ECARules4All_DLL.Debugger
         
         /*
          * Represents a "complete" state
+         * the action and rules fields are converted to string "manually" since they don't support serialization otherwise
          */
         public class FrozenState
         {
             private DateTime timestamp;
-            private Rule[] rules;
-            private Action action;
-            
+            //private Rule[] rules;
+            //private Action action;
+            private string actionString;
+            private List<string> rulesString;
             /* Structure to keep track of state variables, a triple-nested dictionary,
              * the outer dictionary has gameObject names as keys
              * the middle dictionary has component names as keys
@@ -42,16 +45,28 @@ namespace ECARules4All_DLL.Debugger
                 set => timestamp = value;
             }
 
-            public Rule[] Rules
+            /*public Rule[] Rules
             {
                 get => rules;
                 set => rules = value;
-            }
+            }*/
 
-            public Action Action
+            /*public Action Action
             {
                 get => action;
                 set => action = value;
+            }*/
+
+            public string ActionString
+            {
+                get => actionString;
+                set => actionString = value;
+            }
+
+            public List<string> RulesString
+            {
+                get => rulesString;
+                set => rulesString = value;
             }
 
             public Dictionary<string, Dictionary<string, Dictionary<string, object>>> Properties
@@ -63,8 +78,19 @@ namespace ECARules4All_DLL.Debugger
             public FrozenState(Action action)
             {
                 Timestamp = DateTime.Now;
-                Rules = RuleEngine.GetInstance().Rules().ToArray();
-                Action = action;
+                //Action = action;
+                ActionString = action.ToString();
+                //Rules = RuleEngine.GetInstance().Rules().ToArray();
+                TextRuleSerializer textRuleSerializer = new TextRuleSerializer();
+                RulesString = new List<string>();
+                foreach (Rule r in RuleEngine.GetInstance().Rules())
+                {
+                    StringWriter stringWriter = new StringWriter();
+                    textRuleSerializer.PrintRule(r, stringWriter);
+                    RulesString.Add(stringWriter.ToString());
+                }
+                
+                
             }
             
         }
@@ -105,9 +131,11 @@ namespace ECARules4All_DLL.Debugger
         */
         public static void SaveState(Action action = null)
         {
-            FrozenState frozenState = new FrozenState(action);
-            frozenState.Properties = SaveProperties();
-            
+            FrozenState frozenState = new FrozenState(action)
+            {
+                Properties = SaveProperties()
+            };
+
             if (_stateCount > _indexToSaveAt)
             {
                 CleanDebuggerFolderPastIndex(_indexToSaveAt);
@@ -447,7 +475,7 @@ namespace ECARules4All_DLL.Debugger
             return value;
         }
 
-        /* NEEDS TESTING
+        /*
          * Given an action, returns a list of matching states with that action
          * starts from the end of the state list and goes backwards, so list of states goes from newest to oldest
          */
@@ -462,9 +490,9 @@ namespace ECARules4All_DLL.Debugger
                     stateHolder = ReadJsonFile(i);
                     if (stateHolder != null)
                     {
-                        if (stateHolder.Action != null)
+                        if (stateHolder.ActionString != null)
                         {
-                            if (stateHolder.Action == action)
+                            if (stateHolder.ActionString == action.ToString())
                             {
                                 states.Add(stateHolder);
                             }
@@ -490,9 +518,9 @@ namespace ECARules4All_DLL.Debugger
                     stateHolder = ReadJsonFile(i);
                     if (stateHolder != null)
                     {
-                        if (stateHolder.Action != null)
+                        if (stateHolder.ActionString != null)
                         {
-                            if (stateHolder.Action == action)
+                            if (stateHolder.ActionString == action.ToString())
                             {
                                 return stateHolder;
                             }
@@ -506,6 +534,10 @@ namespace ECARules4All_DLL.Debugger
             }
             return null;
         }
+        
+        /* --------
+         * TESTING FUNCTIONS BELOW
+           -------- */
         
         /*
          * Simple benchmark function to check how long saving and restoring states takes
@@ -536,5 +568,49 @@ namespace ECARules4All_DLL.Debugger
             sw.Stop();
             Debug.Log($"Restoring 10 states took {sw.ElapsedMilliseconds}ms");
         }
+
+        
+        /*
+         * For testing only: executes some hardcoded actions 
+         */
+        public static void ActionTesting()
+        {
+            var a = new Action(
+                GameObject.Find("LightCapsule"),
+                "increases", "intensity", "by", 10.0f);
+            var a2 = new Action(
+                GameObject.Find("PlayerRobot"),
+                "interacts with", GameObject.Find("WindowCube"));
+            RuleEngine.GetInstance().ExecuteAction(a);
+            RuleEngine.GetInstance().ExecuteAction(a2);
+
+        }
+
+        /*
+         * For testing only: adds some hardcoded rules
+         */
+        public static void RuleTesting()
+        {
+            var a = new Action(
+                GameObject.Find("LightCapsule"),
+                "increases", "intensity", "by", 10.0f);
+            var a2 = new Action(
+                GameObject.Find("LightCapsule"),
+                "increases", "intensity", "by", 40.0f);
+            var aList1 = new Action(
+                GameObject.Find("LightCapsule"),
+                "increases", "intensity", "by", 12.0f);
+            var aList2 = new Action(
+                GameObject.Find("LightCapsule"),
+                "increases", "intensity", "by", 13.0f);
+            var aList = new List<Action>();
+            aList.Add(aList1);
+            aList.Add(aList2);
+            Rule r = Rule.TryCreateRule(a, aList);
+            Rule r2 = Rule.TryCreateRule(a2, aList);
+            RuleEngine.GetInstance().Add(r);
+            RuleEngine.GetInstance().Add(r2);
+        }
+        
     }
 }
