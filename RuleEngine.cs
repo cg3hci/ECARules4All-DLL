@@ -49,10 +49,6 @@ namespace ECARules4All_DLL
             if (singleton == null)
             {
                 singleton = new RuleEngine();
-                // DEBUGGER TEST; Should be removed eventually
-                DebuggerTest.RuleTesting();
-                DebuggerTest.ActionTesting();
-                
             }
 
             return singleton;
@@ -172,7 +168,6 @@ namespace ECARules4All_DLL
             {
                 // DEBUGGER
                 DebuggerTest.SaveState(act);
-                
                 List<FieldInfo> fields = new List<FieldInfo>(); //TODO Do we want to use GetProperties() as well?
                 List<MethodInfo> methods = new List<MethodInfo>();
                 List<Component> subjects = act.GetSubjectComponent();

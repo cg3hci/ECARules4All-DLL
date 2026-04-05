@@ -5,6 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using ECARules4All_DLL.Parsers;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
@@ -28,8 +30,8 @@ namespace ECARules4All_DLL.Debugger
         public class FrozenState
         {
             private DateTime timestamp;
-            private string action;
-            private List<string> rules;
+            private string actionString;
+            private List<string> rulesString;
             /* Structure to keep track of state variables, a triple-nested dictionary,
              * the outer dictionary has gameObject names as keys
              * the middle dictionary has component names as keys
@@ -43,16 +45,16 @@ namespace ECARules4All_DLL.Debugger
                 set => timestamp = value;
             }
             
-            public string Action
+            public string ActionString
             {
-                get => action;
-                set => action = value;
+                get => actionString;
+                set => actionString = value;
             }
 
-            public List<string> Rules
+            public List<string> RulesString
             {
-                get => rules;
-                set => rules = value;
+                get => rulesString;
+                set => rulesString = value;
             }
 
             public Dictionary<string, Dictionary<string, Dictionary<string, object>>> Properties
@@ -64,18 +66,24 @@ namespace ECARules4All_DLL.Debugger
             public FrozenState(Action action)
             {
                 Timestamp = DateTime.Now;
-                Action = action.ToString();
+                ActionString = action.ToString();
                 
                 TextRuleSerializer textRuleSerializer = new TextRuleSerializer();
-                Rules = new List<string>();
+                RulesString = new List<string>();
                 foreach (Rule r in RuleEngine.GetInstance().Rules())
                 {
                     StringWriter stringWriter = new StringWriter();
                     textRuleSerializer.PrintRule(r, stringWriter);
-                    Rules.Add(stringWriter.ToString());
+                    RulesString.Add(stringWriter.ToString());
                 }
-                
-                
+            }
+            [JsonConstructor]
+            public FrozenState(DateTime timestamp, string actionString, List<string> rulesString, Dictionary<string, Dictionary<string, Dictionary<string, object>>> properties)
+            {
+                Timestamp = timestamp;
+                ActionString = actionString;
+                RulesString = rulesString;
+                Properties = properties;
             }
             
         }
@@ -99,13 +107,10 @@ namespace ECARules4All_DLL.Debugger
          * if DebugPrintValues is true, the value of each saved parameter will be printed with Debug.Log
          * if DebugPrintRestoreValues is true, the value of each parameter restored off a JSON file will be printed
          * if DebugPrintFileOps is true, every operation involving saving and deleting a file will be printed
-         * if DebugIndexChecker is true, changes the value of properties representing a light's intensity based on
-         * the current state index
          */
         private const bool DebugPrintSaveValues = false;
         private const bool DebugPrintRestoreValues = false;
         private const bool DebugPrintFileOps = false;
-        private const bool DebugIndexChecker = false;
         
         // Where JSON data is saved and loaded
         private const string FolderPath = "DebuggerTempSaveData";
@@ -177,11 +182,6 @@ namespace ECARules4All_DLL.Debugger
                                     value = propertyInfo.GetValue(component);
                                 }
                                 
-                                // Debug
-                                if (DebugIndexChecker && ECAStateVariable.Name == "intensity")
-                                {
-                                    value = _indexToSaveAt * 10;
-                                }
                                 if (value != null)
                                 {
                                     processedValue = SerializeUtils.SerializeAttribute(value);
@@ -245,7 +245,11 @@ namespace ECARules4All_DLL.Debugger
             }
         }
          
-        // Attempts to restore a state by reading a file and deserializing the JSON
+        /* Attempts to restore a state by reading a file and deserializing the JSON
+         VERY significant issue: this method only sets the values of the properties (and therefore the fields) of
+         each ECAComponent, but it does not (cannot?) call the respective methods that go on to actually update the
+         object within the scene
+         */
         private static void RestoreStateFromFile(int index)
         {
             try
@@ -298,15 +302,18 @@ namespace ECARules4All_DLL.Debugger
                                         {
                                             fieldInfo = (FieldInfo)ECAStateVariable;
                                             fieldInfo.SetValue(component, value);
+                                            
                                         }
 
                                         if (ECAStateVariable.MemberType.Equals(MemberTypes.Property))
                                         {
                                             propertyInfo = (PropertyInfo)ECAStateVariable;
                                             propertyInfo.SetValue(component, value);
+                                            
                                         }
-
+                                                                            
                                     }
+                                    
                                     else
                                     {
                                         Debug.LogError($"Error getting state variable at key: {ECAStateVariable.Name}");
@@ -475,9 +482,9 @@ namespace ECARules4All_DLL.Debugger
                     stateHolder = ReadJsonFile(i);
                     if (stateHolder != null)
                     {
-                        if (stateHolder.Action != null)
+                        if (stateHolder.ActionString != null)
                         {
-                            if (stateHolder.Action == action.ToString())
+                            if (stateHolder.ActionString == action.ToString())
                             {
                                 states.Add(stateHolder);
                             }
@@ -503,9 +510,9 @@ namespace ECARules4All_DLL.Debugger
                     stateHolder = ReadJsonFile(i);
                     if (stateHolder != null)
                     {
-                        if (stateHolder.Action != null)
+                        if (stateHolder.ActionString != null)
                         {
-                            if (stateHolder.Action == action.ToString())
+                            if (stateHolder.ActionString == action.ToString())
                             {
                                 return stateHolder;
                             }
@@ -595,6 +602,61 @@ namespace ECARules4All_DLL.Debugger
             Rule r2 = Rule.TryCreateRule(a2, aList);
             RuleEngine.GetInstance().Add(r);
             RuleEngine.GetInstance().Add(r2);
+        }
+        
+        
+        public static async void Demonstration()
+        {
+            GameObject capsule = GameObject.Find("LightCapsule");
+            var a2 = new Action(
+                GameObject.Find("PlayerRobot"),
+                "interacts with", GameObject.Find("WindowCube"));
+            ECAColor colorCyan = new ECAColor(Color.cyan);
+            var emptyAction = new Action(capsule, "increases", "intensity", "by", 0.0f);
+            var nonTriggeringAction = new Action(capsule, "increases", "intensity", "by", 10.0f);
+            var triggeringAction = new Action(capsule, "increases", "intensity", "by", 20.0f);
+ 
+            var ruleActionList = new List<Action>();
+            ruleActionList.Add(new Action(
+                GameObject.Find("LightCapsule"),
+                "changes", "color", "to", colorCyan));
+            Rule rule = Rule.TryCreateRule(triggeringAction, ruleActionList);
+            RuleEngine.GetInstance().Add(rule);
+            
+            
+            
+            
+            await Task.Delay(2000);
+            RuleEngine.GetInstance().ExecuteAction(nonTriggeringAction);
+            await Task.Delay(2000);
+            RuleEngine.GetInstance().ExecuteAction(triggeringAction);
+            await Task.Delay(2000);
+            UndoState();
+            UndoState();
+            //RuleEngine.GetInstance().ExecuteAction(emptyAction);
+            /*var a = new Action(
+                GameObject.Find("LightCapsule"),
+                "increases", "intensity", "by", 10.0f);
+
+            var a = new Action(
+                GameObject.Find("LightCapsule"),
+                "increases", "intensity", "by", 10.0f);
+            var a2 = new Action(
+                GameObject.Find("LightCapsule"),
+                "increases", "intensity", "by", 40.0f);
+            var aList1 = new Action(
+                GameObject.Find("LightCapsule"),
+                "increases", "intensity", "by", 12.0f);
+            var aList2 = new Action(
+                GameObject.Find("LightCapsule"),
+                "increases", "intensity", "by", 13.0f);
+            var aList = new List<Action>();
+            aList.Add(aList1);
+            aList.Add(aList2);
+            Rule r = Rule.TryCreateRule(a, aList);
+            Rule r2 = Rule.TryCreateRule(a2, aList);
+            RuleEngine.GetInstance().Add(r);
+            RuleEngine.GetInstance().Add(r2);*/
         }
         
     }
