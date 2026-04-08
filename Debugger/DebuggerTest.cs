@@ -108,9 +108,9 @@ namespace ECARules4All_DLL.Debugger
          * if DebugPrintRestoreValues is true, the value of each parameter restored off a JSON file will be printed
          * if DebugPrintFileOps is true, every operation involving saving and deleting a file will be printed
          */
-        private const bool DebugPrintSaveValues = false;
-        private const bool DebugPrintRestoreValues = false;
-        private const bool DebugPrintFileOps = false;
+        private const bool DebugPrintSaveValues = true;
+        private const bool DebugPrintRestoreValues = true;
+        private const bool DebugPrintFileOps = true;
         
         // Where JSON data is saved and loaded
         private const string FolderPath = "DebuggerTempSaveData";
@@ -130,7 +130,7 @@ namespace ECARules4All_DLL.Debugger
             {
                 CleanDebuggerFolderPastIndex(_indexToSaveAt);
             }
-            SaveStateToFile(frozenState);
+            SaveStateToFile(frozenState);   
             _indexToSaveAt += 1;
             _stateCount = _indexToSaveAt;
         }
@@ -140,7 +140,9 @@ namespace ECARules4All_DLL.Debugger
         {
             GameObject[] allObjects = Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
             
-            Dictionary<string,Dictionary<string,Dictionary<string,object>>> objDict = new  Dictionary<string,Dictionary<string,Dictionary<string,object>>>();
+            Dictionary<string,Dictionary<string,Dictionary<string,object>>> objDict = 
+                new Dictionary<string,Dictionary<string,Dictionary<string,object>>>();
+            
             foreach (var gameObject in allObjects)
                 // Iterate each game object, checking if ECAObject - a universal component - appears in their components
             {
@@ -150,7 +152,7 @@ namespace ECARules4All_DLL.Debugger
                     components = gameObject.GetComponents<MonoBehaviour>();
                     Dictionary<string,Dictionary<string,object>> compDict = new Dictionary<string, Dictionary<string,object>>();
                     /* If they have ECAObject, iterate through their components to find other ECA Components
-                     by checking to see if they have the ECARules4All.
+                     by checking to see if they have the ECARules4All attribute.
                      */
                     foreach (MonoBehaviour component in components)
                     {
@@ -210,9 +212,7 @@ namespace ECARules4All_DLL.Debugger
                     }
                 }
             }
-
             return objDict;
-            
         }
 
         public static void RestoreLatestState()
@@ -292,7 +292,7 @@ namespace ECARules4All_DLL.Debugger
                                             if (DebugPrintRestoreValues)
                                             {
                                                 Debug.Log(
-                                                    $"Restoring value from json for {gameObject.name}/{component.GetType().Name}/{ECAStateVariable.Name}: {json} -> {value}");
+                                                    $"Restoring value from json for {gameObject.name}/{component.GetType().Name}/{ECAStateVariable.Name}: {value}");
                                             }
                                         }
 
@@ -302,14 +302,12 @@ namespace ECARules4All_DLL.Debugger
                                         {
                                             fieldInfo = (FieldInfo)ECAStateVariable;
                                             fieldInfo.SetValue(component, value);
-                                            
                                         }
 
                                         if (ECAStateVariable.MemberType.Equals(MemberTypes.Property))
                                         {
                                             propertyInfo = (PropertyInfo)ECAStateVariable;
                                             propertyInfo.SetValue(component, value);
-                                            
                                         }
                                                                             
                                     }
@@ -460,7 +458,7 @@ namespace ECARules4All_DLL.Debugger
                     //Unused?
                     break;
                 case ECARules4AllType.Scale:
-                    SerializeUtils.ConvertStringToParameter(typeof(Scale), json);
+                    value = SerializeUtils.ConvertStringToParameter(typeof(Scale), json);
                     break;
             }
 
@@ -534,20 +532,32 @@ namespace ECARules4All_DLL.Debugger
         /*
          * Simple benchmark function to check how long saving and restoring states takes
          */
-        public static void Benchmark()
+        public static async void Benchmark()
         {
+            await Task.Delay(5000);
+            GameObject capsule = GameObject.Find("LightCapsule");
+            var a = new Action(capsule, "increases", "intensity", "by", 0.0f);
+            SaveState(a); // Init
             Stopwatch sw = Stopwatch.StartNew();
-            SaveState();
+            SaveState(a);
             sw.Stop();
             Debug.Log($"Saving 1 state took {sw.ElapsedMilliseconds}ms");
             
             sw.Restart();
             for(int i= 0; i < 10; i++){
-                SaveState();
+                SaveState(a);
             }
             sw.Stop();
             Debug.Log($"Saving 10 states took {sw.ElapsedMilliseconds}ms");
+            sw.Restart();
+            for(int i= 0; i < 100; i++){
+                SaveState(a);
+            }
+            sw.Stop();
+            Debug.Log($"Saving 100 states took {sw.ElapsedMilliseconds}ms");
+
             
+            RestoreStateFromFile(0); // Init
             sw.Restart();
             RestoreStateFromFile(0);
             sw.Stop();
@@ -559,6 +569,13 @@ namespace ECARules4All_DLL.Debugger
             }
             sw.Stop();
             Debug.Log($"Restoring 10 states took {sw.ElapsedMilliseconds}ms");
+            
+            sw.Restart();
+            for(int i= 0; i < 100; i++){
+                RestoreStateFromFile(0);
+            }
+            sw.Stop();
+            Debug.Log($"Restoring 100 states took {sw.ElapsedMilliseconds}ms");
         }
 
         
@@ -603,36 +620,45 @@ namespace ECARules4All_DLL.Debugger
             RuleEngine.GetInstance().Add(r);
             RuleEngine.GetInstance().Add(r2);
         }
-        
-        
-        public static async void Demonstration()
+
+        public static async void DemoSave()
         {
+            await Task.Delay(2000);
             GameObject capsule = GameObject.Find("LightCapsule");
-            var a2 = new Action(
-                GameObject.Find("PlayerRobot"),
-                "interacts with", GameObject.Find("WindowCube"));
-            ECAColor colorCyan = new ECAColor(Color.cyan);
-            var emptyAction = new Action(capsule, "increases", "intensity", "by", 0.0f);
-            var nonTriggeringAction = new Action(capsule, "increases", "intensity", "by", 10.0f);
-            var triggeringAction = new Action(capsule, "increases", "intensity", "by", 20.0f);
- 
+            var actionToExecute = new Action(capsule, "increases", "intensity", "by", 10.0f);
+            
+            var ruleTrigger = new Action(capsule, "increases", "intensity", "by", 50.0f);
             var ruleActionList = new List<Action>();
             ruleActionList.Add(new Action(
                 GameObject.Find("LightCapsule"),
-                "changes", "color", "to", colorCyan));
+                "changes", "color", "to", new ECAColor(Color.cyan)));
+            Rule rule = Rule.TryCreateRule(ruleTrigger, ruleActionList);
+            RuleEngine.GetInstance().Add(rule);
+            
+            RuleEngine.GetInstance().ExecuteAction(actionToExecute);
+            
+        }
+
+        public static async void DemoRestore()
+        {
+            await Task.Delay(2000);
+            
+            GameObject capsule = GameObject.Find("LightCapsule");
+            var triggeringAction = new Action(capsule, "increases", "intensity", "by", 20.0f);
+            var ruleActionList = new List<Action>();
+            ruleActionList.Add(new Action(
+                GameObject.Find("LightCapsule"),
+                "changes", "color", "to", new ECAColor(Color.cyan)));
             Rule rule = Rule.TryCreateRule(triggeringAction, ruleActionList);
             RuleEngine.GetInstance().Add(rule);
             
-            
-            
-            
-            await Task.Delay(2000);
-            RuleEngine.GetInstance().ExecuteAction(nonTriggeringAction);
-            await Task.Delay(2000);
             RuleEngine.GetInstance().ExecuteAction(triggeringAction);
             await Task.Delay(2000);
-            UndoState();
-            UndoState();
+            RestoreStateAtIndex(0);
+            
+            var emptyAction = new Action(capsule, "increases", "intensity", "by", 0.0f);
+            RuleEngine.GetInstance().ExecuteAction(emptyAction);
+
             //RuleEngine.GetInstance().ExecuteAction(emptyAction);
             /*var a = new Action(
                 GameObject.Find("LightCapsule"),
