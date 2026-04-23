@@ -87,6 +87,9 @@ namespace ECARules4All_DLL.Debugger
             }
             
         }
+
+        // event used to update the debugger UI after saving a new state
+        public static event System.Action OnStateSaved;
         
         /* integer representing the next index to save a state at. Nominally this would be equal to the last index
          of JSON files saved in DebuggerTempSaveData + 1, but in case of restoring a state from the middle of it, 
@@ -133,6 +136,8 @@ namespace ECARules4All_DLL.Debugger
             SaveStateToFile(frozenState);   
             _indexToSaveAt += 1;
             _stateCount = _indexToSaveAt;
+            
+            OnStateSaved?.Invoke();
         }
         
         // Finds and saves every state variable to JSON
@@ -335,8 +340,10 @@ namespace ECARules4All_DLL.Debugger
             if (!Directory.Exists(FolderPath)){
                 Directory.CreateDirectory(FolderPath);
             }
-
-            string filePath = FolderPath + "\\" + _indexToSaveAt + ".json";
+            
+            //string filePath = FolderPath + "\\" + _indexToSaveAt + ".json";
+            // Fixed hard coded path
+            string filePath = System.IO.Path.Combine(FolderPath, $"{_indexToSaveAt}.json");
             
             string json = JsonConvert.SerializeObject(state, Formatting.Indented);
             if (DebugPrintFileOps)
@@ -393,7 +400,9 @@ namespace ECARules4All_DLL.Debugger
             if (!Directory.Exists(FolderPath)){
                 Directory.CreateDirectory(FolderPath);
             }
-            string filePath = FolderPath + "\\" + index + ".json";
+            //string filePath = FolderPath + "\\" + index + ".json";
+            // Fixed hard coded path
+            string filePath = System.IO.Path.Combine(FolderPath, $"{_indexToSaveAt}.json");
             if (File.Exists(filePath))
             {
                 string json = File.ReadAllText(filePath);
