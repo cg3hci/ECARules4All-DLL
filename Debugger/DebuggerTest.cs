@@ -402,7 +402,7 @@ namespace ECARules4All_DLL.Debugger
             }
             //string filePath = FolderPath + "\\" + index + ".json";
             // Fixed hard coded path
-            string filePath = System.IO.Path.Combine(FolderPath, $"{_indexToSaveAt}.json");
+            string filePath = System.IO.Path.Combine(FolderPath, $"{index}.json");
             if (File.Exists(filePath))
             {
                 string json = File.ReadAllText(filePath);
