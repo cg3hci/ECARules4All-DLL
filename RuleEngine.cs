@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ECARules4All_DLL.Debugger;
 using Serilog;
 using UnityEngine;
 using ECARules4All_DLL.Logger;
@@ -165,6 +166,8 @@ namespace ECARules4All_DLL
             
             if (type != Action.ActionType.INVALID)
             {
+                // DEBUGGER
+                DebuggerTest.SaveState(act);
                 List<FieldInfo> fields = new List<FieldInfo>(); //TODO Do we want to use GetProperties() as well?
                 List<MethodInfo> methods = new List<MethodInfo>();
                 List<Component> subjects = act.GetSubjectComponent();
@@ -1146,7 +1149,8 @@ namespace ECARules4All_DLL
             VALUE,
             PASSIVE,
         }
-
+        
+        
         private GameObject a_subject = null;
 
         private string a_verb;

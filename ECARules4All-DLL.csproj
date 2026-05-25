@@ -134,6 +134,7 @@
         <Compile Include="AntLR\ECARulesParser.cs" />
         <Compile Include="AntLR\ECARulesParserBaseListener.cs" />
         <Compile Include="AntLR\ECARulesParserListener.cs" />
+        <Compile Include="Debugger\DebuggerTest.cs" />
         <Compile Include="ECABehaviour.cs" />
         <Compile Include="ECAScript.cs" />
         <Compile Include="Logger\LoggerFactory.cs" />
