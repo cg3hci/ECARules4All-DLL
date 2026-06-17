@@ -6273,13 +6273,13 @@
         </member>
         <member name="P:ECARules4All_DLL.ECAObject.isVisible">
             <summary>
-            <b>visible</b> indicates whether the object is visible. The allowed values are either "yes" or "no".
+            <b>visible</b> indicates whether the object is visible. The allowed values are either 'yes' or 'no'.
             If invisible, the object is not rendered but remains interactive for collisions.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.ECAObject.isActive">
             <summary>
-            <b>active</b> indicates whether the object is active. The allowed values are either "yes" or "no".
+            <b>active</b> indicates whether the object is active. The allowed values are either 'yes' or 'no'.
             When inactive, the object is not rendered and does not interact with other objects.
             </summary>
         </member>
@@ -6345,13 +6345,13 @@
         </member>
         <member name="M:ECARules4All_DLL.ECAObject.ShowsHides(ECARules4All_DLL.Utils.ECABoolean)">
             <summary>
-            <b>ShowsHides</b> changes the visibility state of the object based on a parameter. The parameter can be either "yes" or "no".
+            <b>ShowsHides</b> changes the visibility state of the object based on a parameter. The parameter can be either 'yes' or 'no'.
             </summary>
             <param name="yesNo">The new visibility state.</param>
         </member>
         <member name="M:ECARules4All_DLL.ECAObject.ActivatesDeactivates(ECARules4All_DLL.Utils.ECABoolean)">
             <summary>
-            <b>ActivatesDeactivates</b> changes the active state of the object based on a parameter. The parameter can be either "yes" or "no".
+            <b>ActivatesDeactivates</b> changes the active state of the object based on a parameter. The parameter can be either 'yes' or 'no'.
             </summary>
             <param name="yesNo">The new active state.</param>
         </member>
@@ -7604,115 +7604,158 @@
             </list>
             </summary>
         </member>
-        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall">
+        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Collectable">
             <summary>
-            <b>ECADustBall</b> is a <see cref="T:ECARules4All_DLL.ECABehaviour">ECABehaviour</see> that attaches dust balls to a virtual object, ideally a  <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface">Surface</see>.
-            It can be "swept" using other objects such as brooms or scottex, and define the number of sweeps needed until all dust is removed.
-            Once fully swept, the object updates its state and optionally plays audio feedback.
+            <b>Collectable</b> is a <see cref="T:UnityEngine.Behaviour">Behaviour</see> that lets an object to be taken inside a player/object owned inventory, or instantly used
+            for interacting with other objects in the scene
+            <example>An object is collected, then a lock on a door unlocks</example>
             </summary>
         </member>
-        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall.sweepsCounter">
+        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Container">
             <summary>
-            <b>sweepsCounter</b> defines how many times the dust ball needs to be swept before it's considered clean.
-            Each sweep reduces this counter until it reaches zero, triggering a "fully swept" state.
+            <b>Container</b> is a <see cref="T:UnityEngine.Behaviour">Behaviour</see> that enables the object to hold other objects.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Container.capacity">
+            <summary>
+            <b>Capacity</b> is the maximum number of objects that can be held by the container.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Container.objectsCount">
+            <summary>
+            <b>objectsCount</b> is the number of objects that are currently held by the container.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Container.objectsList">
+            <summary>
+            <b>objectsList</b> is the list of objects that are currently held by the container.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Container.Start">
+            <summary>
+            <b>Start</b> instantiates the objectsList.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Container.Inserts(UnityEngine.GameObject)">
+            <summary>
+            <b>Inserts</b> inserts an object into the container.
+            </summary>
+            <param name="o">The gameObject to be stored inside the container</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Container.Removes(UnityEngine.GameObject)">
+            <summary>
+            <b>Removes</b> removes an object from the container.
+            </summary>
+            <param name="o">The gameObject to be removed from the container</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Container.Empties">
+            <summary>
+            <b>Empties</b> empties the container.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Counter">
+            <summary>
+            <b>Counter</b> is a <see cref="T:UnityEngine.Behaviour">Behaviour</see> that enables the object to keep track of countable events
+            <example> Player steps, interaction count</example>
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Counter.count">
+            <summary>
+            <b>count</b> is the current count of the counter
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Counter.ChangesCount(System.Single)">
+            <summary>
+            <b>Changes</b> changes the count of the counter
+            </summary>
+            <param name="amount"> the amount to set </param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall">
+            <summary>
+            The EcaDustBall component represents the presence of dust on a virtual object, typically a surface equipped with an see <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface" /> component.
+            Dust can be swept away using specialized objects such as brooms, rags, or scottex equipped with an (<see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.ECACleaningItem"/>) component.
+            After being swept, the object updates its state through the `allSwept` property.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall.allSwept">
             <summary>
             <b>allSwept</b> indicates whether all the dust has been successfully removed from the object.
-            It becomes true once the sweeps counter reaches zero.
             </summary>
-        </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall.ChangesSweepsCounter(System.Int32)">
-            <summary>
-            <b>Changes</b> the value of the sweeps counter to a specified integer.
-            This method ensures the new value is not negative and updates the internal sweep logic accordingly.
-            </summary>
-            <param name="v">The new counter value.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall._IncreasinglySweeps(ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECAScottex)">
             <summary>
-            <b>increasingly-removes-dust</b> simulates a sweeping action by a <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECAScottex"/>, decreasing by one the number of sweeps needed.
-            When enough sweeps are performed, the dust ball is considered clean.
+            <b>removes-dust-with-scottex</b> defines the sweeping action performed by an object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECAScottex"/> component.
+            When the action is executed, the dust balls are removed. Typically, this is the result of a <b>wipes</b> event performed by an object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECAScottex"/>.
             </summary>
-            <param name="scottex">The scottex object performing the sweep.</param>
+            <param name="scottex">The object equipped with an ECAScottex component responsible for performing the sweeping action.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall._IncreasinglySweeps(ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECABroom)">
             <summary>
-            <b>increasingly-removes-dust</b> simulates a sweeping action by a <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECABroom"/>, decreasing by one the number of sweeps needed.
-            When enough sweeps are performed, the dust ball is considered clean.
+            <b>removes-dust-with-broom</b> defines the sweeping action performed by an object that has an ECABroom component.
+            When the action is executed, the dust balls are removed. Typically, this is the result of a <b>sweeps</b>
+            event performed by an object that has an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECABroom"/> component.
+            After removal, nearby objects equipped with an ECADustPan component may automatically execute
+            their <b>collects-dust</b> action to gather the detached dust ball.
             </summary>
-            <param name="broom">The broom object performing the sweep.</param>
+            <param name="broom">The object that has a ECABroomcomponent responsible for performing the sweeping action.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAOilStain">
             <summary>
-            <b>ECAOilStain</b> is a <see cref="T:ECARules4All_DLL.ECABehaviour">ECABehaviour</see> that attaches oil stains to a virtual object, ideally a  <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface">Surface</see>.
-            It can be "washed" using other objects such as mops or cleaning rags, and define the number of washes needed until all stains are removed.
-            Once fully washed, the object updates its state and optionally plays audio feedback.
-            </summary>
-        </member>
-        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAOilStain.washesCounter">
-            <summary>
-            <b>washesCounter</b> defines how many times the oil stains needs to be washed before it's considered clean.
-            Each wash reduces this counter until it reaches zero, triggering a "fully washed" state.
+            <b>ECAOilStain</b> is a component that attaches oil stains to a virtual object, ideally a surface equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component.
+            It can be 'washed' using other objects such as mops or cleaning rags.
+            Once fully washed, the object updates its state.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAOilStain.allWashed">
             <summary>
             <b>allWashed</b> indicates whether all the stains have been successfully removed from the object.
-            It becomes true once the washes counter reaches zero.
             </summary>
-        </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAOilStain.ChangesWashesCounter(System.Int32)">
-            <summary>
-            <b>Changes</b> the value of the washes counter to a specified integer.
-            This method ensures the new value is not negative and updates the internal wash logic accordingly.
-            </summary>
-            <param name="v">The new counter value.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAOilStain._IncreasinglyWashes(ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECACleaningRag)">
             <summary>
-            <b>increasingly-removes-stain</b> simulates a washing action by a <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECACleaningRag"/>, decreasing by one the number of washes needed.
-            When enough washes are performed, the oil stains are considered clean.
+            <b>removes-stain-with-rag</b> defines the sweeping action performed by an object that has an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECACleaningRag"/> component.
+            When the action is executed, the stains are removed. Typically, this is the result of a <b>washes</b> event
+            performed by an object that has an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECACleaningRag"/>.
             </summary>
-            <param name="cleaningRag">The cleaning rag object performing the wash.</param>
+            <param name="cleaningRag">The object that has a <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECACleaningRag"/> component responsible for performing the washing action.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAOilStain._IncreasinglyWashes(ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECAMop)">
             <summary>
-            <b>increasingly-removes-stain</b> simulates a washing action by a <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECAMop"/>, decreasing by one the number of washes needed.
-            When enough washes are performed, the oil stains are considered clean.
+            <b>removes-stain-with-mop</b> defines the sweeping action performed by an object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECAMop"/> component.
+            When the action is executed, the stains are removed. Typically, this is the result of a <b>washes</b> event performed by an
+            object that has an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECAMop"/>..
             </summary>
-            <param name="mop">The mop object performing the wash.</param>
+            <param name="mop">The object equipped with an ECAMop component responsible for performing the washing action.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAPhysicalGrabbable">
             <summary>
-            <b>ECAPhysicalGrabbable</b> represents a physical object in the scene that can be grabbed by the player using one or both hands.
-            It tracks the grabbing state, handles interaction logic based on trigger collisions with hand colliders, and communicates grabbing events through the automation system.
+            <b>ECAPhysicalGrabbable</b> is a component that represents a physical object in the scene which can be grabbed by a player, or user, object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter"/> component, using one or both hands.
+            It tracks the grabbing state, manages interaction logic based on trigger collisions with hand colliders, and communicates grab-related events through the automation system.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAPhysicalGrabbable.grabbed">
             <summary>
-            <b>grabbed</b> indicates whether the object is currently being held by the player.
-            This state is updated based on collision triggers with hand colliders and is used to drive interactive behaviors.
+            <b>grabbed</b> indicates whether the object is currently being held by a player or user object equipped with an ECACharacter component.
+            This state is updated based on trigger collisions with hand colliders and is used to control interactive behaviors.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAPhysicalGrabbable._StartsGrabbing(ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter)">
             <summary>
-            <b>starts-grabbing</b> is triggered when the player begins to grab the object with either hand.
-            Updates the <see cref="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAPhysicalGrabbable.grabbed"/> state and notifies the system about the interaction.
+            <b>starts-grabbing</b> is triggered when a player or user object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter"/> component begins to grab this object with either hand.
+            When triggered, it sets the <see cref="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAPhysicalGrabbable.grabbed"/> state to true and notifies the automation system of the grab event.
             </summary>
-            <param name="c">The character initiating the grab.</param>
+            <param name="c">The object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter"/> component that initiates the grab action.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAPhysicalGrabbable._StopsGrabbing(ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter)">
             <summary>
-            <b>stops-grabbing</b> is triggered when the player releases the object with both hands.
-            Resets the <see cref="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAPhysicalGrabbable.grabbed"/> state and notifies the system of the interaction ending.
+            <b>stops-grabbing</b> is triggered when a player or user object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter"/> component releases this object with both hands.
+            When triggered, it sets the <see cref="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAPhysicalGrabbable.grabbed"/> state to false and notifies the automation system that the grab interaction has ended.
             </summary>
-            <param name="c">The character releasing the object.</param>
+            <param name="c">The object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter"/> component that releases the object.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAHighlight">
             <summary>
-            <b>Highlight</b> is a <see cref="T:ECARules4All_DLL.ECABehaviour">ECABehaviour</see> that is used to highlight the objects that are in the scene.
+            <b>Highlight</b> is a component that is used to highlight the objects that are in the scene.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAHighlight.color">
@@ -7749,13 +7792,15 @@
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAInteractable">
             <summary>
-            <b>Interactable</b> is a <see cref="T:ECARules4All_DLL.ECABehaviour">ECABehaviour</see> that can be attached to an object in order to make it
-            interactable with the player collison.
+            <b>Interactable</b> is a component that can be attached to an object in order to make it
+            interactable with other objects collision.
             </summary>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECASound">
-            <b>Sound</b> is a behavior that functions as a media player specifically designed for audio files.
-            It extends <see cref="T:ECARules4All_DLL.ECABehaviour"/> to provide audio-related functionalities such as playback, volume control, and source management.
+            <summary>
+            <b>Sound</b> is a behavior component that acts as a media player specifically designed for audio playback.
+            It provides functionalities such as playing, pausing, and stopping audio, as well as controlling volume and managing audio sources.
+            </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECASound.source">
             <summary>
@@ -7781,17 +7826,17 @@
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECASound.playing">
             <summary>
-            <b>playing</b> indicates whether the audio is currently playing. The value is either "yes" or "no". If paused or stopped are "yes", playing will be "no".
+            <b>playing</b> indicates whether the audio is currently playing. The value is either 'yes' or 'no'. If paused or stopped are 'yes', playing will be 'no'.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECASound.paused">
             <summary>
-            <b>paused</b> indicates whether the audio playback is paused. The value is either "yes" or "no". When playing again, the audio will resume from the paused time.
+            <b>paused</b> indicates whether the audio playback is paused. The value is either 'yes' or 'no'. When playing again, the audio will resume from the paused time.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECASound.stopped">
             <summary>
-            <b> Stopped </b> indicates whether the audio playback is stopped. The value is either "yes" or "no". When playing again, the audio will start from the beginning.
+            <b> Stopped </b> indicates whether the audio playback is stopped. The value is either 'yes' or 'no'. When playing again, the audio will start from the beginning.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECASound._audioSource">
@@ -7835,19 +7880,262 @@
             </summary>
             <param name="newSource">The new audio filename.</param>
         </member>
-        <member name="T:ECARules4All_DLL.Taxonomies.Utils.LiquidDrop">
+        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Highlight">
+            <summary>
+            <b>Highlight</b> is a <see cref="T:UnityEngine.Behaviour">Behaviour</see> that is used to highlight the objects that are in the scene.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Highlight.color">
+            <summary>
+            <b>Color</b> is the color that will be used to highlight the objects.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Highlight.on">
+            <summary>
+            <b>On</b> is a boolean that tells if the highlight is on or off.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Highlight.outline">
+            <summary>
+            <b>Outline</b> is an object that is used to highlight the object.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Highlight.Start">
+            <summary>
+            <b>Start</b> applies the outline to the object.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Highlight.ChangesColor(UnityEngine.Color)">
+            <summary>
+            <b>ChangesColor</b> changes the color of the outline.
+            </summary>
+            <param name="c"></param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Highlight.Turns(ECARules4All_DLL.Utils.ECABoolean)">
+            <summary>
+            <b>TurnsOn</b> turns the highlight on or off.
+            </summary>
+            <param name="on"></param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Keypad">
+            <summary>
+            <b>Keypad</b> is a <see cref="!:RuleEngine.Behaviour"/> that lets an object to receive codes and trigger
+            actions when the code is correct.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Keypad.keycode">
+            <summary>
+            <b>Keycode</b> is the code that the keypad will accept.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Keypad.input">
+            <summary>
+            <b>Input</b> is the input that the keypad is currently holding.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Keypad.Inserts(System.String)">
+            <summary>
+            <b>Inserts</b> inserts the whole input into the <see cref="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Keypad.input"/> variable.
+            </summary>
+            <param name="input"> The complete code to be checked </param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Keypad.Add(System.String)">
+            <summary>
+            <b>Adds</b> adds a single character to the <see cref="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Keypad.input"/> variable.
+            </summary>
+            <param name="input"></param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Keypad.Resets">
+            <summary>
+            <b>Resets</b> clears the <see cref="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Keypad.input"/> variable.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Lock">
+            <summary>
+            <b>Lock</b> is a <see cref="T:UnityEngine.Behaviour"/> that locks the <see cref="T:ECARules4All_DLL.ECAObject"/> it is attached to.
+            It works in a similar way to the <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Keypad"/> behaviour, but it needs to by unlock by other means (like a key).
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Lock.locked">
+            <summary>
+            <b>locked</b> defines whether the lock is open or not.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Lock.Opens">
+            <summary>
+            <b>Opens</b> sets the lock to open.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Lock.Closes">
+            <summary>
+            <b>Closes</b> sets the lock to closed.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Particle">
+            <summary>
+            <b>Particle</b> is a <see cref="T:UnityEngine.Behaviour"/> that lets the object emit particles.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Particle.on">
+            <summary>
+            <b>On</b> is a boolean that indicates if the particle system is active.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Particle.Turns(ECARules4All_DLL.Utils.ECABoolean)">
+            <summary>
+            <b>Turns</b> is used to turn on/off the particle system.
+            </summary>
+            <param name="on">The status of the particle system.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Particle.Start">
+            <summary>
+            <b>Start</b> initializes the particle system and starts it if the <see cref="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Particle.on"/> variable is set to true.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Placeholder">
+            <summary>
+            <b>Placeholder</b> is a <see cref="T:UnityEngine.Behaviour"/> that is used to represent a placeholder in the scene. It will be
+            used by the End User Developers in order to import and use custom mesh models.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Placeholder.newMesh">
+            <summary>
+            <b>newMesh</b> is the mesh model that the object will use.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Placeholder.Changes(System.String)">
+            <summary>
+            <b>Changes</b> sets the new mesh model that the object will use.
+            </summary>
+            <param name="meshName">The path of the mesh in the user-accessible mesh folder</param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Switch">
+            <summary>
+            <b>Switch</b> is a <see cref="T:UnityEngine.Behaviour"/> that can be use to let an object have an on/off state, useful for
+            objects like lights, doors, etc.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Switch.on">
+            <summary>
+            <b>On</b> is the state of the switch.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Switch.Turns(ECARules4All_DLL.Utils.ECABoolean)">
+            <summary>
+            <b>Turns</b> defines if the switch is on or off.
+            </summary>
+            <param name="on">The new state of the switch.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Switch.Toggle">
+            <summary>
+            <b>Toggle status</b> toggles the switch state.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer">
+            <summary>
+            Represents a time-based <see cref="T:UnityEngine.Behaviour"/> that helps triggering actions after specified durations.
+            The Timer class provides functionality to configure, start, pause, stop, and reset a timer, as well as to emit events when specific time milestones are reached or elapsed.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.duration">
+            <summary>
+            <b>Duration</b> specifies the total duration for which the timer will run.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.current">
+            <summary>
+            <b>Current</b> represents the current time of the timer, meaning the elapsed time from the start. It dynamically updates as the timer counts down.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.active">
+            <summary>
+            <b>Active</b> is a boolean that indicates whether the timer is currently running.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.elapsed">
+            <summary>
+            <b>Elapsed</b> counts the time elapsed since the timer was started.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.ChangeDuration(System.Single)">
+            <summary>
+            <b>ChangesDuration</b> sets the total duration of the timer with a non-negative value.
+            </summary>
+            <param name="amount">The new duration value for the timer.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.ChangeCurrentTime(System.Single)">
+            <summary>
+            <b>ChangeCurrentTime</b> sets the elapsed time of the timer. It ensures that the new value is within the valid range [0, duration].
+            </summary>
+            <param name="amount"> The new </param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.Starts">
+            <summary>
+            <b>Starts</b> activates the timer to begin counting down, resuming its operation from the last paused state.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.Stops">
+            <summary>
+            <b>Stops</b> deactivates the timer, resetting the elapsed time to zero.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.Pauses">
+            <summary>
+            <b>Pauses</b> deactivates the timer, leaving the elapsed time unchanged.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.Reaches(System.Int32)">
+            <summary>
+            <b>Reaches</b> emits an event when the timer reaches a specified elapsed time. It can be used to trigger actions at predefined points in the elapsed timeline.
+            </summary>
+            <param name="seconds">The elapsed time at which the event is triggered.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Timer.Resets">
+            <summary>
+            <b>Resets</b> resets the timer to its maximum duration and deactivates it.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Transition">
+            <summary>
+            <b>Transition</b> is a <see cref="T:UnityEngine.Behaviour"/> that is used to trigger a transition to another scene.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Transition.reference">
+            <summary>
+            <b>Reference</b> is the Unity Scene to transition to.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Transition.Teleports(ECARules4All_DLL.Taxonomies.Objects.Scenes.Scene)">
+            <summary>
+            <b>Teleports</b> changes the current scene to the scene referenced by <see cref="P:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Transition.reference"/>.
+            </summary>
+            <param name="reference"></param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Trigger">
+            <summary>
+            <b>Trigger</b> is a <see cref="T:UnityEngine.Behaviour"/> that can be used to trigger an action without an explicit request
+            from the player. If the action is player initiated, then refer to <see cref="!:Interactable"/>
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.Trigger.Triggers(ECARules4All_DLL.Action)">
+            <summary>
+            <b>Triggers</b> emits an event when the trigger is activated.
+            </summary>
+            <param name="action"> The event to trigger in the scene.</param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Utils.ECALiquidDrop">
             <summary>
             </summary>
         </member>
-        <member name="T:ECARules4All_DLL.Taxonomies.Utils.LiquidSpawner">
+        <member name="T:ECARules4All_DLL.Taxonomies.Utils.ECALiquidSpawner">
             <summary>
             </summary>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.ECAAnimal">
             <summary>
-            Represents an animal character within the ECA rules framework. 
-            An <b>Animal</b> is a specialized subclass of <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter"/> that embodies animal-like traits 
-            and behaviors, enabling interactions and actions unique to animal entities.
+            <b>ECAAnimal</b> is a component that represents an animal character within the ECA rules framework.
+            It extends <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter"/> to provide animal-specific traits and behaviors,
+            enabling actions and interactions characteristic of animal entities.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.ECAAnimal.Speaks(System.String)">
@@ -7857,11 +8145,120 @@
             </summary>
             <param name="s">The name of the audio resource to be played.</param>
         </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.AquaticAnimal">
+            <summary>
+            The <b>AquaticAnimal</b> class represents an aquatic animal.
+            An AquaticAnimal can swim to specific positions or follow predefined paths, with animations for both swimming and idling states.
+            This class extends the functionality of <see cref="!:Animal"/> to include aquatic-specific behaviors.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.AquaticAnimal.IdleAnimation">
+            <summary>
+            <b>IdleAnimation</b> specifies the name of the animation clip played when the aquatic animal is idle.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.AquaticAnimal.SwimAnimation">
+            <summary>
+            <b>SwimAnimation</b> specifies the name of the animation clip played when the aquatic animal is swimming.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.AquaticAnimal.Swims(ECARules4All_DLL.Position)">
+            <summary>
+            <b>Swims</b> (to) is a method that moves the aquatic animal to a specific position with a swimming animation.
+            </summary>
+            <param name="p">The target position to swim to.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.AquaticAnimal.Swims(ECARules4All_DLL.Path)">
+            <summary>
+            <b>Swims</b> (on) is a method that moves the aquatic animal along a specified path while playing the swimming animation.
+            </summary>
+            <param name="p">The path to follow while swimming.</param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature">
+            <summary>
+            The <b>Creature</b> class represents a generic creature.
+            A Creature can perform various movements such as running, walking, and swimming, each with a specific animation.
+            This class extends the functionality of <see cref="!:Animal"/> to include creature-specific behaviors.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.IdleAnimation">
+            <summary>
+            <b>IdleAnimation</b> specifies the name of the animation clip played when the creature is idle.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.SwimAnimation">
+            <summary>
+            <b>SwimAnimation</b> specifies the name of the animation clip played when the creature is swimming.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.FlyAnimation">
+            <summary>
+            <b>FlyAnimation</b> specifies the name of the animation clip played when the creature is running.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.RunAnimation">
+            <summary>
+            <b>RunAnimation</b> specifies the name of the animation clip played when the creature is running.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.WalkAnimation">
+            <summary>
+            <b>WalkAnimation</b> specifies the name of the animation clip played when the creature is walking.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Flies(ECARules4All_DLL.Position)">
+            <summary>
+            <b>Flies</b> (to) is a method that moves the creature to a specific position with a flying animation.
+            </summary>
+            <param name="p">The target position to fly to.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Flies(ECARules4All_DLL.Path)">
+            <summary>
+            <b>Flies</b> (on) is a method that moves the creature along a specified path while playing the flying animation.
+            </summary>
+            <param name="p">The path to follow while flying.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Runs(ECARules4All_DLL.Position)">
+            <summary>
+            <b>Runs</b> (to) is a method that moves the creature to a specific position with a running animation.
+            </summary>
+            <param name="p">The target position to run to.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Runs(ECARules4All_DLL.Path)">
+            <summary>
+            <b>Runs</b> (on) is a method that moves the creature along a specified path while playing the running animation.
+            </summary>
+            <param name="p">The path to follow while running.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Swims(ECARules4All_DLL.Position)">
+            <summary>
+            <b>Swims</b> (to) is a method that moves the creature to a specific position with a swimming animation.
+            </summary>
+            <param name="p">The target position to swim to.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Swims(ECARules4All_DLL.Path)">
+            <summary>
+            <b>Swims</b> (on) is a method that moves the creature along a specified path while playing the swimming animation.
+            </summary>
+            <param name="p">The path to follow while swimming.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Walks(ECARules4All_DLL.Position)">
+            <summary>
+            <b>Walks</b> (to) is a method that moves the creature to a specific position with a walking animation.
+            </summary>
+            <param name="p">The target position to walk to.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Creature.Walks(ECARules4All_DLL.Path)">
+            <summary>
+            <b>Walks</b> (on) is a method that moves the creature along a specified path while playing the walking animation.
+            </summary>
+            <param name="p">The path to follow while walking.</param>
+        </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.ECAHuman">
             <summary>
-            The <b>Human</b> class represents a human character.
-            A Human can perform various movements such as running, walking, and swimming, each with a specific animation.
-            This class extends the functionality of <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.ECAAnimal"/> to include human-specific behaviors.
+            <b>ECAHuman</b> is a component that represents a human character capable of performing physical actions within the environment.
+            It can execute movements such as walking, running, and swimming, each associated with a specific animation sequence.
+            This component extends <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.ECAAnimal"/> by adding human-specific behaviors and interaction capabilities.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.ECAHuman.IdleAnimation">
@@ -7983,12 +8380,155 @@
             </summary>
             <param name="p">The path to follow while walking.</param>
         </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal">
+            <summary>
+            The <b>FlyingAnimal</b> class represents a flying animal.
+            An FlyingAnimal can move using flying or walking animations and supports navigation to specific positions or along predefined paths.
+            This class extends the functionality of <see cref="!:Animal"/> to include flying-specific behaviors.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.IdleAnimation">
+            <summary>
+            <b>IdleAnimation</b> specifies the name of the animation clip played when the flying animal is idle.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.FlyAnimation">
+            <summary>
+            <b>FlyAnimation</b> specifies the name of the animation clip played when the flying animal is flying.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.WalkAnimation">
+            <summary>
+            <b>WalkAnimation</b> specifies the name of the animation clip played when the flying animal is walking.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.Flies(ECARules4All_DLL.Position)">
+            <summary>
+            <b>Flies</b> (to) is a method that moves the flying animal to a specific position with a flying animation.
+            </summary>
+            <param name="p">The target position to fly to.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.Flies(ECARules4All_DLL.Path)">
+            <summary>
+            <b>Flies</b> (on) is a method that moves the flying animal along a specified path while playing the flying animation.
+            </summary>
+            <param name="p">The path to follow while flying.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.Walks(ECARules4All_DLL.Position)">
+            <summary>
+            <b>Walks</b> (to) is a method that moves the flying animal to a specific position with a walking animation.
+            </summary>
+            <param name="p">The target position to walk to.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.FlyingAnimal.Walks(ECARules4All_DLL.Path)">
+            <summary>
+            <b>Walks</b> (on) is a method that moves the flying animal along a specified path while playing the walking animation.
+            </summary>
+            <param name="p">The path to follow while walking.</param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Mannequin">
+            <summary>
+            The <b>Mannequin</b> class provides a way to include a character in the scene to wear 3D models of clothes that do not
+            have rigging skeletons. Since the mannequin is supposed to stay still in the environment, the implementation contains
+            for automatically positioning it on top of the mannequin according to the specified position (e.g., head, torso,
+            left or right leg, arm, etc.). Provided that the distinction between a mannequin and a not-playable human is
+            technical, it is up to the Unity developer to decide which object offers the best configuration options considering the
+            template under development.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Mannequin.torso">
+            <summary>
+            <b>Torso</b>: is the GameObject that represents the torso in the mannequin.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Mannequin.leftLeg">
+            <summary>
+            <b>leftLeg</b>: is the GameObject that represents the left leg in the mannequin.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Mannequin.rightLeg">
+            <summary>
+            <b>rightLeg</b>: is the GameObject that represents the right leg in the mannequin.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Mannequin.leftFoot">
+            <summary>
+            <b>leftFoot</b>: is the GameObject that represents the left foot in the mannequin.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Mannequin.rightFoot">
+            <summary>
+            <b>rightFoot</b>: is the GameObject that represents the right foot in the mannequin.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Mannequin.head">
+            <summary>
+            <b>head</b>: is the GameObject that represents the head in the mannequin.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Mannequin.AssignDress(ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing)">
+            <summary>
+            <b>AssignDress</b>: This method is called to assign a dress to the mannequin.
+            </summary>
+            <param name="c">The <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing"/> object</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Mannequin.RemoveDress(ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing)">
+            <summary>
+            This method is called to remove a dress from the mannequin.
+            </summary>
+            <param name="c">The <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing"/> object</param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal">
+            <summary>
+            The <b>TerrestrialAnimal</b> class represents a terrestrial animal.
+            A TerrestrialAnimal can perform actions like running and walking, with corresponding animations for movement to specific positions or along paths.
+            This class extends the functionality of <see cref="!:Animal"/> to include terrestrial-specific behaviors.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.IdleAnimation">
+            <summary>
+            <b>IdleAnimation</b> specifies the name of the animation clip played when the terrestrial animal is idle.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.RunAnimation">
+            <summary>
+            <b>RunAnimation</b> specifies the name of the animation clip played when the terrestrial animal is running.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.WalkAnimation">
+            <summary>
+            <b>IdleAnimation</b> specifies the name of the animation clip played when the terrestrial animal is walking.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.Runs(ECARules4All_DLL.Position)">
+            <summary>
+            <b>Runs</b> (to) is a method that moves the terrestrial animal to a specific position with a running animation.
+            </summary>
+            <param name="p">The target position to run to.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.Runs(ECARules4All_DLL.Path)">
+            <summary>
+            <b>Runs</b> (on) is a method that moves the terrestrial animal along a specified path while playing the running animation.
+            </summary>
+            <param name="p">The path to follow while running.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.Walks(ECARules4All_DLL.Position)">
+            <summary>
+            <b>Walks</b> (to) is a method that moves the terrestrial animal to a specific position with a walking animation.
+            </summary>
+            <param name="p">The target position to walk to.</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.TerrestrialAnimal.Walks(ECARules4All_DLL.Path)">
+            <summary>
+            <b>Walks</b> (on) is a method that moves the terrestrial animal along a specified path while playing the walking animation.
+            </summary>
+            <param name="p">The path to follow while walking.</param>
+        </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter">
             <summary>
-            Represents a versatile character within the ECA rules framework. 
-            A <b>Character</b> can embody various forms, including animals, humanoids, robots, or generic creatures. 
-            It can operate autonomously or be controlled by the player, supporting a range of actions and state attributes 
-            to interact dynamically with the environment
+            <b>ECACharacter</b> is a behavior component that represents a versatile entity within the ECA rules framework.
+            It can embody different forms such as animals, humanoids, robots, or other autonomous or player-controlled beings.
+            The component supports a wide range of actions and state attributes, enabling dynamic interaction with the environment.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter.life">
@@ -7998,7 +8538,7 @@
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter.playing">
             <summary>
-            <b>playing</b> indicates whether the character is controlled by the player ("yes") or operating autonomously ("no").
+            <b>playing</b> indicates whether the character is controlled by the player ('yes') or operating autonomously ('no').
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter.Interacts(ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAInteractable)">
@@ -8047,20 +8587,52 @@
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Environments.ECAEnvironment">
             <summary>
-            <b>ECAEnvironment</b> represents a generic class for environment items.
-            On contrary with props (<see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.ECAProp"/>), environment items are not interactable by characters.
+            <b>ECAEnvironment</b> is a component that represents non-interactable elements of the environment.
+            Unlike props (<see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.ECAProp"/>), environment items cannot be directly manipulated or interacted with by objects equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter"/> component.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.Artwork">
+            <summary>
+            <b>Artwork</b> represents an artwork in the environment.
+            The Artwork class defines properties such as the author, price, and creation year of the artwork.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.Artwork.author">
+            <summary>
+            <b>author</b> specifies the name of the artist of the artwork.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.Artwork.price">
+            <summary>
+            <b>price</b> represents the monetary value of the artwork.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.Artwork.year">
+            <summary>
+            <b>year</b> denotes the year in which the artwork was created.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.Artwork.type">
+            <summary>
+            <b>type</b> denotes the type of the artwork (e.g., painting, sculpture).
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.Artwork.description">
+            <summary>
+            <b>description</b> denotes the description of the artwork (e.g., style, technique).
             </summary>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface">
             <summary>
-            <b>ECASurface</b> represents a physical or virtual surface within the automation environment.
-            It is used to define surfaces such as tables, floors, walls, or ceilings that cleaning items can interact with.
+            <b>ECASurface</b> is a component that represents a virtual surface within the automation environment.
+            It defines surfaces such as tables, floors, walls, or ceilings that can be detected and interacted with by cleaning items (<see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.ECACleaningItem"/>) or other objects.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface.type">
             <summary>
-            <b>type</b> specifies the kind of surface.
-            Possible values include "table", "floor", "wall", or "ceiling".
+            <b>type</b> specifies the kind of surface represented by an object equipped with the ECASurface component.
+            Valid values include 'table', 'floor', 'wall', and 'ceiling'.
+            This attribute is used by cleaning items to determine how to interact with the surface.
             </summary>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.ECAInteraction">
@@ -8083,6 +8655,66 @@
             </summary>
             <param name="c">The <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter"/> who presses the button. </param>
         </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECACamera">
+            <summary>
+            <b>ECACamera</b> is an <see cref="!:Interaction"/> subclass that allows the user to interact with the camera the
+            script is attached to.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECACamera.camera">
+            <summary>
+            <b>Camera</b> is the <see cref="T:UnityEngine.Camera"/> component the script will control.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECACamera.POV">
+             <summary>
+             <b>POV</b> is the camera's point of view.
+             <p>Possible values:</p>
+             <list type="bullet">
+            <item>
+            <term>First</term>
+            </item>
+            <item>
+            <term>Third</term>
+            </item>
+             </list>
+             </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECACamera.pov">
+            <summary>
+            <b>POV</b> is the camera's point of view.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECACamera.zoomLevel">
+            <summary>
+            <b>zoomLevel</b> is the camera's zoom level.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECACamera.playing">
+            <summary>
+            <b>Playing</b> is a boolean that indicates whether the camera is currently playing.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECACamera.ZoomsIn(System.Single)">
+            <summary>
+            <b>ZoomsIn</b> reduces the camera's zoom level by the specified amount.
+            <p>If the resulting zoom is less than 30 the zoom is set to 30.</p>
+            </summary>
+            <param name="amount">The amount of zoom to remove </param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECACamera.ZoomsOut(System.Single)">
+            <summary>
+            <b>ZoomsOut</b> increases the camera's zoom level by the specified amount.
+            <p> If the resulting zoom is greater than 100 the zoom is set to 100.</p>
+            </summary>
+            <param name="amount">The amount of zoom to add</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECACamera.ChangesPOV(ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECACamera.POV)">
+            <summary>
+            <b> ChangesPov</b> changes the camera's point of view.
+            </summary>
+            <param name="pov">The new <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECACamera.POV"/> value. </param>
+        </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight">
             <summary>
             <b>ECALight</b> represents a controllable light source in the environment.
@@ -8101,12 +8733,12 @@
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.color">
             <summary>
-            <b>color</b> represents the color of the light source. The value is a string that represents the color name (e.g., "red", "blue", "green").
+            <b>color</b> represents the color of the light source. The value is a string that represents the color name (e.g., 'red', 'blue', 'green').
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.on">
             <summary>
-            <b>on</b> indicates whether the light source is currently active or inactive. The accepted values are "on" or "off".
+            <b>on</b> indicates whether the light source is currently active or inactive. The accepted values are 'on' or 'off'.
             </summary>
         </member>
         <member name="F:ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories.ECALight.componentLight">
@@ -8224,79 +8856,129 @@
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.ECACleaningItem">
             <summary>
-            <b>ECACleaningItem</b> represents a generic cleaning item within the automation framework.
-            It serves as a base component for all cleaning tools and supports integration with ECA objects.
+            <b>ECACleaningItem</b> is a base component that represents a generic cleaning tool.
+            It provides shared properties and behaviors for all cleaning-related objects
+            and enables integration with other components and ECA-based automation rules.
             </summary>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECABroom">
             <summary>
-            <b>ECABroom</b> is a virtual cleaning tool used to simulate sweeping actions within an interactive environment.
-            When it comes into contact with a surface, it triggers the sweeping action, which is then propagated through the automation system.
+            <b>ECABroom</b> is a component that represents broom objects within the environment.
+            It defines the properties and capabilities associated with virtual brooms used in automation scenarios.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECABroom.Sweeps(ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface)">
+             <summary>
+             <b>sweeps</b> represents a triggerable interaction performed by a broom on an object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component.
+             When <b>sweeps</b> is used as a trigger in an ECA automation, it implicitly defines a causal action within the same automation.
+            
+             Specifically, if the swept surface is equipped with both <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> and ECADustBall components,
+             the trigger <b>sweeps</b> MUST result in the execution of the <b>removes-dust-with-broom</b> action.
+             This action removes all dust balls present on the surface.
+            
+             Therefore, in an ECA rule, <b>sweeps</b> should be interpreted not only as a trigger condition
+             but also as a semantic indicator that the automation includes the action <b>removes-dust-with-broom</b>
+             applied to the same surface involved in the trigger.
+            
+             Optionally, the removal of dust can enable secondary actions (e.g., dust collection)
+             by nearby objects equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECADustPan"/> component.
+             </summary>
+             <param name="surface">
+             The object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component representing the surface being swept.
+             </param>
             <summary>
-            <b>Sweeps</b> is a method that simulates the broom sweeping a surface.
-            It is typically invoked upon collision with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/>, either manually or automatically.
+            <b>sweeps</b> represents the action of a broom cleaning an object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component,
+            typically a surface within the environment. This method is usually invoked when the broom comes into contact
+            with an object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component.
+            When <b>sweeps</b> is used as a trigger in an ECA automation, if it interacts with objects equipped with
+            both <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> and <see cref="!:ECADustBall"/> components, it MUST trigger in the same automation
+            the corresponding <b>removes-dust-with-broom</b> action. 
+            In addition to removing dust, this action generally activates the <b>collects-dust</b> action of nearby objects
+            equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECADustPan"/> component, allowing them to collect the detached dust balls.
             </summary>
-            <param name="surface">The surface to be swept by the broom.</param>
+            <param name="surface">The object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component representing the surface to be swept.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECACleaningRag">
             <summary>
-            <b>ECACleaningRag</b> is a virtual object that simulates a cleaning rag used for washing surfaces.
-            It interacts with <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> objects and triggers the washing action when it comes into contact with them.
+            <b>ECACleaningRag</b> is a component that represents a cleaning rag object used to wash
+            objects equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECACleaningRag.Washes(ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface)">
             <summary>
-            <b>Washes</b> is a method that simulates the action of cleaning a surface using the rag.
-            It is triggered when the rag interacts with a surface, typically via collision detection.
+            <b>washes</b> simulates the cleaning action performed by a rag on an object
+            equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component, typically a surface within the environment.
+            When executed, it removes dirt, dust, or stains from the surface. If the rag contains water or detergent,
+            the action represents a washing process; otherwise, it performs a dry wiping action.
+            Both cases trigger the <b>washes</b> automation event.
+            When interacting with surfaces equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAOilStain"/> component, it removes oil stains,
+            and when the surface includes an <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall"/> component, it removes dust balls.
+            This method is automatically invoked when the rag comes into contact with an object equipped
+            with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component, typically detected through a collision event.
             </summary>
-            <param name="surface">The <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> to be washed.</param>
+            <param name="surface">The object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component representing the surface to be cleaned.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECADustPan">
             <summary>
-            <b>ECADustPan</b> is a virtual object that simulates the behavior of a dustpan used in cleaning tasks.
-            It has a method for collecting dust balls (<see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall"/>).
+            <b>ECADustPan</b> is a component that represents a virtual dustpan used in cleaning tasks within the environment.
+            It interacts with objects equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall"/> component and allows the collection and containment
+            of dust balls that have been previously removed or swept by other cleaning tools.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECADustPan.CollectsDust(ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall)">
             <summary>
-            <b>CollectsDust</b> is a method that simulates the action of the dustpan collecting a dust ball.
+            <b>collects-dust</b> simulates the action of a dustpan collecting a dust ball from an object equipped
+            with the <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall"/> component, generally a surface within the environment.
+            This method is typically triggered after a <b>sweeps</b> action performed by an object equipped with an
+            <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECABroom"/> component, often in combination with the <b>remove-dust</b> action
+            of an <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall"/> component.
+            When executed, it transfers the dust ball into the dustpan, updating its collected state
             </summary>
-            <param name="dustBall">The <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall"/> object being collected.</param>
+            <param name="dustBall">The <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall"/> object being collected by the dustpan.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECAMop">
             <summary>
-            <b>ECAMop</b> represents a virtual mop used to clean surfaces within the simulation.
-            It is designed to interact with surfaces by "washing" them, typically triggered when coming into contact with a surface.
+            <b>ECAMop</b> is a component that represents a virtual mop used to wash objects equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component,
+            typically representing surfaces within the environment.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECAMop.Washes(ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface)">
             <summary>
-            <b>Washes</b> is a method that simulates the action of the mop cleaning a surface.
-            This action is triggered when the mop collides with a surface object, and notifies the automation system accordingly.
+            <b>washes</b> specifies the action of a mop cleaning an object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component,
+            typically representing a surface within the environment. This method is typically invoked when the mop comes
+            into contact with an object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component, and it assumes that
+            the mop has the property <b>hasWater</b> set to <c>true</c>.
+            When <b>washes</b> is used as a trigger in an ECA automation, if it interacts with objects equipped with
+            both <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> and <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECAOilStain"/> components, it MUST trigger in the same automation
+            the corresponding <b>removes-stain-with-mop</b> action (that removes dirt, liquid residues, or stains from
+            the surface as part of the cleaning process). 
             </summary>
-            <param name="surface">The surface being cleaned by the mop.</param>
+            <param name="surface">The object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component representing the surface to be cleaned.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECAScottex">
             <summary>
-            <b>ECAScottex</b> represents a virtual disposable paper towel used to clean surfaces in the simulation.
-            It interacts with surfaces by sweeping over them and is automatically linked to a soakable cleaning system via the <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECASoakableCleaningItem"/> component.
+            <b>ECAScottex</b> represents a virtual disposable paper towel used to clean an object equipped with an
+            <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component, typically a surface within the environment.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECAScottex.Sweeps(ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface)">
             <summary>
-            <b>Sweeps</b> is a method that simulates the action of the scottex wiping or cleaning a given surface.
-            This action is used to trigger an ECA event when a surface is swept by the object.
+            <b>sweeps</b> represents the action of a paper towel (or scottex) cleaning an object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component,
+            typically representing a surface within the environment. This method is usually invoked when the paper towel
+            comes into contact with an object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component.
+            When <b>sweeps</b> is used as a trigger in an ECA automation, if it interacts with objects equipped with
+            both <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> and <see cref="T:ECARules4All_DLL.Taxonomies.Behaviours.Subcategories.ECADustBall"/> components, it MUST trigger in the same automation
+            the corresponding <b>removes-dust-with-scottex</b> action (that removes the dust from the surface). 
             </summary>
-            <param name="surface">The surface being swept by the scottex.</param>
+            <param name="surface">The object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Environments.Subcategories.ECASurface"/> component representing the surface to be swept.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECASoakableCleaningItem">
             <summary>
-            <b>ECASoakableCleaningItem</b> is a virtual object that represents a reusable cleaning item
-            capable of absorbing and releasing different types of liquids (e.g., water, degreaser, battery killer, disinfectant).
-            It supports being wetted and dried, and tracks its current state using dedicated ECA boolean variables.
+            <b>ECASoakableCleaningItem</b> is a component that represents a reusable virtual cleaning item
+            capable of absorbing and releasing various types of liquids, such as water, degreaser, battery killer,
+            or disinfectant.
+            It can be wetted or dried and maintains its current state through dedicated ECA boolean variables,
+            which indicate the presence or absence of specific absorbed substances.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECASoakableCleaningItem.hasWater">
@@ -8321,10 +9003,17 @@
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECASoakableCleaningItem._Wets(ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser)">
             <summary>
-            <b>Wets</b> is an action method that updates the item’s internal state to reflect it has absorbed a specific liquid.
-            It changes the item's material to a "wet" visual and starts a timer for automatic drying.
+            <b>wets</b> represents the action in which an object equipped with the <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECASoakableCleaningItem"/>
+            component, such as a cloth, rag, or paper towel, becomes wet after being poured on by an object equipped with
+            the <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser"/> component, such as a bottle or sprayer within the environment.
+            When the <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECASoakableCleaningItem"/> is wetted, this event acts as a trigger within an ECA automation.
+            The resulting state change depends on the liquid dispensed:
+            - When the <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser"/> contains water, the cleaning item implicitly performs the action
+            <b>changes-has-water</b>.
+            - When the <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser"/> contains degreaser, it implicitly performs the action <b>changes-has-dDegreaser</b>.
+            - When the <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser"/> contains amuchina, it implicitly performs the action <b>changes-has-amuchina</b>.
+            Executing this action updates the internal state of the cleaning item to reflect the absorbed liquid.
             </summary>
-            <param name="ld">The liquid dispenser responsible for wetting this item.</param>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECASoakableCleaningItem.Dries">
             <summary>
@@ -8332,16 +9021,200 @@
             both visually and logically by clearing the water state variable.
             </summary>
         </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECASoakableCleaningItem.changesHasWater">
+            <summary>
+            <b>changes has water</b> represents the implicit action performed when an object equipped with an
+            <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECASoakableCleaningItem"/> component absorbs water due to the <b>wets</b> action
+            triggered by an object equipped with a <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser"/> component whose
+            <b>liquidSpawner</b> property is explicitly set to <b>water</b> (e.g., a spruzzino object).
+            In other words, this action is only applicable if the liquid dispenser is configured to dispense
+            water; liquid dispensers configured with any other liquid do not trigger this state change.
+            When this condition is satisfied, the action updates the internal state of the cleaning item by
+            setting the <b>hasWater</b> variable to <c>true</c>, indicating that the object has absorbed
+            water and is now ready for water-based cleaning operations.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECASoakableCleaningItem.changesHasDegreaser">
+            <summary>
+            <b>changes-has-degreaser</b> represents the implicit action performed when an object equipped with an
+            <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECASoakableCleaningItem"/> component absorbs degreaser due to the <b>wets</b> action
+            triggered by an object equipped with a <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser"/> component whose
+            <b>liquidSpawner</b> property is explicitly set to <b>degreaser</b> (e.g., spruzzinosgrassatore object).
+            In other words, this action is only applicable if the liquid dispenser is configured to dispense
+            degreaser; liquid dispensers configured with any other liquid do not trigger this state change.
+            When this condition is satisfied, the action updates the internal state of the cleaning item by
+            setting the <b>hasDegreaser</b> variable to <c>true</c>, indicating that the object has absorbed
+            degreaser and is therefore ready for degreasing operations.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECASoakableCleaningItem.changesHasAmuchina">
+            <summary>
+            <b>changes-has-amuchina</b> represents the implicit action performed when an object equipped with an
+            <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.CleaningItems.Subcategories.ECASoakableCleaningItem"/> component absorbs amuchina due to the <b>wets</b> action
+            triggered by an object equipped with a <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser"/> component whose
+            <b>liquidSpawner</b> property is explicitly set to <b>amuchina</b> (e.g., spruzzinoamuchina object).
+            In other words, this action is only applicable if the liquid dispenser is configured to dispense
+            amuchina; liquid dispensers configured with any other liquid do not trigger this state change.
+            When this condition is satisfied, the action updates the internal state of the cleaning item by
+            setting the <b>hasAmuchina</b> variable to <c>true</c>, indicating that the object has absorbed
+            amuchina and is therefore ready for sanitizing operations.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing">
+            <summary>
+            <b>Clothing</b>: This class is used to define the clothing properties of the objects.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing.ClothingCategories">
+            <summary>
+            <b>ClothingCategories</b>: This enum is used to define the clothing categories: TOP, PANTS, SHOES and HAT.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing.brand">
+            <summary>
+            <b>Brand</b>: This property is used to define the brand of the clothing.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing.color">
+            <summary>
+            <b>Color</b>: This property is used to define the color of the clothing.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing.size" -->
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing.weared">
+            <summary>
+            <b>Weared</b>: This property is used to define if the clothing is weared or not.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing._Wears(ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Mannequin)">
+            <summary>
+            <b>_Wears</b>: This method is used to allow the mannequin to wear the clothing.
+            </summary>
+            <param name="m">The mannequin that wears the clothing</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing._Unwears(ECARules4All_DLL.Taxonomies.Objects.Characters.Animals.Subcategories.Mannequin)">
+            <summary>
+            <b>_Unwears</b>: This method is used to allow the mannequin to unwear the clothing.
+            </summary>
+            <param name="m">The mannequin that unwears the clothing</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing._Wears(ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter)">
+            <summary>
+            <b>_Wears</b>: This method is used to allow the character to wear the clothing.
+            </summary>
+            <param name="c">The character that wears the clothing</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Clothing._Unwears(ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter)">
+            <summary>
+            <b>_Unwears</b>: This method is used to allow the character to unwear the clothing.
+            </summary>
+            <param name="c">The character that unwears the clothing</param>
+        </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.ECADoor">
             <summary>
             <b>ECADoor</b>: This class is used to define a door beviour.
             </summary>
         </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.ECAWindow">
+            <summary>
+            <b>ECAWindow</b> is a component that represents a virtual window within the environment.
+            It can be used as part of automation rules involving environmental interactions,
+            such as opening or closing actions.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.ECAWindow.isOpen">
+            <summary>
+            <b>isOpen</b> is a boolean state variable that indicates whether a window is open.
+            Its value is automatically updated when the window executes the <b>opens</b> or <b>closes</b> action.
+            This variable can be used as a condition within automation rules related to environmental control.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.ECAWindow.Opens">
+            <summary>
+            <b>opens</b> represents the action of opening a window.
+            When executed, if the window is currently closed (<c>isOpen = false</c>), it automatically
+            updates the internal state variable <c>isOpen</c> to <c>true</c> and
+            rotates the window to its predefined open position.
+            Executing this action may be involved in automations related to ventilation, lighting,
+            or other environmental interactions that depend on the window’s open state.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.ECAWindow.Closes">
+            <summary>
+            <b>closes</b> represents the action of closing a window.
+            When executed, if the window is currently open (<c>isOpen = true</c>), it automatically updates the
+            internal state variable <c>isOpen</c> to <c>false</c> and rotates
+            the window to its predefined closed position. This action may be involed in automations
+            related to ventilation, insulation, energy efficiency, or security.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Electronic">
+            <summary>
+            <b>Electronic</b> class is used to create and manage electronics objects, which are used to interact with the game.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Electronic.brand">
+            <summary>
+            <b>Brand</b> is the brand of the electronic.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Electronic.model">
+            <summary>
+            <b>Model</b> is the model of the electronic.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Electronic.on">
+            <summary>
+            <b>On</b> is the state of the electronic.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Electronic.turnParticle">
+            <summary>
+            <b>TurnParticle</b>: The particle system to play when the electronic object is turned on.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Electronic.Turns(ECARules4All_DLL.Utils.ECABoolean)">
+            <summary>
+            <b>Turns</b>: Turns the electronic on or off.
+            </summary>
+            <param name="on">A boolean for the new state of the electronic</param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Food">
+            <summary>
+            <b>Food</b> is a class that represents something that can be eaten.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Food.weight">
+            <summary>
+            <b>Weight</b>: is the weight of the food.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Food.expiration">
+            <summary>
+            <b>Expiration</b>: is the expiration date of the food.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Food.description">
+            <summary>
+            <b>Description</b>: is the description of the food.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Food.eaten">
+            <summary>
+            <b>Eaten</b>: is true if the food has been eaten.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Food._Eats(ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter)">
+            <summary>
+            <b>_Eats</b> is the method that is called when the food is eaten. This is a passive action, so the Food type
+            is not in the subject of the action, but on the object.
+            </summary>
+            <param name="c">The character that eats the food</param>
+        </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContainer.ECALiquidContainer">
             <summary>
-            <b>ECALiquidContainer</b> represents a virtual container that can hold various virtual liquids and tracks their fill levels.
-            It manages the fill steps between start and end positions, tracks different types of liquid drops,
-            updates the visual liquid level, and handles temperature changes as liquids are added.
+            <b>ECALiquidContainer</b> is a component that represents a virtual container capable of holding different
+            types of virtual liquids and tracking their fill levels within the environment.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContainer.ECALiquidContainer.waterDrops">
@@ -8372,39 +9245,45 @@
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContainer.ECALiquidContainer._FillsIn(ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser)">
             <summary>
-            <b>_FillsIn</b> is an action method invoked when the container is filled by a liquid dispenser.
+            <b>fills-in</b> represents the action performed when an object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContainer.ECALiquidContainer"/> component
+            is filled by an object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser"/> component.
             </summary>
-            <param name="dispenser">The liquid dispenser that fills the container.</param>
+            <param name="dispenser">The object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser"/> component that fills the container.</param>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContainer.Subcategories.ECABucket">
             <summary>
-            <b>ECABucket</b> represents a virtual bucket that can contain different types of virtual liquids in the automation system.
-            It extends the functionality of <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContainer.ECALiquidContainer"/> by specializing the container as a bucket.
-            This class can be filled with water, degreaser, amuchina, or battery killer, and it supports visual feedback such as fill level and liquid type.
+            <b>ECABucket</b> is a component that represents a virtual bucket capable of containing different types of virtual
+            liquids within the environment.
+            It extends the functionality of <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContainer.ECALiquidContainer"/> by specializing it as a bucket-type container.
+            The bucket can be filled with liquids such as water, degreaser, disinfectant, or battery killer,
+            and provides visual feedback to indicate both the current fill level and the type of liquid contained.
             </summary>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser">
             <summary>
-            <b>ECALiquidDispenser</b> is a virtual dispenser capable of filling containers with specific types of liquid.
-            Supports defining the type of liquid it dispenses (e.g., water, degreaser, amuchina, battery killer).
+            <b>ECALiquidDispenser</b> is a component that represents a virtual dispenser capable of releasing or
+            filling containers with specific types of liquids within the environment.
+            It allows the definition of the liquid type it dispenses, such as water, degreaser, disinfectant, or battery killer,
+            and integrates with other ECA components to support automated filling and wetting actions.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser.liquidType">
             <summary>
             <b>liquidType</b> specifies the type of liquid dispensed by this object.
-            Possible values include <c>"water"</c>, <c>"degreaser"</c>, <c>"amuchina"</c>, and <c>"battery killer"</c>.
+            Possible values include 'water', 'degreaser', 'amuchina', and 'battery killer'.
             </summary>
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle">
             <summary>
-            <b>ECABottle</b> is a virtual bottle object that can contain and dispense liquid.
-            It supports state variables such as <c>capOpen</c> and <c>flipped</c>, and interacts with a <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser"/> component for liquid spawning.
-            It provides actions for flipping the bottle, opening or closing its cap, and starting or stopping the flow of liquid.
-            Some rules are added automatically at the start:
-            - Flipping the bottle down while the cap is open will cause liquid to drop.
-            - Flipping the bottle up will stop the liquid from dropping.
-            - Closing the cap will stop the liquid from dropping.
-            - Opening the cap while the bottle is flipped down will cause liquid to drop.
+            <b>ECABottle</b> is a component that represents a virtual bottle capable of containing and dispensing
+            liquid within the environment. It maintains internal state variables such as <c>capOpen</c> and <c>flipped</c>,
+            and interacts with objects equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser"/> component to
+            manage liquid flow and spawning. The bottle provides actions for flipping, opening or closing the cap,
+            and starting or stopping the liquid flow. Several default automation rules are initialized at startup:
+            - Flipping the bottle downward while the cap is open causes liquid to flow.
+            - Flipping the bottle upward stops the liquid flow.
+            - Closing the cap stops the liquid flow.
+            - Opening the cap while the bottle is flipped downward resumes the liquid flow.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle.capOpen">
@@ -8417,34 +9296,49 @@
             <b>flipped</b> indicates whether the bottle is currently flipped upside down (<c>YES</c>) or upright (<c>NO</c>).
             </summary>
         </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle._OpenCap">
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle._OpenCap(ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter)">
             <summary>
-            <b>opens-cap</b> is an action that opens the bottle’s cap.
+            <b>opens-cap</b> represents the action of opening the cap of a bottle equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle"/>
+            component.
+            When executed, it sets the internal state variable <c>capOpen</c> to <c>true</c>
+            and, if the bottle is flipped downward, triggers the <b>drops-liquid</b> action to start the liquid flow.
             </summary>
         </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle._CloseCap">
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle._CloseCap(ECARules4All_DLL.Taxonomies.Objects.Characters.ECACharacter)">
             <summary>
-            <b>closes-cap</b> is an action that closes the bottle’s cap.
+            <b>closes-cap</b> represents the action of closing the cap of a bottle equipped with
+            an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle"/> component.
+            When executed, it sets the internal state variable <c>capOpen</c> to <c>false</c>
+            and triggers the <b>stops-dropping</b> action to halt any ongoing liquid flow.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle.FlipsDown">
             <summary>
-            <b>flips-down</b> is an action that simulates turning the bottle upside down.
+            <b>flips-down</b> represents the action of turning a bottle equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle"/> component
+            upside down. When executed, it updates the internal state variable <c>flipped</c> to <c>true</c>
+            and, if the cap is open, triggers the <b>drops-liquid</b> action to start the liquid flow.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle.FlipsUp">
             <summary>
-            <b>flips-up</b> is an action that simulates turning the bottle upright.
+            <b>flips-up</b> represents the action of turning a bottle equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle"/> component
+            to an upright position. When executed, it updates the internal state variable <c>flipped</c> to <c>false</c>
+            and stops any ongoing liquid flow if the bottle was previously pouring.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle.DropsLiquid">
             <summary>
-            <b>drops-liquid</b> is an internal action that triggers the liquid to start spawning from the spawner.
+            <b>drops liquid</b> represents the action that initiates the release of liquid from the spawner
+            associated with an object equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle"/> component.
+            When executed, it starts the spawning of liquid particles or drops within the environment.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle.StopsDropping">
             <summary>
-            <b>stops-dropping</b> is an internal action that stops the flow of liquid from the bottle.
+            <b>stops dropping</b> represents the internal action that stops the flow of liquid from an object
+            equipped with an <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle"/> component.
+            When executed, it halts the spawning of liquid particles or drops and updates the dispenser’s internal state
+            to indicate that the liquid flow has stopped.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECABottle.ToggleCap">
@@ -8454,17 +9348,21 @@
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECAWaterMixerTap">
             <summary>
-            <b>ECAWaterMixerTap</b> is a virtual object representing a water mixer tap that can be turned left, idle (middle), or right.
-            Some rules are added automatically at the start:
-            - Turning left flows warm water.
-            - Turning right flows cold water
-            - Turning idle (middle) stops the flow.
-            The class includes properties and methods for controlling and responding to user interactions.
+            <b>ECAWaterMixerTap</b> is a component that represents a virtual water mixer tap within the environment.
+            It can be turned to the left, idle (center), or right positions, corresponding respectively to warm,
+            neutral, and cold water flow states.
+            Several default automation rules are initialized at startup:
+            - Turning left starts the flow of warm water.
+            - Turning right starts the flow of cold water.
+            - Returning to the idle (center) position stops the water flow.
+            The component provides properties and actions for controlling its rotation state, managing the water flow,
+            and responding to user interactions or automation triggers.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECAWaterMixerTap.FlowsWarmWater">
             <summary>
-            <b>FlowsWarmWater</b> causes the tap to emit warm water.
+            <b>flows-warm-water</b> represents the action that causes an object equipped with an
+            <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECAWaterMixerTap"/> component, typically a tap, to emit warm water. 
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.Subcategories.ECAWaterMixerTap.FlowsColdWater">
@@ -8495,17 +9393,164 @@
             </summary>
             <param name="c">The character performing the action.</param>
         </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray">
+            <summary>
+            <b>Spray</b> is a class that represents a spray.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.SprayType">
+            <summary>
+            <b>SprayType</b>: This enum is used to define the spray types: SMALL, MEDIUM and LARGE.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.charge">
+            <summary>
+            <b>Charge</b>: a float value that represents the charge of the spray.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.ChangesSprayType(ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.SprayType)">
+            <summary>
+            <b> ChangesSprayType</b> changes the spray type.
+            </summary>
+            <param name="type">The new <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.SprayType"/> value. </param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Spray.Sprays">
+            <summary>
+            <b>Sprays</b>: The action of using the spray. It decreases the charge of the spray.
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Bullet">
+            <summary>
+            <b>Bullet</b>: this class it is a type of <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Weapon"/> that is usually expelled from another object in the scene, usually a <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Firearm"/> object
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Bullet.speed">
+            <summary>
+            <b>Speed</b>: this is the speed of the bullet
+            </summary>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.EdgedWeapon">
+            <summary>
+            The <b>EdgedWeapon</b> class is a <b>Weapon</b> that has a sharp edge.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.EdgedWeapon.particleStab">
+            <summary>
+            <b>ParticleStab</b>: The particle system to play when the weapon stabs.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.EdgedWeapon.particleSlice">
+            <summary>
+            <b>ParticleSlice</b>: The particle system to play when the weapon slices.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.EdgedWeapon.Stabs(ECARules4All_DLL.ECAObject)">
+            <summary>
+            <b>Stabs</b>: The action that occurs when a player stabs another ECAObject.
+            </summary>
+            <param name="obj">The ECAObject that has been stabbed</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.EdgedWeapon.Slices(ECARules4All_DLL.ECAObject)">
+            <summary>
+            <b>Stabs</b>: The action that occurs when a player slices another ECAObject.
+            </summary>
+            <param name="obj">The ECAObject that has been sliced</param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Firearm">
+            <summary>
+            <b>Firearm</b> is a class that represents a firearm, a firearm can expel bullets.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Firearm.particleFire">
+            <summary>
+            <b>ParticleFire</b> is a reference to the particle system that is used to simulate the fire.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Firearm.particleRecharge">
+            <summary>
+            <b>ParticleRecharge</b> is a reference to the particle system that is used to simulate the recharging.
+            </summary>
+        </member>
+        <member name="F:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Firearm.bulletPrefab">
+            <summary>
+            <b>BulletPrefab</b> is a reference to the bullet prefab that is used to instantiate bullets.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Firearm.charge">
+            <summary>
+            <b>Charge</b> is the current charge of the firearm.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Firearm.Recharges(System.Int32)">
+            <summary>
+            <b>Recharges</b>: The action of recharging the firearm. It plays the particle system and increases the charge.
+            </summary>
+            <param name="charge">The amount of charge</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Firearm.Fires(ECARules4All_DLL.ECAObject)">
+            <summary>
+            <b>Fires</b>: The action of firing the firearm. It plays the particle system and decreases the charge.
+            </summary>
+            <param name="obj">The ECAObject that has been shot</param>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Firearm.Aims(ECARules4All_DLL.ECAObject)">
+            <summary>
+            <b>Aims</b>: The action of aiming the firearm.
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Shield">
+            <summary>
+            <b>Shield</b> class allows to create a shield for defending from a <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Weapon"/>.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Subcategories.Shield.Blocks(ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Weapon)">
+            <summary>
+            <b>Blocks</b>: This action allows to block the <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Weapon"/> attack.
+            </summary>
+            <param name="weapon"></param>
+        </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Weapon">
+            <summary>
+            The <b>Weapon</b> class is a base class for all weapons.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.Weapons.Weapon.power">
+            <summary>
+            <b>Power</b>: a float value that represents the power of the weapon.
+            </summary>
+        </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Systems.ECASystem">
             <summary>
-            <b>ECASystem</b> represents the virtual system within the automation system.
-            It notifies when the virtual system starts, allowing the execution of rules at the start of the application.
+            <b>ECASystem</b> is a component that represents the virtual automation system within the environment.
+            It handles system-level initialization events and notifies when the virtual system starts,
+            enabling the execution of ECA rules and actions defined to occur at application startup.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Systems.ECASystem.StartsUpTest">
             <summary>
-            <b>StartsUpTest</b> is a method that triggers the startup process of the system.
-            It can be used as trigger for automations.
+            <b>starts up</b> represents the action that triggers the startup process of the virtual system.
+            When executed, it signals that the system has initialized successfully and can serve as a trigger
+            for ECA automation rules that should run at application startup.
             </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAAirPurifier.TurnOn">
+            Attiva il purificatore d'aria.
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAAirPurifier.TurnOff">
+            Spegne il purificatore d'aria e azzera la velocità della ventilatore
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAAirPurifier.SetSpeed(System.Int32)">
+            Imposta una velocità specifica per la ventola.
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAFireplace.Ignite">
+            Azione per accendere il camino (Imposta intensità a 20 di default)
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAFireplace.Extinguish">
+            Azione per spegnere completamente il camino
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAFireplace.SetIntensity(System.Int32)">
+            Azione per impostare l'intensità del camino
         </member>
         <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetSubjectsNameAsSet">
             <summary>
