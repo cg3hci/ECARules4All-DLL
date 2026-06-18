@@ -9552,6 +9552,46 @@
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAFireplace.SetIntensity(System.Int32)">
             Azione per impostare l'intensità del camino
         </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard">
+            <summary>
+            Represents an interactive tankard in the taverna scene, managing its containment state and handling its 2D visual representation.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.hasBeer">
+            <summary>
+            A boolean state variable that specifies if the tankard is currently filled with beer.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.isHeld">
+            <summary>
+            A boolean state variable that tracks whether the player is currently holding the tankard in their hands.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.Awake">
+            <summary>
+            Initializes the object, automatically finds the child SpriteRenderer, and sets the initial visual state.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.Fill">
+            <summary>
+            Triggers the action to fill the tankard with beer, updating both its empty and beer containment states.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.Empty">
+            <summary>
+            Triggers the action to pour out all contents, resetting the tankard back to an empty and beerless state.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.PlaceOnTable">
+            <summary>
+            Triggers the action to place the tankard back down, marking the item as no longer held by the player.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.UpdateVisualEffects">
+            <summary>
+            Toggles the visibility of the 2D beer sprite based on the current empty and fluid state variables.
+            </summary>
+        </member>
         <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetSubjectsNameAsSet">
             <summary>
             Restituisce l'insieme dei soggetti (ECA Object) nella scena
