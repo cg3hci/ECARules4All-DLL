@@ -1,5 +1,6 @@
 ﻿using ECARules4All_DLL.Taxonomies.Objects.Interactions;
 using ECARules4All_DLL.Taxonomies.Objects.Interactions.Subcategories;
+using ECARules4All_DLL.Taxonomies.Objects.Props;
 using ECARules4All_DLL.Utils;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Taverna
     [ECARules4All("fireplace")]
     [RequireComponent(typeof(ECAInteraction))]
     [DisallowMultipleComponent]
-    public class ECAFireplace : ECAObject
+    public class ECAFireplace : ECAProp
     {
         [Header("Fireplace Properties (HASS)")]
         [ECARelevance(true)]

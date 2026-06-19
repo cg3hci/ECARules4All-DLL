@@ -160,9 +160,13 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
             {
                 amuchinaDrops += 1;
             }
+            else if (lqType == ECALiquidSpawner.LiquidType.Beer)
+            {
+                beerDrops += 1;
+            }
             
             ////////  Update rendered water level ////////
-            var totalLiquidIn = waterDrops + degreaserDrops + batteryKillerDrops + amuchinaDrops;
+            var totalLiquidIn = waterDrops + degreaserDrops + batteryKillerDrops + amuchinaDrops + beerDrops;
             int currentLevel = Mathf.FloorToInt(totalLiquidIn / liquidPerLevel);
 
             // Find the highest FillStep whose level is <= currentLevel
@@ -238,6 +242,22 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContaine
             }
         }
         [SerializeField] private int _waterDrops = 0;
+        
+        /// <summary>
+        /// <b>beerDrops</b> counts how many beer drops have been added to the container.
+        /// </summary>
+        [ECARelevance(true)]
+        [StateVariable("beerDrops", ECARules4AllType.Integer)]
+        public int beerDrops
+        {
+            get => _beerDrops;
+            set
+            {
+                _beerDrops = value;
+                ECAScript.NotifyUpdate(this, nameof(beerDrops), beerDrops.ToString());
+            }
+        }
+        [SerializeField] private int _beerDrops = 0;
         
         /// <summary>
         /// <b>degreaserDrops</b> counts how many degreaser drops have been added to the container.

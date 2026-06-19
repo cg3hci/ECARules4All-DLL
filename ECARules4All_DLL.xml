@@ -9222,6 +9222,11 @@
             <b>waterDrops</b> counts how many water drops have been added to the container.
             </summary>
         </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContainer.ECALiquidContainer.beerDrops">
+            <summary>
+            <b>beerDrops</b> counts how many beer drops have been added to the container.
+            </summary>
+        </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidContainer.ECALiquidContainer.degreaserDrops">
             <summary>
             <b>degreaserDrops</b> counts how many degreaser drops have been added to the container.
@@ -9554,7 +9559,12 @@
         </member>
         <member name="T:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard">
             <summary>
-            Represents an interactive tankard in the taverna scene, managing its containment state and handling its 2D visual representation.
+            Represents an interactive tankard in the taverna scene, specializing ECALiquidContainer to manage fluid states for the rule engine.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.isEmpty">
+            <summary>
+            A boolean state variable that determines if the tankard is completely empty or contains liquid.
             </summary>
         </member>
         <member name="P:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.hasBeer">
@@ -9572,14 +9582,24 @@
             Initializes the object, automatically finds the child SpriteRenderer, and sets the initial visual state.
             </summary>
         </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.Update">
+            <summary>
+            Synchronizes and updates the state variables and visual representation based on the physical drops inside the container.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.UpdateLiquidPosition(System.Int32)">
+            <summary>
+            Calcola la quota 3D del cerchio di liquido interpolando tra StartStep ed EndStep in base alle gocce.
+            </summary>
+        </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.Fill">
             <summary>
-            Triggers the action to fill the tankard with beer, updating both its empty and beer containment states.
+            Triggers the action to fill the tankard with beer, computing the drops required to reach the maximum fill step level.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.Empty">
             <summary>
-            Triggers the action to pour out all contents, resetting the tankard back to an empty and beerless state.
+            Triggers the action to pour out all contents, resetting all fluid types and drop counters to zero.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.PlaceOnTable">
@@ -9589,7 +9609,7 @@
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.UpdateVisualEffects">
             <summary>
-            Toggles the visibility of the 2D beer sprite based on the current empty and fluid state variables.
+            Toggles the visibility of the 2D fluid sprite based on the current empty and liquid containment state variables.
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetSubjectsNameAsSet">

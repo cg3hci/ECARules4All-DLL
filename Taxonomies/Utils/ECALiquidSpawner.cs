@@ -15,7 +15,8 @@ namespace ECARules4All_DLL.Taxonomies.Utils
             Water,
             Amuchina,
             BatteryKiller,
-            Degreaser
+            Degreaser,
+            Beer
         }
 
         public enum LiquidTemperature
