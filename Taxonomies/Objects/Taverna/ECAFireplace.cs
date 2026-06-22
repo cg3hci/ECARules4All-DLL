@@ -24,7 +24,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Taverna
             }
         }
         [SerializeField]
-        private ECABoolean _isLit = new ECABoolean(ECABoolean.BoolType.OFF);
+        private ECABoolean _isLit = new ECABoolean(ECABoolean.BoolType.FALSE);
 
         [StateVariable("intensity", ECARules4AllType.Integer)]
         public int intensity
@@ -48,7 +48,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Taverna
             set
             {
                 _smokeLevel = value;
-                ECAScript.NotifyUpdate(this, nameof(smokeLevel), smokeLevel.ToString());
+                ECAScript.NotifyUpdate(this, nameof(smokeLevel), smokeLevel.ToString(System.Globalization.CultureInfo.InvariantCulture));
             }
         }
         [SerializeField]
@@ -65,13 +65,14 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Taverna
             UpdateVisualEffects();
         }
 
-        /// Azione per accendere il camino (Imposta intensità a 20 di default)
+        /// Azione per accendere il camino
         [ECARelevance(true)]
         [Action(typeof(ECAFireplace), "ignite")]
         [ContextMenu("Ignite")]
         public void Ignite()
         {
-            isLit = new ECABoolean(ECABoolean.BoolType.ON);
+            // L'assegnazione attiva automaticamente i setter che inviano le notifiche corrette (TRUE/FALSE)
+            isLit = new ECABoolean(ECABoolean.BoolType.TRUE);
             intensity = 20;
             smokeLevel = 33.3f;
         }
@@ -82,7 +83,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Taverna
         [ContextMenu("Extinguish")]
         public void Extinguish()
         {
-            isLit = new ECABoolean(ECABoolean.BoolType.OFF);
+            isLit = new ECABoolean(ECABoolean.BoolType.FALSE);
             intensity = 0;
             smokeLevel = 0f;
         }
@@ -91,7 +92,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Taverna
         [Action(typeof(ECAFireplace), "sets", "intensity", "to", typeof(int))]
         public void SetIntensity(int level)
         {
-            isLit = new ECABoolean(level > 0 ? ECABoolean.BoolType.ON : ECABoolean.BoolType.OFF);
+            isLit = new ECABoolean(level > 0 ? ECABoolean.BoolType.TRUE : ECABoolean.BoolType.FALSE);
             intensity = level;
             smokeLevel = level * 33.3f;
         }

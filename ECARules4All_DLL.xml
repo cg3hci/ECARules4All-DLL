@@ -9549,68 +9549,13 @@
             Imposta una velocità specifica per la ventola.
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAFireplace.Ignite">
-            Azione per accendere il camino (Imposta intensità a 20 di default)
+            Azione per accendere il camino
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAFireplace.Extinguish">
             Azione per spegnere completamente il camino
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAFireplace.SetIntensity(System.Int32)">
             Azione per impostare l'intensità del camino
-        </member>
-        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard">
-            <summary>
-            Represents an interactive tankard in the taverna scene, specializing ECALiquidContainer to manage fluid states for the rule engine.
-            </summary>
-        </member>
-        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.isEmpty">
-            <summary>
-            A boolean state variable that determines if the tankard is completely empty or contains liquid.
-            </summary>
-        </member>
-        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.hasBeer">
-            <summary>
-            A boolean state variable that specifies if the tankard is currently filled with beer.
-            </summary>
-        </member>
-        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.isHeld">
-            <summary>
-            A boolean state variable that tracks whether the player is currently holding the tankard in their hands.
-            </summary>
-        </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.Awake">
-            <summary>
-            Initializes the object, automatically finds the child SpriteRenderer, and sets the initial visual state.
-            </summary>
-        </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.Update">
-            <summary>
-            Synchronizes and updates the state variables and visual representation based on the physical drops inside the container.
-            </summary>
-        </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.UpdateLiquidPosition(System.Int32)">
-            <summary>
-            Calcola la quota 3D del cerchio di liquido interpolando tra StartStep ed EndStep in base alle gocce.
-            </summary>
-        </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.Fill">
-            <summary>
-            Triggers the action to fill the tankard with beer, computing the drops required to reach the maximum fill step level.
-            </summary>
-        </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.Empty">
-            <summary>
-            Triggers the action to pour out all contents, resetting all fluid types and drop counters to zero.
-            </summary>
-        </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.PlaceOnTable">
-            <summary>
-            Triggers the action to place the tankard back down, marking the item as no longer held by the player.
-            </summary>
-        </member>
-        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECATankard.UpdateVisualEffects">
-            <summary>
-            Toggles the visibility of the 2D fluid sprite based on the current empty and liquid containment state variables.
-            </summary>
         </member>
         <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetSubjectsNameAsSet">
             <summary>

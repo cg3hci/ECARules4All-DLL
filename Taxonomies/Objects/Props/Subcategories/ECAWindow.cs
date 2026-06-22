@@ -49,6 +49,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         /// </summary>
         [ECARelevance(true)]
         [Action(typeof(ECAWindow), "opens")]
+        [ContextMenu("opens")]
         public void Opens()
         {
             if (!isOpen)
@@ -68,6 +69,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
         /// </summary>
         [ECARelevance(true)]
         [Action(typeof(ECAWindow), "closes")]
+        [ContextMenu("closes")]
         public void Closes()
         {
             if (isOpen)
