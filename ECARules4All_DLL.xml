@@ -9548,6 +9548,52 @@
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAAirPurifier.SetSpeed(System.Int32)">
             Imposta una velocità specifica per la ventola.
         </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECABeerBarrel">
+            <summary>
+            <b>ECABeerBarrel</b> represents a rustic or medieval beer barrel in the Virtual Tavern.
+            It extends <see cref="T:ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories.LiquidDispenser.ECALiquidDispenser"/> to manage beer dispensing, tracking the tap state
+            and the volume of remaining liquid, using the native physics-based spawning system (<see cref="T:ECARules4All_DLL.Taxonomies.Utils.ECALiquidSpawner"/>).
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECABeerBarrel.isTapped">
+            <summary>
+            <b>isTapped</b> specifies whether the barrel's tap is currently open and dispensing beer drops.
+            It uses the strict <see cref="T:ECARules4All_DLL.Utils.ECABoolean"/> type to maintain compliance with the Rule Engine.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECABeerBarrel.remainingLiquid">
+            <summary>
+            <b>remainingLiquid</b> tracks the volume or percentage of beer left inside the barrel.
+            Changes to this value are synchronized with Home Assistant using invariant culture formatting.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECABeerBarrel.Awake">
+            <summary>
+            Initializes the barrel by forcing the inherited liquidType property to "beer" 
+            and linking the owner reference.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECABeerBarrel.OpenTap">
+            <summary>
+            <b>OpenTap</b> opens the valve of the barrel to initiate the beer pouring process.
+            It starts the native physics spawner (<see cref="T:ECARules4All_DLL.Taxonomies.Utils.ECALiquidSpawner"/>) at Ambient temperature.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECABeerBarrel.CloseTap">
+            <summary>
+            <b>CloseTap</b> closes the valve of the barrel, immediately halting the liquid drop spawning.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECABeerBarrel.PourBeer">
+            <summary>
+            <b>PourBeer</b> opens the tap to dispense beer and automatically closes it after 3 seconds.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECABeerBarrel.PourBeerCourtine">
+            <summary>
+            Coroutine interna che gestisce l'attesa di 3 secondi tra l'apertura e la chiusura della botte di birra.
+            </summary>        
+        </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAFireplace.Ignite">
             Azione per accendere il camino
         </member>

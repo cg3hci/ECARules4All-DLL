@@ -224,8 +224,8 @@
         <Compile Include="Taxonomies\Objects\Props\Subcategories\Weapons\Weapon.cs" />
         <Compile Include="Taxonomies\Objects\Scenes\Scene.cs" />
         <Compile Include="Taxonomies\Objects\Systems\ECASystem.cs" />
-        <Compile Include="Taxonomies\Objects\Taverna\BeerBarrel.cs" />
         <Compile Include="Taxonomies\Objects\Taverna\ECAAirPurifier.cs" />
+        <Compile Include="Taxonomies\Objects\Taverna\ECABeerBarrel.cs" />
         <Compile Include="Taxonomies\Objects\Taverna\ECAFireplace.cs" />
         <Compile Include="Taxonomies\Objects\Taverna\ECATankard.cs" />
         <Compile Include="Taxonomies\Objects\Vehicles\Subcategories\AirVehicle.cs" />
