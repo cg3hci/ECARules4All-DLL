@@ -9594,6 +9594,11 @@
             Coroutine interna che gestisce l'attesa di 3 secondi tra l'apertura e la chiusura della botte di birra.
             </summary>        
         </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECACandle.UpdateVisualEffects">
+            <summary>
+            Update visual components in Unity (Lights and ps) from the value of the variable isLit
+            </summary>
+        </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAFireplace.Ignite">
             Azione per accendere il camino
         </member>
