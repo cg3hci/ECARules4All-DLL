@@ -227,6 +227,7 @@
         <Compile Include="Taxonomies\Objects\Taverna\ECAAirPurifier.cs" />
         <Compile Include="Taxonomies\Objects\Taverna\ECABeerBarrel.cs" />
         <Compile Include="Taxonomies\Objects\Taverna\ECACandle.cs" />
+        <Compile Include="Taxonomies\Objects\Taverna\ECAChandelier.cs" />
         <Compile Include="Taxonomies\Objects\Taverna\ECAFireplace.cs" />
         <Compile Include="Taxonomies\Objects\Taverna\ECATankard.cs" />
         <Compile Include="Taxonomies\Objects\Vehicles\Subcategories\AirVehicle.cs" />
