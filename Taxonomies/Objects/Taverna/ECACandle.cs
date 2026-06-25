@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections;
 using ECARules4All_DLL.Taxonomies.Behaviours.Subcategories;
 using ECARules4All_DLL.Taxonomies.Objects.Props;
 using ECARules4All_DLL.Utils;
@@ -12,10 +12,14 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Taverna
     public class ECACandle : ECAProp
     {
         [SerializeField]
-        private ECABoolean _isLit = new ECABoolean(ECABoolean.BoolType.FALSE);
+        private ECABoolean _isLit = ECABoolean.FALSE;
 
         [SerializeField] 
-        private float _fuelLevel = 100.0f;
+        private float _fuelLevel = 5.0f;
+
+        public float burnRate = 2.0f;
+        
+        private Coroutine _burnCoroutine;
 
         [ECARelevance(true)]
         [StateVariable("isLit", ECARules4AllType.Boolean)]
@@ -28,6 +32,8 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Taverna
                 ECAScript.NotifyUpdate(this, nameof(isLit), isLit.ToString());
                 
                 UpdateVisualEffects();
+
+                ManageBurnRoutine();
             }
         }
         
@@ -63,7 +69,12 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Taverna
         [ContextMenu("Lights Up")]
         public void LightUp()
         {
-            isLit = new ECABoolean(ECABoolean.BoolType.TRUE);
+            if (fuelLevel > 0)
+                isLit = new ECABoolean(ECABoolean.BoolType.TRUE);
+            else
+            {
+                Debug.LogError($"[{gameObject.name}] Impossibile accendere la candela: la cera è stata tutta consumata");
+            }
         }
         
         [ECARelevance(true)]
@@ -95,6 +106,42 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Taverna
                 else if (!shouldBeOn && fireParticle.isPlaying)
                 {
                     fireParticle.Stop();
+                }
+            }
+        }
+
+        private void ManageBurnRoutine()
+        {
+            bool shouldBeOn = isLit == ECABoolean.TRUE;
+
+            if (shouldBeOn && fuelLevel > 0)
+            {
+                if (_burnCoroutine == null)
+                    _burnCoroutine = StartCoroutine(BurnRoutine());
+            }
+            else
+            {
+                if (_burnCoroutine != null)
+                {
+                    StopCoroutine(_burnCoroutine);
+                    _burnCoroutine = null;
+                }
+            }
+        }
+
+        private IEnumerator BurnRoutine()
+        {
+            while (isLit == ECABoolean.TRUE && fuelLevel > 0)
+            {
+                yield return new WaitForSeconds(2f);
+                
+                fuelLevel -= burnRate;
+
+                if (fuelLevel <= 0)
+                {
+                    Debug.LogError($"[{gameObject.name}] Cera esaurita!");
+                    fuelLevel = 0;
+                    BlowsOut();
                 }
             }
         }
