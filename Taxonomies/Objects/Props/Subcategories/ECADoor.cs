@@ -33,6 +33,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Props.Subcategories
 
         [ECARelevance(true)]
         [Action(typeof(ECADoor), "opens")]
+        [ContextMenu("open")]
         public void Opens()
         {
             status = true;

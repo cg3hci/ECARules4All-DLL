@@ -9608,6 +9608,29 @@
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAFireplace.SetIntensity(System.Int32)">
             Azione per impostare l'intensità del camino
         </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAKey">
+            <summary>
+            ECAKey represents a physical key used in the VR environment. 
+            It mainly tracks whether it is currently being held by the user.
+            </summary>
+        </member>
+        <member name="P:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAKey.isPickedUp">
+            <summary>
+            Gets or sets the state of the key. True if the user is holding it, false otherwise.
+            Automatically notifies the ECA backend upon state change.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAKey.PickUp">
+            <summary>
+            Updates the key state to indicate it has been picked up by the user.
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAKey.Drop">
+            <summary>
+            Updates the key state to indicate it has been released or dropped by the user.
+            This is an auxiliary method to keep the physics interaction synchronized with the ECA state.
+            </summary>
+        </member>
         <member name="M:ECARules4All_DLL.Utils.ECAObjectInfo.GetSubjectsNameAsSet">
             <summary>
             Restituisce l'insieme dei soggetti (ECA Object) nella scena
