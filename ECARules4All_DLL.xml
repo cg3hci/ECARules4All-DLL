@@ -9599,6 +9599,12 @@
             Update visual components in Unity (Lights and ps) from the value of the variable isLit
             </summary>
         </member>
+        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECACarillon">
+            <summary>
+            ECACarillon represents a music box/gramophone. 
+            It manages playback state, visual particles, and physical animations (crank and disc rotation).
+            </summary>
+        </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAFireplace.Ignite">
             Azione per accendere il camino
         </member>
