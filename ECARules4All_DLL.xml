@@ -9599,10 +9599,19 @@
             Update visual components in Unity (Lights and ps) from the value of the variable isLit
             </summary>
         </member>
-        <member name="T:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECACarillon">
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECACarillon.UpdateVisualEffects">
             <summary>
-            ECACarillon represents a music box/gramophone. 
-            It manages playback state, visual particles, and physical animations (crank and disc rotation).
+            Gestisce l'allineamento tra stato logico e componenti grafici/audio
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECACarillon.Play">
+            <summary>
+            starts play music from the carillon
+            </summary>
+        </member>
+        <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECACarillon.Stop">
+            <summary>
+            stops the music from the carillon
             </summary>
         </member>
         <member name="M:ECARules4All_DLL.Taxonomies.Objects.Taverna.ECAFireplace.Ignite">
