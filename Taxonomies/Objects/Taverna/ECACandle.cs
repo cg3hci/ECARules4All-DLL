@@ -8,7 +8,6 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Taverna
 {
     [ECARules4All("candle")]
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(ECAInteractable))]
     public class ECACandle : ECAProp
     {
         [SerializeField]
@@ -70,7 +69,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Taverna
         public void LightUp()
         {
             if (fuelLevel > 0)
-                isLit = new ECABoolean(ECABoolean.BoolType.TRUE);
+                isLit = ECABoolean.TRUE;
             else
             {
                 Debug.LogError($"[{gameObject.name}] Impossibile accendere la candela: la cera è stata tutta consumata");
@@ -82,7 +81,7 @@ namespace ECARules4All_DLL.Taxonomies.Objects.Taverna
         [ContextMenu("Blows Out")]
         public void BlowsOut()
         {
-            isLit = new ECABoolean(ECABoolean.BoolType.FALSE); 
+            isLit =ECABoolean.FALSE; 
         }
 
         /// <summary>
